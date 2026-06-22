@@ -1,0 +1,78 @@
+name: overnight-22-search
+
+on:
+  workflow_dispatch:
+    inputs:
+      seconds:
+        description: "Seconds per shard. 20400 = 5h40m, safely below the 6h job limit."
+        required: false
+        default: "20400"
+      box_min:
+        description: "Minimum integer coordinate for search vertices"
+        required: false
+        default: "-3"
+      box_max:
+        description: "Maximum integer coordinate for search vertices"
+        required: false
+        default: "7"
+      top_k:
+        description: "How many high-scoring moves are kept at each step"
+        required: false
+        default: "32"
+
+jobs:
+  verify-known-23:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Verify the known 23-link trail
+        run: python scripts/check_trail.py data/ripa_23_trail.json --expected-links 23 --require-full
+
+  overnight-search-22:
+    runs-on: ubuntu-latest
+    needs: verify-known-23
+    timeout-minutes: 355
+    strategy:
+      fail-fast: false
+      max-parallel: 16
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Run overnight shard ${{ matrix.shard }}
+        run: |
+          mkdir -p results
+          python scripts/search_22_integer_box.py \
+            --links 22 \
+            --seconds "${{ github.event.inputs.seconds }}" \
+            --box-min "${{ github.event.inputs.box_min }}" \
+            --box-max "${{ github.event.inputs.box_max }}" \
+            --top-k "${{ github.event.inputs.top_k }}" \
+            --shard "${{ matrix.shard }}" \
+            --shards 16 \
+            --out "results/overnight_best_shard_${{ matrix.shard }}.json"
+      - name: Verify best trail from this shard
+        if: always()
+        run: |
+          if [ -f "results/overnight_best_shard_${{ matrix.shard }}.json" ]; then
+            python scripts/check_trail.py "results/overnight_best_shard_${{ matrix.shard }}.json"
+          else
+            echo "No result file was produced for shard ${{ matrix.shard }}"
+          fi
+      - name: Upload shard result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: overnight-22-shard-${{ matrix.shard }}
+          path: results/overnight_best_shard_${{ matrix.shard }}.json
+          if-no-files-found: warn
