@@ -2,9 +2,75 @@ name: overnight-22-parallel-search
 
 on:
   workflow_dispatch:
+    inputs:
+      seconds:
+        description: "Seconds per shard. 20400 = 5h40m, below the 6h job limit."
+        required: false
+        default: "20400"
+      workers:
+        description: "Worker processes per GitHub job."
+        required: false
+        default: "4"
 
 jobs:
-  hello:
+  verify-known-23:
     runs-on: ubuntu-latest
     steps:
-      - run: echo hello
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Verify the known 23-link trail
+        run: python scripts/check_trail.py data/ripa_23_trail.json --expected-links 23 --require-full
+
+  overnight-parallel-search-22:
+    runs-on: ubuntu-latest
+    needs: verify-known-23
+    timeout-minutes: 355
+    strategy:
+      fail-fast: false
+      max-parallel: 16
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Run parallel overnight shard
+        run: |
+          mkdir -p results/parallel_workers
+          python scripts/search_22_parallel.py \
+            --links 22 \
+            --seconds "${{ github.event.inputs.seconds }}" \
+            --box-min -3 \
+            --box-max 7 \
+            --top-k 32 \
+            --workers "${{ github.event.inputs.workers }}" \
+            --shard "${{ matrix.shard }}" \
+            --shards 16 \
+            --out "results/parallel_best_shard_${{ matrix.shard }}.json" \
+            --worker-dir "results/parallel_workers"
+      - name: Verify best trail from this shard
+        if: always()
+        run: |
+          if [ -f "results/parallel_best_shard_${{ matrix.shard }}.json" ]; then
+            python scripts/check_trail.py "results/parallel_best_shard_${{ matrix.shard }}.json"
+          fi
+      - name: Analyze this shard's result patterns
+        if: always()
+        run: python scripts/analyze_22_results.py results --out "results/summary_shard_${{ matrix.shard }}.md"
+      - name: Upload parallel shard result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: parallel-22-shard-${{ matrix.shard }}
+          path: |
+            results/parallel_best_shard_${{ matrix.shard }}.json
+            results/parallel_workers/*.json
+            results/summary_shard_${{ matrix.shard }}.md
+          if-no-files-found: warn
