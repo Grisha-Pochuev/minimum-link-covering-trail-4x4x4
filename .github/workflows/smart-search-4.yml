@@ -1,0 +1,101 @@
+name: smart-search-4
+run-name: smart-search-4
+
+on:
+  workflow_dispatch:
+    inputs:
+      seconds:
+        description: "Seconds per shard. 20400 = 5h40m."
+        required: false
+        default: "20400"
+      workers:
+        description: "Worker processes per GitHub job."
+        required: false
+        default: "4"
+      top_k:
+        description: "Choice pool size inside the randomized search."
+        required: false
+        default: "64"
+      seed:
+        description: "Random seed. Leave empty to use github.run_id."
+        required: false
+        default: ""
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/smart-search-4.yml"
+
+jobs:
+  smart-search:
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    strategy:
+      fail-fast: false
+      max-parallel: 16
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+    env:
+      GH_TOKEN: ${{ github.token }}
+      SEARCH_SECONDS: ${{ github.event.inputs.seconds || '20400' }}
+      SEARCH_WORKERS: ${{ github.event.inputs.workers || '4' }}
+      SEARCH_TOP_K: ${{ github.event.inputs.top_k || '64' }}
+      SEARCH_SEED: ${{ github.event.inputs.seed || github.run_id }}
+      PRIOR_RUN_ID: "28059258009"
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Download latest useful artifacts
+        run: |
+          mkdir -p prior-artifacts
+          gh run download "$PRIOR_RUN_ID" --dir prior-artifacts || true
+      - name: Run smart shard
+        run: |
+          mkdir -p results/smart_workers
+          python scripts/smart_search_runtime.py \
+            --prior prior-artifacts \
+            --seconds "$SEARCH_SECONDS" \
+            --workers "$SEARCH_WORKERS" \
+            --top-k "$SEARCH_TOP_K" \
+            --seed "$SEARCH_SEED" \
+            --shard "${{ matrix.shard }}" \
+            --shards 16 \
+            --out "results/smart_best_shard_${{ matrix.shard }}.json" \
+            --worker-dir "results/smart_workers"
+      - name: Upload smart shard result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smart-22-shard-${{ matrix.shard }}
+          path: |
+            results/smart_best_shard_${{ matrix.shard }}.json
+            results/smart_workers/*.json
+          if-no-files-found: warn
+
+  aggregate-smart-results:
+    runs-on: ubuntu-latest
+    needs: smart-search
+    if: always()
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Download smart shard artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: smart-22-shard-*
+          path: collected
+          merge-multiple: true
+      - name: Build smart run summary
+        run: python scripts/build_smart_summary.py
+      - name: Upload smart run summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smart-run-summary
+          path: |
+            collected/smart_run_summary.json
+            collected/smart_run_summary.md
+          if-no-files-found: warn
