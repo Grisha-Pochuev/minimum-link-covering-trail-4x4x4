@@ -1,5 +1,6 @@
 name: smart-search-4
 run-name: smart-search-4
+# Frontier source: run 28059258009, best known partial candidate 56/64.
 
 on:
   workflow_dispatch:
