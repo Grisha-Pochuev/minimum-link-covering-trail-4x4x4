@@ -1,0 +1,37 @@
+{
+  "schema": "mlct-frontier-v1",
+  "status": "bootstrap_scaffold_pending_smart_run_analysis",
+  "repository": "Grisha-Pochuev/minimum-link-covering-trail-4x4x4",
+  "updated_utc": "2026-06-24",
+  "latest_completed_baseline": {
+    "run_id": 28029809039,
+    "workflow_name": "overnight-22-parallel-search",
+    "run_url": "https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/28029809039",
+    "result_type": "heuristic_search",
+    "links_target": 22,
+    "best_result": {
+      "covered_count": 54,
+      "grid_points": 64,
+      "missing_count": 10,
+      "status": "partial_candidate"
+    }
+  },
+  "latest_smart_run": null,
+  "next_run_seed_source": {
+    "source_type": "github_actions_artifacts",
+    "run_id": 28029809039,
+    "artifact_notes": "Use as baseline until the current overnight-smart-search run is completed and analyzed."
+  },
+  "fields_to_update_after_next_run": [
+    "latest_smart_run.run_id",
+    "latest_smart_run.workflow_name",
+    "latest_smart_run.run_url",
+    "latest_smart_run.commit_sha",
+    "latest_smart_run.parameters",
+    "latest_smart_run.best_result",
+    "latest_smart_run.top_missing_points",
+    "latest_smart_run.best_modes",
+    "latest_smart_run.artifact_names",
+    "next_run_seed_source"
+  ]
+}
