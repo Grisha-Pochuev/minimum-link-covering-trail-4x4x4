@@ -1,6 +1,6 @@
 name: smart-search-4
 run-name: smart-search-4
-# Frontier source: run 28059258009, best known partial candidate 56/64.
+# Frontier source: run 28103660449, best known partial candidate 56/64.
 
 on:
   workflow_dispatch:
@@ -32,16 +32,16 @@ jobs:
     timeout-minutes: 355
     strategy:
       fail-fast: false
-      max-parallel: 16
+      max-parallel: 20
       matrix:
-        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
     env:
       GH_TOKEN: ${{ github.token }}
       SEARCH_SECONDS: ${{ github.event.inputs.seconds || '20400' }}
       SEARCH_WORKERS: ${{ github.event.inputs.workers || '4' }}
       SEARCH_TOP_K: ${{ github.event.inputs.top_k || '64' }}
       SEARCH_SEED: ${{ github.event.inputs.seed || github.run_id }}
-      PRIOR_RUN_ID: "28059258009"
+      PRIOR_RUN_ID: "28103660449"
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -63,7 +63,7 @@ jobs:
             --top-k "$SEARCH_TOP_K" \
             --seed "$SEARCH_SEED" \
             --shard "${{ matrix.shard }}" \
-            --shards 16 \
+            --shards 20 \
             --out "results/smart_best_shard_${{ matrix.shard }}.json" \
             --worker-dir "results/smart_workers"
       - name: Upload smart shard result
