@@ -17,6 +17,10 @@ A run folder should usually contain:
 - optional small JSON files with best candidates, recurring missing points, or parameters;
 - notes about what the next run should use as seed material.
 
+## Recorded runs
+
+- `runs/2026-06-25-smart-search-4/` — run `28103660449`, `smart-search-4`, best `56/64`, stable 8-point defect set, next seed source for workflow.
+
 The current frontier is always summarized in:
 
 ```text
