@@ -188,6 +188,31 @@ expected wall time: about 5h50m per shard
 
 Important: workflows for expensive searches should be manual `workflow_dispatch`, not automatic `push`, unless there is an explicit reason. Do not silently burn GitHub Actions time from a preparation commit.
 
+## Workflow robustness lesson from smart-search-8
+
+This is a known assistant failure mode, not just a random one-off.
+
+When preparing a new GitHub Actions workflow, the assistant may overfocus on the mathematical search idea and under-check operational fragility. The concrete failure from run `28303978510` was: all shard jobs failed before C++ generation/search because `gh run download` for old artifacts was a hard-failing step. The run died in under a minute; this was not a mathematical result.
+
+Rules for future workflow preparation:
+
+- Add explicit permissions when downloading artifacts:
+
+```yaml
+permissions:
+  contents: read
+  actions: read
+```
+
+- Treat old GitHub Actions artifacts as useful but fragile. They can be missing, expired, inaccessible, renamed, or intermittently fail to download.
+- Do not make the whole expensive search fail merely because one old artifact download failed, unless that artifact is absolutely required and no repository seed fallback exists.
+- Prefer best-effort artifact download wrappers: create the target directories, run `gh run download`, log a warning on failure, and continue with `candidates/bank.jsonl`, `bank-additions`, saved `runs/`, and whatever artifacts did download.
+- A smoke-test must verify more than the 23-link checker. It should reach artifact download, seed export, C++ generation, compilation, shard execution, result checking, artifact upload, and summary aggregation.
+- If a failed run used an old workflow commit, do not press `Re-run jobs` after fixing the workflow. Start a new manual workflow run from current `main`, otherwise GitHub may rerun the old broken commit.
+- In explanations to the user, distinguish clearly between: a workflow infrastructure failure, a smoke-test failure, and a real mathematical search result.
+
+For `smart-search-8-orbit-bridge`, the workflow was fixed after the failed run by adding `actions: read` and making the artifact downloads best-effort. After this fix, run a new smoke-test from the workflow page rather than rerunning failed jobs from the red run.
+
 ## Candidate-saving rules
 
 There are three candidate layers:
