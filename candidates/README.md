@@ -27,10 +27,12 @@ So the bank should keep only genuinely new candidate geometries, not symmetric c
 
 ## Files
 
-- `index.json` — machine-readable bank manifest and counts.
+- `index.json` — original machine-readable bank manifest.
+- `index_2026_06_27.json` — updated count snapshot after the symmetry-aware import.
 - `bank.jsonl` — one full unique candidate per line, including `vertices2`.
 - `by_run/<run_id>.jsonl` — source candidates from a run. This may contain candidates already deduplicated into `bank.jsonl`.
 - `by_coverage/<covered_count>.jsonl` — unique candidates grouped by coverage level.
+- `by_coverage/56_2026_06_27_added.jsonl` — supplement containing the 7 newly added 56/64 candidates from run `28059258009`.
 
 ## Current contents
 
