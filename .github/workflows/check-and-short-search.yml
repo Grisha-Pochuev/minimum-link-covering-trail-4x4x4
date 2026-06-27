@@ -1,3 +1,10 @@
+# Web-chat operating rule:
+# This repository is usually maintained from ChatGPT web chat, not by a background agent.
+# Therefore a workflow run must not be treated as something that the user is expected to wait for,
+# re-check later, or continue manually unless the user explicitly asks for that workflow result.
+# Memory-only commits under candidates/, runs/, and frontier/ should not start this smoke-test workflow.
+# Long searches must be started only by an explicit user request.
+
 name: check-and-short-search
 
 on:
@@ -21,6 +28,10 @@ on:
         default: "24"
   push:
     branches: ["main"]
+    paths-ignore:
+      - "candidates/**"
+      - "runs/**"
+      - "frontier/**"
 
 jobs:
   check-known-23:
