@@ -1,17 +1,31 @@
 {
   "schema": "mlct-top-candidates-v1",
   "source_run_id": 28200925016,
-  "note": "Top candidate bank from repair-search-5. This file stores compact summaries; full shard JSON remains in Actions artifacts.",
+  "note": "Top candidate bank from repair-search-5. This file stores compact summaries for all 20 shard-best candidates; full shard JSON remains in Actions artifacts.",
   "best_covered_count": 58,
   "full_64_64_found": false,
+  "stored_count": 20,
+  "stored_count_by_coverage": {"58": 13, "57": 7},
   "top_results": [
     {"rank":1,"shard":4,"covered_count":58,"links":22,"mode":"repair56_target8","missing":[[1,1,0],[1,2,1],[2,1,0],[3,1,1],[3,1,2],[3,1,3]]},
     {"rank":2,"shard":17,"covered_count":58,"links":22,"mode":"fractional_bridge22","missing":[[1,1,0],[1,2,1],[2,1,0],[3,1,1],[3,1,2],[3,1,3]]},
     {"rank":3,"shard":12,"covered_count":58,"links":22,"mode":"transition_penalty22","missing":[[1,1,0],[1,2,1],[2,1,0],[3,1,1],[3,1,2],[3,1,3]]},
     {"rank":4,"shard":13,"covered_count":58,"links":22,"mode":"transition_penalty22","missing":[[1,1,0],[1,2,3],[2,1,0],[3,1,1],[3,1,2],[3,1,3]]},
-    {"rank":5,"shard":18,"covered_count":58,"links":22,"mode":"subcube_stitch22","missing":[[1,1,0],[1,2,1],[2,1,0],[3,1,1],[3,1,2],[3,1,3]]},
-    {"rank":6,"shard":16,"covered_count":57,"links":22,"mode":"fractional_bridge22","missing":[[0,0,0],[0,1,0],[1,1,0],[2,0,0],[3,1,1],[3,1,2],[3,1,3]]},
-    {"rank":7,"shard":2,"covered_count":57,"links":22,"mode":"repair56_target8","missing":[[1,1,0],[1,2,1],[2,0,0],[2,3,0],[3,1,1],[3,1,2],[3,1,3]]},
-    {"rank":8,"shard":9,"covered_count":57,"links":22,"mode":"rich_segment_catalog","missing":[[1,2,1],[1,2,2],[1,2,3],[2,1,0],[3,1,1],[3,1,2],[3,1,3]]}
+    {"rank":5,"shard":5,"covered_count":58,"links":22,"mode":"repair56_target8","missing":[[1,1,0],[1,2,1],[2,1,0],[3,1,1],[3,1,2],[3,1,3]]},
+    {"rank":6,"shard":18,"covered_count":58,"links":22,"mode":"subcube_stitch22","missing":[[1,1,0],[1,2,1],[2,1,0],[3,1,1],[3,1,2],[3,1,3]]},
+    {"rank":7,"shard":3,"covered_count":58,"links":22,"mode":"repair56_target8","missing":[[1,1,0],[1,2,3],[2,1,0],[3,1,1],[3,1,2],[3,1,3]]},
+    {"rank":8,"shard":7,"covered_count":58,"links":22,"mode":"repair56_target8","missing":[[1,1,0],[1,2,3],[2,1,0],[3,1,1],[3,1,2],[3,1,3]]},
+    {"rank":9,"shard":1,"covered_count":58,"links":22,"mode":"repair56_target8","missing":[[1,1,0],[1,2,3],[2,1,0],[3,1,1],[3,1,2],[3,1,3]]},
+    {"rank":10,"shard":14,"covered_count":58,"links":22,"mode":"transition_penalty22","missing":[[1,1,0],[1,2,3],[2,1,0],[3,1,1],[3,1,2],[3,1,3]]},
+    {"rank":11,"shard":6,"covered_count":58,"links":22,"mode":"repair56_target8","missing":[[1,1,0],[1,2,3],[2,1,0],[3,1,1],[3,1,2],[3,1,3]]},
+    {"rank":12,"shard":0,"covered_count":58,"links":22,"mode":"repair56_target8","missing":[[1,1,0],[1,2,3],[2,1,0],[3,1,1],[3,1,2],[3,1,3]]},
+    {"rank":13,"shard":15,"covered_count":58,"links":22,"mode":"fractional_bridge22","missing":[[1,1,0],[1,2,1],[2,1,0],[3,1,1],[3,1,2],[3,1,3]]},
+    {"rank":14,"shard":9,"covered_count":57,"links":22,"mode":"rich_segment_catalog","missing":[[1,2,1],[1,2,2],[1,2,3],[2,1,0],[3,1,1],[3,1,2],[3,1,3]]},
+    {"rank":15,"shard":16,"covered_count":57,"links":22,"mode":"fractional_bridge22","missing":[[0,0,0],[0,1,0],[1,1,0],[2,0,0],[3,1,1],[3,1,2],[3,1,3]]},
+    {"rank":16,"shard":8,"covered_count":57,"links":22,"mode":"rich_segment_catalog","missing":[[1,2,1],[1,2,2],[1,2,3],[2,1,0],[3,1,1],[3,1,2],[3,1,3]]},
+    {"rank":17,"shard":2,"covered_count":57,"links":22,"mode":"repair56_target8","missing":[[1,1,0],[1,2,1],[2,0,0],[2,3,0],[3,1,1],[3,1,2],[3,1,3]]},
+    {"rank":18,"shard":19,"covered_count":57,"links":22,"mode":"integer_control22","missing":[[1,2,1],[1,2,2],[1,2,3],[2,1,0],[3,1,1],[3,1,2],[3,1,3]]},
+    {"rank":19,"shard":10,"covered_count":57,"links":22,"mode":"rich_segment_catalog","missing":[[1,2,1],[1,2,2],[1,2,3],[2,1,0],[3,1,1],[3,1,2],[3,1,3]]},
+    {"rank":20,"shard":11,"covered_count":57,"links":22,"mode":"rich_segment_catalog","missing":[[1,2,1],[1,2,2],[1,2,3],[2,1,0],[3,1,1],[3,1,2],[3,1,3]]}
   ]
 }
