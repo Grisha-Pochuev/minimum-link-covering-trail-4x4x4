@@ -1,0 +1,1 @@
+{"schema":"mlct-original-archive-index-v1","status":"initialized","note":"Append one JSON object per archived run. Each archived run should also have candidates/originals/run-<run_id>-<workflow>.jsonl with original non-deduplicated eligible shard-best trails."}
