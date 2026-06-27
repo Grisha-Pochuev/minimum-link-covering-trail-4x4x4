@@ -30,14 +30,14 @@ Read these in this order:
 2. `frontier/latest.md` and `frontier/latest.json` — current best frontier and latest useful run.
 3. The relevant workflow in `.github/workflows/` — for a completed run, read the workflow that launched that run. Do not assume the newest workflow is automatically the right one for an old run.
 4. `docs/*-plan.md` and `docs/web-chat-memento-prompts.md` — planning notes and web-chat operating prompts.
-5. `candidates/bank.jsonl` and any `candidates/bank-additions-*.jsonl` mentioned below — reusable seed memory.
+5. `candidates/bank.jsonl`, `candidates/bank-additions-*.jsonl`, and `candidates/originals/` — reusable seed memory and original candidate archive.
 6. The latest relevant folder in `runs/`.
 7. GitHub Actions artifacts of the latest useful runs.
 
 Short invariant:
 
 ```text
-START_HERE → frontier → relevant workflow → plans → bank/additions → runs/artifacts → action
+START_HERE → frontier → relevant workflow → plans → bank/additions/originals → runs/artifacts → action
 ```
 
 ## What START_HERE is, and what workflow is
@@ -215,20 +215,27 @@ For `smart-search-8-orbit-bridge`, the workflow was fixed after the failed run b
 
 ## Candidate-saving rules
 
-There are three candidate layers:
+There are now two different candidate-memory layers. Do not mix them up.
 
-1. Per-run champion candidate: one or several best candidates from a run, saved for easy reference in `frontier/latest.*`.
-2. Per-run top/original candidates: useful candidates from that particular run, saved under that run folder or preserved as Actions artifacts.
-3. Global candidate bank: `candidates/bank.jsonl` plus named `candidates/bank-additions-*.jsonl`, the reusable seed memory across runs.
+### Compact working bank
 
-Normal bank threshold unless the workflow says otherwise:
+This is the small reusable search memory:
+
+```text
+candidates/bank.jsonl
+candidates/bank-additions-*.jsonl
+```
+
+This layer should be symmetry-deduplicated and convenient for future workflows. It is fuel for the next search, not a full scientific archive.
+
+Normal compact-bank threshold unless the workflow says otherwise:
 
 ```text
 covered_count >= 56
 links <= 22
 ```
 
-Do not only save the single best candidate. Merge all new unique eligible candidates into reusable seed memory using `scripts/merge_candidate_bank.py` or the same canonical idea: coordinate permutations, cube reflections, and trail reversal.
+Merge new unique eligible candidates into this layer using `scripts/merge_candidate_bank.py` or the same canonical idea: coordinate permutations, cube reflections, and trail reversal.
 
 For run `28292425390`, the 6 unique eligible candidates were saved in:
 
@@ -238,6 +245,61 @@ candidates/bank-additions-run28292425390.summary.json
 ```
 
 These additions must be included as seed material in the next run even if `candidates/bank.jsonl` has not yet been physically merged.
+
+### Original trail archive
+
+This is the permanent archive of original, non-deduplicated lomanaya/trail candidates:
+
+```text
+candidates/originals/
+candidates/originals/README.md
+candidates/originals/index.jsonl
+```
+
+This layer is for scientific analysis. It should preserve original shard-best candidates before symmetry deduplication. Do not collapse cube symmetries, reflections, coordinate permutations, trail reversal, or repeated missing-set patterns here.
+
+For each completed useful run, create a file like:
+
+```text
+candidates/originals/run-<run_id>-<workflow_short_name>.jsonl
+```
+
+Example:
+
+```text
+candidates/originals/run-28292425390-smart-search-7-core5.jsonl
+```
+
+Also append/update one summary line in:
+
+```text
+candidates/originals/index.jsonl
+```
+
+Normally archive every original shard-best candidate satisfying:
+
+```text
+covered_count >= 56
+links <= 22
+```
+
+Each JSONL row should contain at least:
+
+```text
+schema, run_id, workflow, source_artifact, source_shard, candidate_id,
+covered_count, links, missing, coordinate_scale, vertices2
+```
+
+Important: the original archive is not a replacement for GitHub Actions artifacts. It is protection against losing them. Artifacts can expire or become hard to rediscover; the original archive should keep the scientific evidence in the repository.
+
+Post-run saving rule:
+
+```text
+1. Save champion candidate(s) and update frontier/latest.* if needed.
+2. Save compact unique eligible candidates into bank/additions.
+3. Save all original eligible shard-best candidates into candidates/originals/.
+4. Update START_HERE.md if the frontier, prepared workflow, or next step changed.
+```
 
 ## Standard command: analyze a completed run
 
@@ -250,13 +312,13 @@ Use this style when the user says a run has finished:
 
 Сними результаты: проверь jobs, logs и artifacts; найди лучшее покрытие из 64, links, mode, source artifact и пропущенные точки.
 
-Сравни с frontier/latest.md, frontier/latest.json, последними runs/ и candidates/bank.jsonl.
+Сравни с frontier/latest.md, frontier/latest.json, последними runs/, candidates/bank.jsonl, bank-additions и candidates/originals/.
 
-Сохрани результаты по правилам workflow: кандидатов-чемпионов для frontier, лучших оригинальных кандидатов этого run в runs/ или artifact-backed memory, всех новых уникальных кандидатов выше порога — в reusable candidate memory.
+Сохрани результаты по правилам workflow: кандидатов-чемпионов для frontier, все новые уникальные кандидаты выше порога — в reusable compact bank/additions, а все оригинальные shard-best кандидаты выше порога — в candidates/originals/ без symmetry deduplication.
 
 Обнови START_HERE.md, если изменился текущий frontier, актуальный следующий workflow или главный следующий шаг.
 
-В конце коротко скажи: что дал прогон, сколько кандидатов какого уровня найдено, какой режим что дал, какие точки остались проблемными, что записано в GitHub и какой следующий шаг лучше для поиска 64/64.
+В конце коротко скажи: что дал прогон, сколько кандидатов какого уровня найдено, сколько оригинальных кривых записано в candidates/originals, какой режим что дал, какие точки остались проблемными, что записано в GitHub и какой следующий шаг лучше для поиска 64/64.
 ```
 
 ## Standard command: prepare a next smart run
@@ -266,9 +328,9 @@ Use this style when the user asks to prepare the next run:
 ```text
 Подготовь следующий умный прогон smart-search-<следующий номер>-<1-2 слова>.
 
-Сначала открой START_HERE.md, чтобы понять текущее состояние проекта. Затем открой актуальный workflow, frontier/latest.md, frontier/latest.json, последние runs/, candidates/bank.jsonl, планы в docs/ и artifacts последних полезных запусков.
+Сначала открой START_HERE.md, чтобы понять текущее состояние проекта. Затем открой актуальный workflow, frontier/latest.md, frontier/latest.json, последние runs/, candidates/bank.jsonl, candidates/originals/, планы в docs/ и artifacts последних полезных запусков.
 
-Новый прогон не должен начинаться с нуля. Он должен использовать старые данные: лучшие кандидаты, общий банк кривых, artifacts, частые пропущенные точки, defect patterns и выводы прошлых прогонов.
+Новый прогон не должен начинаться с нуля. Он должен использовать старые данные: лучшие кандидаты, общий банк кривых, original archive, artifacts, частые пропущенные точки, defect patterns и выводы прошлых прогонов.
 
 Цель нового прогона — умнее приблизиться к 64/64: закрыть оставшиеся дырки, отремонтировать лучшие 22-звенные кандидаты или проверить новую математическую идею на основе прошлых неудач.
 
@@ -286,7 +348,8 @@ When explaining results, say:
 - best coverage: `X/64`;
 - how many points are still missing;
 - which points are missing;
-- how many candidates of each level were saved if known;
+- how many compact-bank candidates were saved if known;
+- how many original shard-best candidates were saved in `candidates/originals/` if known;
 - which modes produced what;
 - what was committed to GitHub;
 - what the next useful action is.
