@@ -3,12 +3,8 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
-from typing import Any
 
-
-def path_key(record: dict[str, Any]) -> str:
-    verts = record.get("vertices2") or record.get("vertices") or []
-    return ";".join(",".join(str(v) for v in p) for p in verts)
+from candidate_symmetry import canonical_path_key, has_usable_vertices
 
 
 def main() -> int:
@@ -23,6 +19,7 @@ def main() -> int:
     seen: set[str] = set()
     written = 0
     scanned = 0
+    skipped_symmetric_duplicates = 0
 
     for name in args.files:
         path = Path(name)
@@ -39,10 +36,13 @@ def main() -> int:
                 continue
             if int(rec.get("covered_count", 0)) < args.min_covered:
                 continue
-            if not rec.get("vertices2") and not rec.get("vertices"):
+            if not has_usable_vertices(rec):
                 continue
-            key = path_key(rec)
-            if not key or key in seen:
+            key = canonical_path_key(rec)
+            if not key:
+                continue
+            if key in seen:
+                skipped_symmetric_duplicates += 1
                 continue
             seen.add(key)
             cid = rec.get("candidate_id") or f"candidate_{written:04d}"
@@ -51,7 +51,14 @@ def main() -> int:
             (out / f"{written:04d}_{cid}.json").write_text(json.dumps(rec, sort_keys=True) + "\n")
             written += 1
 
-    manifest = {"schema": "mlct-seed-export-v1", "scanned_records": scanned, "written_seed_files": written, "min_covered": args.min_covered}
+    manifest = {
+        "schema": "mlct-seed-export-v1",
+        "dedupe_rule": "canonical modulo coordinate permutations, cube reflections, and trail reversal",
+        "scanned_records": scanned,
+        "written_seed_files": written,
+        "skipped_symmetric_duplicates": skipped_symmetric_duplicates,
+        "min_covered": args.min_covered,
+    }
     (out / "manifest.json").write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n")
     print(json.dumps(manifest, indent=2, sort_keys=True))
     return 0
