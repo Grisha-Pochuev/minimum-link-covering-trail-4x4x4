@@ -1,0 +1,140 @@
+# Web-chat operating rule:
+# This workflow is for explicit manual launches from ChatGPT/web-chat work.
+# It is not triggered on push, so commits that prepare the run do not silently burn GitHub Actions time.
+
+name: smart-search-6-defect
+run-name: smart-search-6-defect
+
+on:
+  workflow_dispatch:
+    inputs:
+      seconds:
+        description: "Seconds per shard. 21000 = 5h50m; use 60-180 for smoke-test."
+        required: false
+        default: "21000"
+      threads:
+        description: "C++ worker threads per GitHub job. Use 4 on GitHub runners."
+        required: false
+        default: "4"
+      seed:
+        description: "Random seed for reproducibility."
+        required: false
+        default: "20260627"
+      prior_run_id:
+        description: "Latest useful run whose artifacts are used as seed material."
+        required: false
+        default: "28200925016"
+      min_covered_to_save:
+        description: "Candidate preservation threshold."
+        required: false
+        default: "56"
+
+jobs:
+  check-known-23:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Verify the known 23-link trail
+        run: python scripts/check_trail.py data/ripa_23_trail.json --expected-links 23 --require-full
+
+  defect-repair-search:
+    runs-on: ubuntu-latest
+    needs: check-known-23
+    timeout-minutes: 359
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    env:
+      GH_TOKEN: ${{ github.token }}
+      SEARCH_SECONDS: ${{ github.event.inputs.seconds || '21000' }}
+      SEARCH_THREADS: ${{ github.event.inputs.threads || '4' }}
+      SEARCH_SEED: ${{ github.event.inputs.seed || '20260627' }}
+      PRIOR_RUN_ID: ${{ github.event.inputs.prior_run_id || '28200925016' }}
+      MIN_COVERED_TO_SAVE: ${{ github.event.inputs.min_covered_to_save || '56' }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Download latest useful repair artifacts
+        run: |
+          mkdir -p seed-material/prior-artifacts
+          gh run download "$PRIOR_RUN_ID" --dir seed-material/prior-artifacts
+      - name: Export candidate bank into seed JSON files
+        run: |
+          python scripts/export_candidate_bank_jsons.py \
+            --out seed-material/from-candidate-bank \
+            --min-covered "$MIN_COVERED_TO_SAVE" \
+            candidates/bank.jsonl
+      - name: Prepare 58/64 defect repair engine
+        run: python scripts/prepare_repair58_engine.py --out build/repair58_search.cpp
+      - name: Compile C++ defect repair engine
+        run: g++ -O3 -std=c++17 -pthread -DNDEBUG build/repair58_search.cpp -o repair58_search
+      - name: Run defect repair shard
+        run: |
+          mkdir -p results/defect
+          ./repair58_search \
+            --input-dir seed-material/prior-artifacts \
+            --input-dir seed-material/from-candidate-bank \
+            --input-dir runs/2026-06-26-repair-search-5 \
+            --input-dir experiments/2026-06-25-repair57-local-smoke \
+            --seconds "$SEARCH_SECONDS" \
+            --threads "$SEARCH_THREADS" \
+            --seed "$SEARCH_SEED" \
+            --shard "${{ matrix.shard }}" \
+            --shards 20 \
+            --out "results/defect/defect_best_shard_${{ matrix.shard }}.json"
+      - name: Check shard result
+        if: always()
+        run: |
+          if [ -f "results/defect/defect_best_shard_${{ matrix.shard }}.json" ]; then
+            python scripts/check_scaled_trail.py "results/defect/defect_best_shard_${{ matrix.shard }}.json" --max-links 22
+          fi
+      - name: Upload defect shard result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: defect-22-shard-${{ matrix.shard }}
+          path: results/defect/defect_best_shard_${{ matrix.shard }}.json
+          if-no-files-found: warn
+      - name: Upload seed manifest
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: defect-seed-manifest-${{ matrix.shard }}
+          path: seed-material/from-candidate-bank/manifest.json
+          if-no-files-found: warn
+
+  aggregate-defect-results:
+    runs-on: ubuntu-latest
+    needs: defect-repair-search
+    if: always()
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Download defect shard artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: defect-22-shard-*
+          path: collected
+          merge-multiple: true
+      - name: Build defect run summary
+        run: python scripts/build_smart_summary.py
+      - name: Upload defect run summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: defect-run-summary
+          path: |
+            collected/smart_run_summary.json
+            collected/smart_run_summary.md
+          if-no-files-found: warn
