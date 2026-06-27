@@ -2,7 +2,7 @@
   "schema": "mlct-frontier-v1",
   "status": "latest_repair_search_5_analyzed",
   "repository": "Grisha-Pochuev/minimum-link-covering-trail-4x4x4",
-  "updated_utc": "2026-06-27T01:02:00Z",
+  "updated_utc": "2026-06-27T01:15:00Z",
   "latest_completed_baseline": {
     "run_id": 28029809039,
     "workflow_name": "overnight-22-parallel-search",
@@ -40,6 +40,13 @@
     "top_missing_points": [{"point":[3,1,1],"count":20},{"point":[3,1,2],"count":20},{"point":[3,1,3],"count":20},{"point":[2,1,0],"count":18},{"point":[1,1,0],"count":15},{"point":[1,2,1],"count":12},{"point":[1,2,3],"count":12},{"point":[1,2,2],"count":5}],
     "mode_stats": [{"mode":"transition_penalty22","result_count":3,"best_covered_count":58,"average_covered_count":58.0},{"mode":"repair56_target8","result_count":8,"best_covered_count":58,"average_covered_count":57.875},{"mode":"subcube_stitch22","result_count":1,"best_covered_count":58,"average_covered_count":58.0},{"mode":"fractional_bridge22","result_count":3,"best_covered_count":58,"average_covered_count":57.667},{"mode":"rich_segment_catalog","result_count":4,"best_covered_count":57,"average_covered_count":57.0},{"mode":"integer_control22","result_count":1,"best_covered_count":57,"average_covered_count":57.0}]
   },
+  "candidate_preservation_rule_for_future_runs": {
+    "rule_type": "threshold_and_above",
+    "min_covered_to_save": 56,
+    "save_condition": "covered_count >= min_covered_to_save",
+    "plain_language": "Save all unique 56/64 candidates and everyone above that level: 57/64, 58/64, 59/64, ..., up to 64/64.",
+    "do_not_do": "Do not save only the single best candidate per shard. Do not save only exact levels 56, 57, 58 if a higher candidate appears."
+  },
   "next_run_seed_source": {
     "source_type": "github_actions_repair_artifacts_plus_saved_top_candidate_summaries",
     "run_id": 28200925016,
@@ -48,13 +55,14 @@
     "saved_run_folder": "runs/2026-06-26-repair-search-5/",
     "top_candidates_file": "runs/2026-06-26-repair-search-5/top_candidates.json",
     "note": "top_candidates.json stores compact candidate summaries; full JSON candidates remain in the repair-22-shard-* Actions artifacts.",
-    "next_focus": "local repair of the new 6-point defect patterns, especially the persistent line x=3,y=1,z=1..3"
+    "next_focus": "local repair of the new 6-point defect patterns, especially the persistent line x=3,y=1,z=1..3; preserve every unique candidate with covered_count >= 56"
   },
   "conclusions_for_next_run": [
     "The C++ repair direction worked: the official GitHub Actions frontier moved from 56/64 to 58/64.",
     "No full 64/64 candidate was found; the best is still a partial 22-link candidate with 6 missing points.",
     "The persistent hard core after this run is the vertical triple (3,1,1),(3,1,2),(3,1,3), missed in all 20 shard-best candidates.",
     "The next search should repair around the new 6-point defect patterns rather than reverting to broad warm search.",
-    "Use the saved top_candidates.json plus the original repair-22-shard-* artifacts, not only the single best result, as the next seed bank."
+    "Use the saved top_candidates.json plus the original repair-22-shard-* artifacts, not only the single best result, as the next seed bank.",
+    "Future workflows should save every unique candidate with covered_count >= 56, not just the shard-best candidate."
   ]
 }
