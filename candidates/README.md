@@ -25,6 +25,39 @@ mirrored / reflected / coordinate-permuted / reversed-path copies are not new ca
 
 So the bank should keep only genuinely new candidate geometries, not symmetric copies of an already saved line.
 
+## Automatic bank policy
+
+When adding new candidates after a GitHub Actions run, use symmetry-aware canonicalization, not manual judgement about whether a curve is "interesting".
+
+A candidate is eligible for the unified bank only if:
+
+```text
+covered_count >= 56
+links <= 22
+vertices2 or vertices are present
+canonical key is new modulo cube symmetries and path reversal
+```
+
+The canonical key must identify candidates up to:
+
+```text
+1) permutation of x/y/z axes;
+2) reflection of any coordinate across the cube;
+3) reversal of the trail vertex order.
+```
+
+Operational rule:
+
+```text
+workflow computes artifacts;
+post-run analysis reads artifacts;
+scripts/merge_candidate_bank.py merges eligible candidates into candidates/bank.jsonl;
+symmetric duplicates are not appended as new bank rows;
+if a duplicate appears again, only source metadata/counts should be merged.
+```
+
+The shared implementation of this rule is in `scripts/candidate_symmetry.py`. The seed export used by workflows, `scripts/export_candidate_bank_jsons.py`, also deduplicates exported seeds by the same symmetry-aware canonical key, so even if a duplicate slips into an input file it should not waste search effort as a separate seed.
+
 ## Files
 
 - `index.json` — original machine-readable bank manifest.
