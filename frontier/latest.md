@@ -2,7 +2,7 @@
 
 This file is the human-readable working memory of the project.
 
-Status: `smart-search-7-core5` full run analyzed and recorded.
+Status: `smart-search-8-orbit-bridge` prepared after `smart-search-7-core5` full run analysis.
 
 Latest useful completed run:
 
@@ -16,7 +16,7 @@ Latest useful completed run:
 - Result type: heuristic search, not a proof
 - Artifacts: `core5-run-summary`, `core5-22-shard-*`, `core5-seed-manifest-*`
 
-## Parameters
+## Parameters of latest completed run
 
 - seconds: `21000`
 - threads: `4` per shard
@@ -87,7 +87,7 @@ covered_count >= 56
 links <= 22
 ```
 
-All 20 shard-best candidates met this threshold. They all had `59/64` coverage and 22 links. Symmetry-aware deduplication reduced them to 6 unique candidates.
+All 20 shard-best candidates met this threshold. They all had `59/64` coverage and 22 links. Symmetry-aware deduplication reduced them to 6 unique candidates. The 20 original concrete shard results remain available as `core5-22-shard-*` artifacts from run `28292425390` and are used by the next workflow through downloaded artifact folders.
 
 ## Top recurring missing points from run 28292425390
 
@@ -141,7 +141,29 @@ The conclusion is similar to the previous full run: the C++ repair direction rel
 - Run `28275850889` / smart-search-6-defect full run: best `59/64`, old 5-point defect core.
 - Run `28292425390` / smart-search-7-core5 full run: best `59/64`, new 5-point defect orbit.
 
-So this run did not raise the numeric frontier, but it expanded the `59/64` evidence from one main defect core to several useful defect orbits.
+So run `28292425390` did not raise the numeric frontier, but it expanded the `59/64` evidence from one main defect core to several useful defect orbits.
+
+## Prepared next run
+
+Prepared workflow:
+
+```text
+smart-search-8-orbit-bridge
+.github/workflows/smart-search-8-orbit-bridge.yml
+```
+
+Supporting files:
+
+```text
+scripts/prepare_orbit_bridge_engine.py
+docs/smart-search-8-orbit-bridge-plan.md
+```
+
+Prepared next focus:
+
+```text
+smart-search-8-orbit-bridge: compare and bridge distinct 59/64 defect orbits, then use targeted local surgery around the shared hard region near (3,1,3) and the x=3,y=1 transition zone.
+```
 
 ## What became clear for the next run
 
@@ -159,14 +181,42 @@ The next serious run should start from:
 - GitHub Actions artifacts of run `28292425390`;
 - `core5-run-summary` from this run;
 - all `core5-22-shard-*` artifacts from this run;
+- GitHub Actions artifacts of runs `28275850889`, `28275666411`, and `28200925016`;
 - `runs/2026-06-27-smart-search-7-core5-full/best_candidate.json`;
 - `candidates/mlct22-a584fa7e488e0279-run28292425390.json`;
 - `candidates/bank-additions-run28292425390.jsonl`;
 - older `59/64` bank candidates from run `28275850889`;
 - `candidates/bank.jsonl` as broad seed memory.
 
-Prepared next focus:
+## Smoke-test launch parameters
 
 ```text
-smart-search-8-orbit-bridge: compare and bridge distinct 59/64 defect orbits, then use targeted local surgery around the shared hard region near (3,1,3).
+workflow: smart-search-8-orbit-bridge
+seconds: 180
+threads: 4
+seed: 20260629
+prior_run_id: 28292425390
+old_59_run_id: 28275850889
+secondary_run_id: 28275666411
+base_repair_run_id: 28200925016
+min_covered_to_save: 56
+jobs/shards: 20
+max-parallel: 20
+```
+
+## Full serious-run launch parameters
+
+```text
+workflow: smart-search-8-orbit-bridge
+seconds: 21000
+threads: 4
+seed: 20260629
+prior_run_id: 28292425390
+old_59_run_id: 28275850889
+secondary_run_id: 28275666411
+base_repair_run_id: 28200925016
+min_covered_to_save: 56
+jobs/shards: 20
+max-parallel: 20
+expected wall time: about 5h50m per shard
 ```
