@@ -5,6 +5,10 @@
 # every new serious search workflow should be named smart-search-<next-number>-<short-tag>.
 # Examples: smart-search-7-repair, smart-search-7-defect, smart-search-8-bridge.
 # The short tag should be one or two words describing the main idea of the run.
+# Candidate-bank rule:
+# keep candidates with covered_count >= 56 and links <= 22, but only one representative modulo
+# coordinate permutations, cube reflections, and trail reversal. Use scripts/merge_candidate_bank.py
+# for post-run bank updates; workflow seed export also deduplicates by this canonical rule.
 
 name: smart-search-6-defect
 run-name: smart-search-6-defect
