@@ -12,9 +12,8 @@
 #
 # Candidate-bank rule:
 # Keep candidates with covered_count >= 56 and links <= 22. Use both the main
-# bank and unmerged additions from run 28292425390. Also preserve original shard
-# candidates from the latest run as seed material even when they collapse to fewer
-# symmetry classes.
+# bank and unmerged additions from run 28292425390. Original shard candidates from
+# the latest run are supplied through the downloaded core5-22-shard-* artifacts.
 
 name: smart-search-8-orbit-bridge
 run-name: smart-search-8-orbit-bridge
@@ -107,8 +106,7 @@ jobs:
             --out seed-material/from-candidate-bank \
             --min-covered "$MIN_COVERED_TO_SAVE" \
             candidates/bank.jsonl \
-            candidates/bank-additions-run28292425390.jsonl \
-            candidates/original-shard-candidates-run28292425390.jsonl
+            candidates/bank-additions-run28292425390.jsonl
       - name: Prepare orbit-bridge repair engine
         run: python scripts/prepare_orbit_bridge_engine.py --out build/orbit_bridge_search.cpp
       - name: Compile C++ orbit-bridge repair engine
