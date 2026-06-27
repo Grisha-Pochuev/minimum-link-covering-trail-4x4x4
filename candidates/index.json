@@ -1,0 +1,33 @@
+{
+  "counts": {
+    "source_records": 20,
+    "source_records_by_coverage": {
+      "57": 7,
+      "58": 13
+    },
+    "unique_candidates": 5,
+    "unique_candidates_by_coverage": {
+      "57": 3,
+      "58": 2
+    }
+  },
+  "current_seeded_from": [
+    {
+      "note": "This completed run preserved one best JSON per shard, so the initial bank is built from 20 shard-best source records.",
+      "run_id": 28200925016,
+      "workflow": "repair-search-5"
+    }
+  ],
+  "files": {
+    "by_coverage_dir": "candidates/by_coverage/",
+    "source_records_for_run_28200925016": "candidates/by_run/28200925016.jsonl",
+    "unique_bank": "candidates/bank.jsonl"
+  },
+  "important_note": "Runs folders remain the historical experiment log. This candidates directory is the reusable unified seed bank.",
+  "purpose": "Unified bank of strong 22-link candidates for the 4x4x4 minimum-link covering trail search.",
+  "schema": "mlct-candidate-bank-index-v1",
+  "threshold_rule": {
+    "min_covered_to_save": 56,
+    "save_condition": "covered_count >= min_covered_to_save"
+  }
+}
