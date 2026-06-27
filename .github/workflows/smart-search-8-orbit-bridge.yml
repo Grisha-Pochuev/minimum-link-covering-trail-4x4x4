@@ -1,0 +1,179 @@
+# Web-chat operating rule / Memento rule:
+# START_HERE.md is the top-level durable project memory. Read it first.
+# This workflow is the executable recipe for smart-search-8-orbit-bridge.
+#
+# Manual-only: no push trigger. Default seconds is a safe smoke-test.
+# For the full run, manually set seconds=21000, threads=4, seed=20260629.
+#
+# Search idea:
+# Do not repeat core5 unchanged. Compare/bridge distinct 59/64 defect orbits from
+# runs 28275850889 and 28292425390, with special pressure around the shared hard
+# point (3,1,3) and the x=3,y=1 transition zone.
+#
+# Candidate-bank rule:
+# Keep candidates with covered_count >= 56 and links <= 22. Use both the main
+# bank and unmerged additions from run 28292425390. Also preserve original shard
+# candidates from the latest run as seed material even when they collapse to fewer
+# symmetry classes.
+
+name: smart-search-8-orbit-bridge
+run-name: smart-search-8-orbit-bridge
+
+on:
+  workflow_dispatch:
+    inputs:
+      seconds:
+        description: "Seconds per shard. Default 180 = safe smoke; full run 21000 = 5h50m."
+        required: false
+        default: "180"
+      threads:
+        description: "C++ worker threads per GitHub job. Use 4 on GitHub runners."
+        required: false
+        default: "4"
+      seed:
+        description: "Random seed for reproducibility. Use 20260629 for the first full run."
+        required: false
+        default: "20260629"
+      prior_run_id:
+        description: "Latest full core5 run with new 59/64 orbit."
+        required: false
+        default: "28292425390"
+      old_59_run_id:
+        description: "Previous full 59/64 run with old defect core."
+        required: false
+        default: "28275850889"
+      secondary_run_id:
+        description: "Previous 59/64 smoke run, used as additional seed material."
+        required: false
+        default: "28275666411"
+      base_repair_run_id:
+        description: "Earlier 58/64 repair run, used as broad seed material."
+        required: false
+        default: "28200925016"
+      min_covered_to_save:
+        description: "Candidate preservation threshold for bank export."
+        required: false
+        default: "56"
+
+jobs:
+  check-known-23:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Verify the known 23-link trail
+        run: python scripts/check_trail.py data/ripa_23_trail.json --expected-links 23 --require-full
+
+  orbit-bridge-search:
+    runs-on: ubuntu-latest
+    needs: check-known-23
+    timeout-minutes: 359
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    env:
+      GH_TOKEN: ${{ github.token }}
+      SEARCH_SECONDS: ${{ github.event.inputs.seconds || '180' }}
+      SEARCH_THREADS: ${{ github.event.inputs.threads || '4' }}
+      SEARCH_SEED: ${{ github.event.inputs.seed || '20260629' }}
+      PRIOR_RUN_ID: ${{ github.event.inputs.prior_run_id || '28292425390' }}
+      OLD_59_RUN_ID: ${{ github.event.inputs.old_59_run_id || '28275850889' }}
+      SECONDARY_RUN_ID: ${{ github.event.inputs.secondary_run_id || '28275666411' }}
+      BASE_REPAIR_RUN_ID: ${{ github.event.inputs.base_repair_run_id || '28200925016' }}
+      MIN_COVERED_TO_SAVE: ${{ github.event.inputs.min_covered_to_save || '56' }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Download previous useful artifacts
+        run: |
+          mkdir -p seed-material/base-repair-artifacts seed-material/secondary-artifacts seed-material/old-59-artifacts seed-material/latest-artifacts
+          gh run download "$BASE_REPAIR_RUN_ID" --dir seed-material/base-repair-artifacts
+          gh run download "$SECONDARY_RUN_ID" --dir seed-material/secondary-artifacts
+          gh run download "$OLD_59_RUN_ID" --dir seed-material/old-59-artifacts
+          gh run download "$PRIOR_RUN_ID" --dir seed-material/latest-artifacts
+      - name: Export candidate memory into seed JSON files
+        run: |
+          python scripts/export_candidate_bank_jsons.py \
+            --out seed-material/from-candidate-bank \
+            --min-covered "$MIN_COVERED_TO_SAVE" \
+            candidates/bank.jsonl \
+            candidates/bank-additions-run28292425390.jsonl \
+            candidates/original-shard-candidates-run28292425390.jsonl
+      - name: Prepare orbit-bridge repair engine
+        run: python scripts/prepare_orbit_bridge_engine.py --out build/orbit_bridge_search.cpp
+      - name: Compile C++ orbit-bridge repair engine
+        run: g++ -O3 -std=c++17 -pthread -DNDEBUG build/orbit_bridge_search.cpp -o orbit_bridge_search
+      - name: Run orbit-bridge repair shard
+        run: |
+          mkdir -p results/orbit_bridge
+          ./orbit_bridge_search \
+            --input-dir seed-material/base-repair-artifacts \
+            --input-dir seed-material/secondary-artifacts \
+            --input-dir seed-material/old-59-artifacts \
+            --input-dir seed-material/latest-artifacts \
+            --input-dir seed-material/from-candidate-bank \
+            --input-dir runs/2026-06-27-smart-search-7-core5-full \
+            --input-dir runs/2026-06-27-smart-search-6-defect-full \
+            --input-dir runs/2026-06-26-repair-search-5 \
+            --input-dir experiments/2026-06-25-repair57-local-smoke \
+            --seconds "$SEARCH_SECONDS" \
+            --threads "$SEARCH_THREADS" \
+            --seed "$SEARCH_SEED" \
+            --shard "${{ matrix.shard }}" \
+            --shards 20 \
+            --out "results/orbit_bridge/orbit_bridge_best_shard_${{ matrix.shard }}.json"
+      - name: Check shard result
+        if: always()
+        run: |
+          if [ -f "results/orbit_bridge/orbit_bridge_best_shard_${{ matrix.shard }}.json" ]; then
+            python scripts/check_scaled_trail.py "results/orbit_bridge/orbit_bridge_best_shard_${{ matrix.shard }}.json" --max-links 22
+          fi
+      - name: Upload orbit-bridge shard result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: orbit-bridge-22-shard-${{ matrix.shard }}
+          path: results/orbit_bridge/orbit_bridge_best_shard_${{ matrix.shard }}.json
+          if-no-files-found: warn
+      - name: Upload seed manifest
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: orbit-bridge-seed-manifest-${{ matrix.shard }}
+          path: seed-material/from-candidate-bank/manifest.json
+          if-no-files-found: warn
+
+  aggregate-orbit-bridge-results:
+    runs-on: ubuntu-latest
+    needs: orbit-bridge-search
+    if: always()
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Download orbit-bridge shard artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: orbit-bridge-22-shard-*
+          path: collected
+          merge-multiple: true
+      - name: Build orbit-bridge run summary
+        run: python scripts/build_smart_summary.py
+      - name: Upload orbit-bridge run summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: orbit-bridge-run-summary
+          path: |
+            collected/smart_run_summary.json
+            collected/smart_run_summary.md
+          if-no-files-found: warn
