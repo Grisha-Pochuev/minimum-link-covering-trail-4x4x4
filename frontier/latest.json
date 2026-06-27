@@ -1,75 +1,26 @@
 {
   "schema": "mlct-frontier-v1",
-  "status": "smart_search_6_defect_full_analyzed",
+  "status": "smart_search_7_core5_full_analyzed",
   "repository": "Grisha-Pochuev/minimum-link-covering-trail-4x4x4",
-  "updated_utc": "2026-06-27T08:35:00Z",
-  "latest_completed_baseline": {
-    "run_id": 28029809039,
-    "workflow_name": "overnight-22-parallel-search",
-    "result_type": "heuristic_search",
-    "links_target": 22,
-    "best_result": {"covered_count": 54, "grid_points": 64, "missing_count": 10, "status": "partial_candidate"}
-  },
-  "previous_smart_run": {
-    "run_id": 28103660449,
-    "workflow_name": "smart-search-4",
-    "best_result": {
-      "covered_count": 56,
-      "grid_points": 64,
-      "coverage_percent": 87.5,
-      "missing_count": 8,
-      "links": 22,
-      "mode": "targeted_warm22",
-      "status": "partial_candidate",
-      "missing": [[1,0,0],[1,2,1],[1,2,2],[1,2,3],[2,0,1],[2,1,0],[3,0,2],[3,0,3]]
-    }
-  },
-  "local_prelaunch_best": {
-    "source_file": "experiments/2026-06-25-repair57-local-smoke/repair57_candidate.json",
-    "source_type": "local_smoke_test_not_actions_run",
-    "covered_count": 57,
-    "grid_points": 64,
-    "coverage_percent": 89.0625,
-    "missing_count": 7,
-    "links": 22,
-    "mode": "repair56_target8",
-    "status": "partial_candidate",
-    "missing": [[1,2,1],[1,2,2],[1,2,3],[2,1,0],[3,1,1],[3,1,2],[3,1,3]]
-  },
-  "repair_search_5_run": {
-    "workflow_name": "repair-search-5",
-    "run_id": 28200925016,
-    "run_url": "https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/28200925016",
-    "best_result": {
-      "covered_count": 58,
-      "grid_points": 64,
-      "coverage_percent": 90.625,
-      "missing_count": 6,
-      "links": 22,
-      "status": "partial_candidate",
-      "missing": [[1,1,0],[1,2,1],[2,1,0],[3,1,1],[3,1,2],[3,1,3]]
-    }
-  },
-  "smart_search_6_smoke_run": {
-    "workflow_name": "smart-search-6-defect",
-    "run_id": 28275666411,
-    "run_url": "https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/28275666411",
-    "parameters": {"seconds": 90, "threads": 4, "shards": 20, "seed": 20260627, "prior_run_id": 28200925016, "coordinate_scale": 2},
-    "best_result": {
-      "covered_count": 59,
-      "grid_points": 64,
-      "coverage_percent": 92.1875,
-      "missing_count": 5,
-      "links": 22,
-      "status": "partial_candidate",
-      "missing": [[1,2,1],[2,1,2],[2,2,3],[3,1,0],[3,1,3]]
-    }
-  },
-  "latest_full_defect_run": {
+  "updated_utc": "2026-06-27T21:20:00Z",
+  "previous_numeric_frontier": {
     "workflow_name": "smart-search-6-defect",
     "run_id": 28275850889,
-    "run_url": "https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/28275850889",
-    "head_commit_sha": "1c1ba2f574bc075d29b65c6b2f5a571ac6069634",
+    "best_result": {
+      "candidate_id": "mlct22-278a7d8dc1d65f25",
+      "covered_count": 59,
+      "grid_points": 64,
+      "links": 22,
+      "mode": "fractional_bridge22",
+      "missing_count": 5,
+      "missing": [[1,2,2],[2,0,2],[2,0,3],[3,1,2],[3,1,3]]
+    }
+  },
+  "latest_useful_run": {
+    "workflow_name": "smart-search-7-core5",
+    "run_id": 28292425390,
+    "run_url": "https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/28292425390",
+    "head_commit_sha": "b29af6a4af45fa62c531384587377b36c650c832",
     "status": "success",
     "result_type": "heuristic_search_not_proof",
     "parameters": {
@@ -77,75 +28,83 @@
       "threads": 4,
       "shards": 20,
       "max_parallel": 20,
-      "seed": 20260627,
-      "prior_run_id": 28275666411,
+      "seed": 20260628,
+      "prior_run_id": 28275850889,
+      "secondary_run_id": 28275666411,
       "base_repair_run_id": 28200925016,
       "coordinate_scale": 2,
       "min_covered_to_save": 56
     },
     "best_result": {
-      "candidate_id": "mlct22-278a7d8dc1d65f25",
+      "candidate_id": "mlct22-a584fa7e488e0279",
       "covered_count": 59,
       "grid_points": 64,
       "coverage_percent": 92.1875,
       "missing_count": 5,
       "links": 22,
       "links_target": 22,
-      "mode": "fractional_bridge22",
-      "source_file": "collected/defect_best_shard_6.json",
-      "source_artifact": "defect-22-shard-6",
+      "mode": "subcube_stitch22",
+      "source_file": "runs/2026-06-27-smart-search-7-core5-full/best_candidate.json",
+      "source_artifact": "core5-22-shard-15",
       "status": "partial_candidate",
-      "missing": [[1,2,2],[2,0,2],[2,0,3],[3,1,2],[3,1,3]]
+      "missing": [[0,1,0],[1,2,3],[2,1,0],[3,1,1],[3,1,3]]
     },
-    "top_candidates_file": "runs/2026-06-27-smart-search-6-defect-full/top_candidates.json",
-    "best_candidate_file": "runs/2026-06-27-smart-search-6-defect-full/best_candidate.json",
+    "run_folder": "runs/2026-06-27-smart-search-7-core5-full/",
+    "summary_file": "runs/2026-06-27-smart-search-7-core5-full/summary.md",
+    "best_candidate_file": "runs/2026-06-27-smart-search-7-core5-full/best_candidate.json",
+    "reusable_best_candidate_file": "candidates/mlct22-a584fa7e488e0279-run28292425390.json",
+    "bank_additions_file": "candidates/bank-additions-run28292425390.jsonl",
+    "bank_additions_summary_file": "candidates/bank-additions-run28292425390.summary.json",
+    "all_shard_best_count": 20,
+    "unique_candidate_count_in_run": 6,
+    "eligible_unique_candidate_count_in_run": 6,
     "top_missing_points": [
-      {"point": [1,2,2], "count": 20},
-      {"point": [3,1,0], "count": 19},
-      {"point": [2,0,2], "count": 18},
-      {"point": [2,0,3], "count": 18},
-      {"point": [3,1,2], "count": 18},
-      {"point": [3,1,3], "count": 3},
-      {"point": [2,1,2], "count": 2},
-      {"point": [2,2,3], "count": 2}
+      {"point": [3,1,3], "count": 17},
+      {"point": [3,1,0], "count": 16},
+      {"point": [2,1,2], "count": 14},
+      {"point": [2,2,3], "count": 14},
+      {"point": [1,2,1], "count": 13},
+      {"point": [0,1,0], "count": 4},
+      {"point": [1,2,3], "count": 4},
+      {"point": [2,1,0], "count": 4},
+      {"point": [3,1,1], "count": 4},
+      {"point": [3,1,2], "count": 3},
+      {"point": [1,2,2], "count": 2},
+      {"point": [2,0,2], "count": 2},
+      {"point": [2,0,3], "count": 2},
+      {"point": [0,2,2], "count": 1}
     ],
     "top_missing_patterns": [
-      {"count": 17, "missing": [[1,2,2],[2,0,2],[2,0,3],[3,1,0],[3,1,2]]},
-      {"count": 2, "missing": [[1,2,2],[2,1,2],[2,2,3],[3,1,0],[3,1,3]]},
-      {"count": 1, "missing": [[1,2,2],[2,0,2],[2,0,3],[3,1,2],[3,1,3]]}
+      {"count": 13, "missing": [[1,2,1],[2,1,2],[2,2,3],[3,1,0],[3,1,3]]},
+      {"count": 4, "missing": [[0,1,0],[1,2,3],[2,1,0],[3,1,1],[3,1,3]]},
+      {"count": 2, "missing": [[1,2,2],[2,0,2],[2,0,3],[3,1,0],[3,1,2]]},
+      {"count": 1, "missing": [[0,2,2],[2,1,2],[2,2,3],[3,1,0],[3,1,2]]}
     ],
     "mode_stats": [
-      {"mode": "fractional_bridge22", "result_count": 5, "best_covered_count": 59, "average_covered_count": 59.0},
-      {"mode": "integer_control22", "result_count": 1, "best_covered_count": 59, "average_covered_count": 59.0},
-      {"mode": "repair56_target8", "result_count": 5, "best_covered_count": 59, "average_covered_count": 59.0},
-      {"mode": "rich_segment_catalog", "result_count": 1, "best_covered_count": 59, "average_covered_count": 59.0},
-      {"mode": "subcube_stitch22", "result_count": 5, "best_covered_count": 59, "average_covered_count": 59.0},
-      {"mode": "transition_penalty22", "result_count": 3, "best_covered_count": 59, "average_covered_count": 59.0}
+      {"mode": "fractional_bridge22", "result_count": 6, "best_covered_count": 59, "average_covered_count": 59.0, "shards": [6,7,8,9,10,11]},
+      {"mode": "integer_control22", "result_count": 1, "best_covered_count": 59, "average_covered_count": 59.0, "shards": [19]},
+      {"mode": "repair56_target8", "result_count": 2, "best_covered_count": 59, "average_covered_count": 59.0, "shards": [16,17]},
+      {"mode": "rich_segment_catalog", "result_count": 1, "best_covered_count": 59, "average_covered_count": 59.0, "shards": [18]},
+      {"mode": "subcube_stitch22", "result_count": 4, "best_covered_count": 59, "average_covered_count": 59.0, "shards": [12,13,14,15]},
+      {"mode": "transition_penalty22", "result_count": 6, "best_covered_count": 59, "average_covered_count": 59.0, "shards": [0,1,2,3,4,5]}
     ]
   },
   "candidate_preservation_rule_for_future_runs": {
     "rule_type": "threshold_and_above",
     "min_covered_to_save": 56,
-    "main_analysis_threshold_after_this_run": 59,
-    "save_condition": "covered_count >= min_covered_to_save",
-    "plain_language": "Keep old 56/57/58 evidence, but treat unique 59/64 candidates as the main seed bank for the next run."
+    "max_links": 22,
+    "save_condition": "covered_count >= 56 and links <= 22",
+    "plain_language": "Keep old 56/57/58 evidence and all unique 59/64 candidates; the next search should use multiple 59/64 defect orbits rather than only one champion."
   },
-  "next_run_seed_source": {
-    "source_type": "github_actions_defect_artifacts_plus_saved_59_candidates",
-    "run_id": 28275850889,
-    "run_url": "https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/28275850889",
-    "primary_artifacts": ["defect-run-summary", "defect-22-shard-*"],
-    "saved_run_folder": "runs/2026-06-27-smart-search-6-defect-full/",
-    "best_candidate_file": "runs/2026-06-27-smart-search-6-defect-full/best_candidate.json",
-    "top_candidates_file": "runs/2026-06-27-smart-search-6-defect-full/top_candidates.json",
-    "candidate_file": "candidates/mlct22-278a7d8dc1d65f25-run28275850889.json",
-    "note": "Use all 20 shard-best 59/64 candidates, not only the selected best; the recurring missing pattern is more informative than a single candidate."
+  "next_recommended_workflow": {
+    "workflow_name": "smart-search-8-orbit-bridge",
+    "prepared": false,
+    "purpose": "Compare and bridge the old and new 59/64 defect orbits, with targeted local repair around the shared hard region near (3,1,3)."
   },
   "conclusions_for_next_run": [
-    "The full run reproduced 59/64 across all 20 shard-best results but did not find 60/64 or 64/64.",
-    "The numeric frontier remains 59/64, now confirmed by a full 21000-second-per-shard run rather than only a 90-second smoke-test.",
-    "The dominant missing pattern appeared in 17 of 20 shard-best candidates: (1,2,2),(2,0,2),(2,0,3),(3,1,0),(3,1,2).",
-    "The point (1,2,2) was missed in all 20 shard-best candidates and should be treated as a hard anchor for the next repair search.",
-    "The next run should be smart-search-7-core5 or similar: focused exact local repair around the recurring 5-point defect core and transition-aware replacement windows, not a plain repeat of the same repair distribution."
+    "The run did not find 60/64 or 64/64; the numeric frontier remains 59/64.",
+    "All 20 shard-best artifacts reached 59/64 with 22 links, so core5 repair reliably reproduces the frontier but appears saturated in its current shape.",
+    "The new selected best changes the defect set: it covers several old hard points and leaves a different 5-point defect set.",
+    "The next run should not repeat core5 unchanged; it should compare the 59/64 orbits and try orbit-bridging/local surgery around (3,1,3) and the x=3,y=1 transition region."
   ]
 }
