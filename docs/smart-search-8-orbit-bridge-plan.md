@@ -36,9 +36,8 @@ Use all of the following:
 - local repair smoke folder: `experiments/2026-06-25-repair57-local-smoke/`
 - main candidate bank: `candidates/bank.jsonl`
 - unmerged unique additions: `candidates/bank-additions-run28292425390.jsonl`
-- original latest shard-best candidates: `candidates/original-shard-candidates-run28292425390.jsonl`
 
-The original shard-best file is intentionally not symmetry-deduplicated. It preserves all 20 concrete shard results from run `28292425390`, while the exporter still canonicalizes seeds before running so the C++ search is not flooded with exact symmetry duplicates.
+The 20 original shard-best candidates from run `28292425390` are used through the downloaded `core5-22-shard-*` artifacts. The persistent repo bank keeps symmetry-unique candidates, while artifacts preserve the original concrete shard results.
 
 ## Code changes for the run
 
@@ -48,7 +47,7 @@ The generated engine changes the previous repair search in five ways:
 
 1. It targets the union of old-selected, new-selected, and latest-dominant `59/64` defect sets, with the strongest weight on `(3,1,3)`.
 2. It boosts the `x=3,y=1` transition column: `(3,1,0)`, `(3,1,1)`, `(3,1,2)`, `(3,1,3)`.
-3. It uses a wider seed bank, including `candidates/bank.jsonl`, `bank-additions-run28292425390`, original shard candidates, saved run folders, and downloaded artifacts.
+3. It uses a wider seed memory: saved run folders, downloaded artifacts, `candidates/bank.jsonl`, and `bank-additions-run28292425390`.
 4. It prefers `59/64` seeds more aggressively while keeping 56/57/58 candidates as fallback structure.
 5. It increases local repair window size and repair probability, because the current obstruction looks like a local transition problem rather than a cold-start problem.
 
