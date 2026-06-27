@@ -13,13 +13,14 @@ runs/2026-06-24-smart-search/
 A run folder should usually contain:
 
 - `README.md` — human-readable summary of what was run and what was learned;
-- `smart_run_summary.json` or a reduced copy of the important artifact summary;
+- compact JSON summaries of the important artifact data;
 - optional small JSON files with best candidates, recurring missing points, or parameters;
 - notes about what the next run should use as seed material.
 
 ## Recorded runs
 
 - `runs/2026-06-25-smart-search-4/` — run `28103660449`, `smart-search-4`, best `56/64`, stable 8-point defect set, next seed source for workflow.
+- `runs/2026-06-26-repair-search-5/` — run `28200925016`, `repair-search-5`, best `58/64`, stable 6-point defect patterns, compact top candidate bank saved for the next repair run.
 
 The current frontier is always summarized in:
 
