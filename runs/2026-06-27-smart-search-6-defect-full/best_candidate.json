@@ -1,0 +1,41 @@
+{
+  "schema": "repair59-defect-shard-v1",
+  "coordinate_scale": 2,
+  "status": "partial_candidate",
+  "mode": "fractional_bridge22",
+  "links_target": 22,
+  "links": 22,
+  "covered_count": 59,
+  "target_defect_hits": 4,
+  "missing": [[1,2,2],[2,0,2],[2,0,3],[3,1,2],[3,1,3]],
+  "vertices2": [[2,12,6],[2,-6,0],[2,12,0],[2,-6,6],[2,6,6],[6,2,2],[-6,2,2],[6,6,6],[6,6,0],[0,0,6],[0,0,0],[0,6,0],[0,0,6],[0,6,6],[0,6,-2],[6,0,10],[6,0,0],[6,4,0],[6,4,7],[4,4,6],[4,-2,0],[4,6,0],[4,6,14]],
+  "parameters": {
+    "mode": "fractional_bridge22",
+    "seconds": 21000,
+    "threads": 4,
+    "shard": 6,
+    "shards": 20,
+    "seed": 20260627,
+    "prior_seed_count": 34,
+    "vertex_count": 1378,
+    "directed_edge_count": 133784
+  },
+  "total_attempts": 820364112,
+  "worker_summaries": [
+    {"worker_id": 0, "covered_count": 59, "links": 22, "attempts": 205188509, "elapsed_seconds": 21000.0},
+    {"worker_id": 1, "covered_count": 59, "links": 22, "attempts": 205199084, "elapsed_seconds": 21000.0},
+    {"worker_id": 2, "covered_count": 59, "links": 22, "attempts": 204799381, "elapsed_seconds": 21000.0},
+    {"worker_id": 3, "covered_count": 59, "links": 22, "attempts": 205177138, "elapsed_seconds": 21000.0}
+  ],
+  "candidate_id": "mlct22-278a7d8dc1d65f25",
+  "source_run_id": 28275850889,
+  "source_run_url": "https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/28275850889",
+  "source_artifact": "defect-22-shard-6",
+  "postrun_verification": {
+    "checked_exact_scaled_geometry": true,
+    "verified_links": 22,
+    "verified_covered_count": 59,
+    "verified_missing": [[1,2,2],[2,0,2],[2,0,3],[3,1,2],[3,1,3]],
+    "note": "Post-run analysis rechecked the vertices2 candidate using exact integer collinearity and betweenness on coordinate_scale=2."
+  }
+}
