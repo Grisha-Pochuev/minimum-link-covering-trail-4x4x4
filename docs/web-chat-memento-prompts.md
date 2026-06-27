@@ -4,6 +4,18 @@ This project is usually operated from ChatGPT web chat. A new chat may not remem
 
 Before analyzing a completed run or preparing a new run, read the relevant workflow first. The workflow is both executable GitHub Actions configuration and a memory note explaining what the run was supposed to do: inputs, seed sources, artifact names, save rules, candidate-bank rules, and post-run expectations.
 
+## Candidate terminology
+
+There are three different candidate-saving layers. Do not mix them up.
+
+1. Per-run champion candidate: the single strongest candidate from one run. Save it only as a quick reference for `frontier/latest.*` and human reading.
+
+2. Per-run top candidates: the best useful candidates from this particular run, usually all shard-best candidates and/or all distinct high-quality candidates above the run threshold. Save these under that run's folder, for example as `top_candidates.json` or similar. This is not the global bank.
+
+3. Global candidate bank: `candidates/bank.jsonl`. This is the reusable seed memory for future runs. It should contain all unique eligible candidates, not only the single best one. Current normal threshold: `covered_count >= 56` and `links <= 22`, unless the workflow says otherwise. Merge by the canonical bank rule, not by hand-picked favorites.
+
+In plain language: save one champion for easy reporting, save the run's full top set for analysis, and merge every eligible unique candidate into the global bank.
+
 ## Prompt 1: analyze a completed run
 
 ```text
@@ -13,7 +25,9 @@ Before analyzing a completed run or preparing a new run, read the relevant workf
 
 После этого сними результаты: проверь jobs, logs и artifacts; найди лучший covered_count, число links, mode, candidate_id, source artifact и пропущенные точки; сравни с frontier/latest.md, frontier/latest.json, предыдущими runs/ и candidates/bank.jsonl.
 
-Сохрани лучший кандидат, top candidates, smart_run_summary и выводы в runs/. Обнови frontier/latest.md и frontier/latest.json, если прогон полезный. Обязательно проверь правило candidate bank из workflow и добавь в candidates/bank.jsonl все новые оригинальные кандидаты, которые проходят порог сохранения, а не только один лучший кандидат. Для банка используй scripts/merge_candidate_bank.py или тот же канонический принцип: coordinate permutations, cube reflections и trail reversal.
+Сохрани не только одного победителя. Раздели результаты на три уровня: 1) один per-run champion candidate для удобной ссылки во frontier/latest.*; 2) per-run top candidates — все лучшие/полезные кандидаты этого конкретного run, например все shard-best и все отличающиеся кандидаты выше порога; 3) global candidate bank — добавь в candidates/bank.jsonl все новые уникальные кандидаты, которые проходят порог сохранения из workflow, обычно covered_count >= 56 и links <= 22.
+
+Обнови frontier/latest.md и frontier/latest.json, если прогон полезный. Для обновления candidates/bank.jsonl используй scripts/merge_candidate_bank.py или тот же канонический принцип: coordinate permutations, cube reflections и trail reversal. Не путай per-run top candidates с общим банком: top candidates — отчет по одному run, bank.jsonl — долговременная память всех run.
 
 В конце коротко скажи: что этот прогон дал, улучшился ли frontier, какие точки/паттерны остались проблемными, что записано в репозиторий, и какой следующий шаг лучше.
 ```
@@ -25,7 +39,7 @@ Before analyzing a completed run or preparing a new run, read the relevant workf
 
 Сначала открой и прочитай последний релевантный workflow. Это не просто технический YAML, а “память” проекта: там записано, как устроен прошлый запуск, какие artifacts он создаёт, что считается seed material, какой порог сохранения кандидатов, и что нужно делать после завершения.
 
-Затем изучи frontier/latest.md, frontier/latest.json, последние runs/, candidates/bank.jsonl, docs/*-plan.md и artifacts последнего полезного run. Новый прогон не должен стартовать с нуля: используй лучшие кандидаты, банк кривых, top candidates, defect patterns и выводы прошлых прогонов.
+Затем изучи frontier/latest.md, frontier/latest.json, последние runs/, candidates/bank.jsonl, docs/*-plan.md и artifacts последнего полезного run. Новый прогон не должен стартовать с нуля: используй champion candidates из frontier, per-run top candidates из последних runs, общий банк кривых candidates/bank.jsonl, defect patterns и выводы прошлых прогонов.
 
 Если нужно, обнови workflow/C++/Python-код, но не делай workflow с trigger on push. Новый workflow должен быть ручным workflow_dispatch, чтобы подготовительные коммиты не запускали дорогой GitHub Actions run автоматически.
 
