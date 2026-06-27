@@ -1,6 +1,6 @@
 # START HERE — project memory
 
-Last updated: 2026-06-27
+Last updated: 2026-06-28
 
 This is the first file to read when starting work in a new ChatGPT web chat.
 
@@ -30,14 +30,14 @@ Read these in this order:
 2. `frontier/latest.md` and `frontier/latest.json` — current best frontier and latest useful run.
 3. The relevant workflow in `.github/workflows/` — for a completed run, read the workflow that launched that run. Do not assume the newest workflow is automatically the right one for an old run.
 4. `docs/*-plan.md` and `docs/web-chat-memento-prompts.md` — planning notes and web-chat operating prompts.
-5. `candidates/bank.jsonl` — global candidate bank / reusable seed memory.
+5. `candidates/bank.jsonl` and any `candidates/bank-additions-*.jsonl` mentioned below — reusable seed memory.
 6. The latest relevant folder in `runs/`.
 7. GitHub Actions artifacts of the latest useful runs.
 
 Short invariant:
 
 ```text
-START_HERE → frontier → relevant workflow → plans → bank → runs/artifacts → action
+START_HERE → frontier → relevant workflow → plans → bank/additions → runs/artifacts → action
 ```
 
 ## What START_HERE is, and what workflow is
@@ -97,7 +97,7 @@ The previous selected 59/64 best from run `28275850889` missed:
 (1,2,2), (2,0,2), (2,0,3), (3,1,2), (3,1,3)
 ```
 
-The new selected 59/64 best from run `28292425390` misses a different set. So the numeric frontier did not improve beyond `59/64`, but we now have more than one useful 59/64 defect orbit. This is valuable evidence for the next search.
+The new selected 59/64 best from run `28292425390` misses a different set. The numeric frontier did not improve beyond `59/64`, but we now have more than one useful 59/64 defect orbit. This is valuable evidence for the next search.
 
 Dominant recurring defect patterns from run `28292425390`:
 
@@ -110,25 +110,30 @@ Dominant recurring defect patterns from run `28292425390`:
 
 Important observation: all 20 shard-best artifacts reached `59/64`, and all major modes represented in this run reached `59/64`, but none reached `60/64` or `64/64`. The next improvement probably needs a new repair idea, not simply another identical core5 run.
 
-## Current next workflow
+## Current prepared workflow
 
-No new workflow has been prepared yet after analyzing run `28292425390`.
-
-Recommended next workflow to prepare:
+The next workflow is now prepared:
 
 ```text
 .github/workflows/smart-search-8-orbit-bridge.yml
 ```
 
-Recommended workflow name:
+Workflow name:
 
 ```text
 smart-search-8-orbit-bridge
 ```
 
+Supporting files prepared:
+
+```text
+scripts/prepare_orbit_bridge_engine.py
+docs/smart-search-8-orbit-bridge-plan.md
+```
+
 Purpose:
 
-Compare and bridge the distinct `59/64` defect orbits from runs `28275850889` and `28292425390`. The search should try to combine what each orbit covers well, with targeted local surgery around the shared hard region near `(3,1,3)` and the `x=3,y=1` transition zone.
+Compare and bridge the distinct `59/64` defect orbits from runs `28275850889` and `28292425390`. The search should try to combine what each orbit covers well, with targeted local surgery around the shared hard point `(3,1,3)` and the `x=3,y=1` transition zone.
 
 It should not start from zero. It should use:
 
@@ -143,14 +148,22 @@ runs/2026-06-27-smart-search-7-core5-full/
 runs/2026-06-27-smart-search-6-defect-full/
 runs/2026-06-26-repair-search-5/
 experiments/2026-06-25-repair57-local-smoke/
+GitHub Actions artifacts from the listed runs, especially core5-22-shard-* from 28292425390
 ```
+
+The 20 original shard-best candidates from run `28292425390` are preserved as GitHub Actions artifacts and are used through the downloaded `core5-22-shard-*` artifact folders. The persistent repo bank keeps symmetry-unique candidates; do not confuse that with the original per-shard artifact layer.
 
 Suggested smoke-test parameters:
 
 ```text
+workflow: smart-search-8-orbit-bridge
 seconds: 180
 threads: 4
 seed: 20260629
+prior_run_id: 28292425390
+old_59_run_id: 28275850889
+secondary_run_id: 28275666411
+base_repair_run_id: 28200925016
 min_covered_to_save: 56
 jobs/shards: 20
 max-parallel: 20
@@ -159,6 +172,7 @@ max-parallel: 20
 Suggested full serious-run parameters:
 
 ```text
+workflow: smart-search-8-orbit-bridge
 seconds: 21000
 threads: 4
 seed: 20260629
@@ -179,8 +193,8 @@ Important: workflows for expensive searches should be manual `workflow_dispatch`
 There are three candidate layers:
 
 1. Per-run champion candidate: one or several best candidates from a run, saved for easy reference in `frontier/latest.*`.
-2. Per-run top candidates: useful best candidates from that particular run, saved under that run folder.
-3. Global candidate bank: `candidates/bank.jsonl`, the reusable seed memory across runs.
+2. Per-run top/original candidates: useful candidates from that particular run, saved under that run folder or preserved as Actions artifacts.
+3. Global candidate bank: `candidates/bank.jsonl` plus named `candidates/bank-additions-*.jsonl`, the reusable seed memory across runs.
 
 Normal bank threshold unless the workflow says otherwise:
 
@@ -213,7 +227,7 @@ Use this style when the user says a run has finished:
 
 Сравни с frontier/latest.md, frontier/latest.json, последними runs/ и candidates/bank.jsonl.
 
-Сохрани результаты по правилам workflow: кандидатов-чемпионов для frontier, лучших оригинальных кандидатов этого run в runs/, всех новых уникальных кандидатов выше порога — в reusable candidate memory.
+Сохрани результаты по правилам workflow: кандидатов-чемпионов для frontier, лучших оригинальных кандидатов этого run в runs/ или artifact-backed memory, всех новых уникальных кандидатов выше порога — в reusable candidate memory.
 
 Обнови START_HERE.md, если изменился текущий frontier, актуальный следующий workflow или главный следующий шаг.
 
