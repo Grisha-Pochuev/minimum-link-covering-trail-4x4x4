@@ -2,7 +2,7 @@
 
 This project is usually operated from ChatGPT web chat. A new chat may not remember the full previous conversation. Treat the repository as durable memory.
 
-Before analyzing a completed run or preparing a new run, read the relevant workflow first. The workflow is both executable GitHub Actions configuration and a memory note explaining what the run was supposed to do: inputs, seed sources, artifact names, save rules, candidate-bank rules, and post-run expectations.
+Before analyzing a completed run or preparing a new run, read `START_HERE.md` first. It is the top-level project memory. Then read the relevant workflow: for a completed run, the workflow that launched that run; for a new run, the current or prepared workflow. The workflow is both executable GitHub Actions configuration and a memory note explaining what that run was supposed to do: inputs, seed sources, artifact names, save rules, candidate-bank rules, and post-run expectations.
 
 ## Candidate terminology
 
@@ -21,13 +21,13 @@ In plain language: save one champion for easy reporting, save the run's full top
 ```text
 Прогон завершился: <ссылка на GitHub Actions run>.
 
-Сначала открой и прочитай workflow, которым был запущен этот run. Не начинай с jobs/logs/artifacts: workflow — это главная “память” запуска, там записано, какие inputs, seed sources, artifacts, thresholds и правила сохранения должны были использоваться.
+Сначала открой START_HERE.md, чтобы понять текущее состояние проекта. Затем открой workflow, которым был запущен этот run, и следуй правилам из него.
 
-После этого сними результаты: проверь jobs, logs и artifacts; найди лучший covered_count, число links, mode, candidate_id, source artifact и пропущенные точки; сравни с frontier/latest.md, frontier/latest.json, предыдущими runs/ и candidates/bank.jsonl.
+Сними результаты: проверь jobs, logs и artifacts; найди лучший covered_count, число links, mode, candidate_id, source artifact и пропущенные точки; сравни с frontier/latest.md, frontier/latest.json, предыдущими runs/ и candidates/bank.jsonl.
 
 Сохрани не только одного победителя. Раздели результаты на три уровня: 1) один per-run champion candidate для удобной ссылки во frontier/latest.*; 2) per-run top candidates — все лучшие/полезные кандидаты этого конкретного run, например все shard-best и все отличающиеся кандидаты выше порога; 3) global candidate bank — добавь в candidates/bank.jsonl все новые уникальные кандидаты, которые проходят порог сохранения из workflow, обычно covered_count >= 56 и links <= 22.
 
-Обнови frontier/latest.md и frontier/latest.json, если прогон полезный. Для обновления candidates/bank.jsonl используй scripts/merge_candidate_bank.py или тот же канонический принцип: coordinate permutations, cube reflections и trail reversal. Не путай per-run top candidates с общим банком: top candidates — отчет по одному run, bank.jsonl — долговременная память всех run.
+Обнови frontier/latest.md и frontier/latest.json, если прогон полезный. Обнови START_HERE.md, если изменился текущий frontier, актуальный следующий workflow или главный следующий шаг. Для обновления candidates/bank.jsonl используй scripts/merge_candidate_bank.py или тот же канонический принцип: coordinate permutations, cube reflections и trail reversal. Не путай per-run top candidates с общим банком: top candidates — отчет по одному run, bank.jsonl — долговременная память всех run.
 
 В конце коротко скажи: что этот прогон дал, улучшился ли frontier, какие точки/паттерны остались проблемными, что записано в репозиторий, и какой следующий шаг лучше.
 ```
@@ -37,11 +37,11 @@ In plain language: save one champion for easy reporting, save the run's full top
 ```text
 Подготовь следующий умный прогон smart-search-<следующий номер>-<1-2 слова>, например smart-search-7-repair или smart-search-7-core5.
 
-Сначала открой и прочитай последний релевантный workflow. Это не просто технический YAML, а “память” проекта: там записано, как устроен прошлый запуск, какие artifacts он создаёт, что считается seed material, какой порог сохранения кандидатов, и что нужно делать после завершения.
+Сначала открой START_HERE.md, чтобы понять текущее состояние проекта. Затем открой последний релевантный workflow. Это не просто технический YAML, а “память” конкретного запуска: там записано, как устроен прошлый или следующий запуск, какие artifacts он создаёт, что считается seed material, какой порог сохранения кандидатов, и что нужно делать после завершения.
 
 Затем изучи frontier/latest.md, frontier/latest.json, последние runs/, candidates/bank.jsonl, docs/*-plan.md и artifacts последнего полезного run. Новый прогон не должен стартовать с нуля: используй champion candidates из frontier, per-run top candidates из последних runs, общий банк кривых candidates/bank.jsonl, defect patterns и выводы прошлых прогонов.
 
-Если нужно, обнови workflow/C++/Python-код, но не делай workflow с trigger on push. Новый workflow должен быть ручным workflow_dispatch, чтобы подготовительные коммиты не запускали дорогой GitHub Actions run автоматически.
+Если нужно, обнови START_HERE.md как главную память проекта, а также workflow/C++/Python-код. Новый workflow должен быть ручным workflow_dispatch, без trigger on push, чтобы подготовительные коммиты не запускали дорогой GitHub Actions run автоматически.
 
 Сначала подготовь безопасный smoke-test: короткое время на shard, 20 jobs × 4 threads, те же seed sources, проверка компиляции, checker и artifacts. Затем дай точные параметры для полного запуска: 20 jobs × 4 threads примерно на 5ч50м, обычно seconds=21000, threads=4, max-parallel=20, правильные run_id для seed artifacts и min_covered_to_save.
 
@@ -53,5 +53,5 @@ In plain language: save one champion for easy reporting, save the run's full top
 For every new web-chat cycle:
 
 ```text
-workflow first, then frontier, then bank, then artifacts, then action.
+START_HERE first, then frontier, then the relevant workflow, then plans, then bank, then runs/artifacts, then action.
 ```
