@@ -1,10 +1,10 @@
 # Web-chat operating rule / Memento rule:
 # In this project, the assistant may start a new web-chat without enough memory of prior chats.
-# Therefore this workflow, frontier/latest.*, docs/*-plan.md, candidates/bank.jsonl, and the latest
-# useful GitHub Actions artifacts are the durable project memory, like the written clues in Memento.
-# Before analyzing a completed run or preparing the next run, first read the relevant workflow file.
-# The workflow explains what was supposed to happen: inputs, seed sources, artifact names, save rules,
-# candidate-bank rules, and post-run expectations. Do not infer those rules from memory alone.
+# START_HERE.md is the top-level durable project memory. Read it first.
+# Then read this workflow when analyzing this run or preparing this specific search line.
+# This workflow is the executable recipe and local memory for smart-search-7-core5:
+# inputs, seed sources, artifact names, save rules, candidate-bank rules, and post-run expectations.
+# Do not infer those rules from chat memory alone.
 #
 # This workflow is for explicit manual launches from ChatGPT/web-chat work.
 # It is not triggered on push, so commits that prepare the run do not silently burn GitHub Actions time.
@@ -18,13 +18,15 @@
 # and trail reversal. Do not only save the single best candidate.
 #
 # Standard post-run order:
-# 1. Read this workflow first.
-# 2. Inspect jobs, logs, and artifacts for the given run id.
-# 3. Compare the results with frontier/latest.md, frontier/latest.json, previous runs, and candidates/bank.jsonl.
-# 4. Save the best candidate, top candidates, run summary, and conclusions under runs/.
-# 5. Update frontier/latest.md and frontier/latest.json if the run is useful.
-# 6. Merge all new eligible unique candidates into candidates/bank.jsonl.
-# 7. Only then recommend the next smart run.
+# 1. Read START_HERE.md first.
+# 2. Read this workflow to understand what this run was supposed to do.
+# 3. Inspect jobs, logs, and artifacts for the given run id.
+# 4. Compare the results with frontier/latest.md, frontier/latest.json, previous runs, and candidates/bank.jsonl.
+# 5. Save the champion candidate(s), per-run top candidates, run summary, and conclusions under runs/.
+# 6. Update frontier/latest.md and frontier/latest.json if the run is useful.
+# 7. Update START_HERE.md if the current frontier, next workflow, or main next step changed.
+# 8. Merge all new eligible unique candidates into candidates/bank.jsonl.
+# 9. Only then recommend the next smart run.
 
 name: smart-search-7-core5
 run-name: smart-search-7-core5
