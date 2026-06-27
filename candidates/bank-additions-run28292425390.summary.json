@@ -1,0 +1,17 @@
+{
+  "bank_threshold": {"max_links": 22, "min_covered": 56},
+  "candidate_ids": [
+    "mlct22-30c323971c1e79c5",
+    "mlct22-fb6f35639e636e82",
+    "mlct22-a77764189bd3e13a",
+    "mlct22-a7b17a52b1969f31",
+    "mlct22-a584fa7e488e0279",
+    "mlct22-750c1a2a8cc45c12"
+  ],
+  "new_run_records": 20,
+  "new_unique_eligible_candidates": 6,
+  "note": "These are the unique eligible candidates from run 28292425390. They should be merged into candidates/bank.jsonl; this file is also a safe append record for web-chat runs.",
+  "run_id": 28292425390,
+  "schema": "mlct-bank-additions-v1",
+  "workflow": "smart-search-7-core5"
+}
