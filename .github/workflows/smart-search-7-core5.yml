@@ -1,10 +1,30 @@
-# Web-chat operating rule:
+# Web-chat operating rule / Memento rule:
+# In this project, the assistant may start a new web-chat without enough memory of prior chats.
+# Therefore this workflow, frontier/latest.*, docs/*-plan.md, candidates/bank.jsonl, and the latest
+# useful GitHub Actions artifacts are the durable project memory, like the written clues in Memento.
+# Before analyzing a completed run or preparing the next run, first read the relevant workflow file.
+# The workflow explains what was supposed to happen: inputs, seed sources, artifact names, save rules,
+# candidate-bank rules, and post-run expectations. Do not infer those rules from memory alone.
+#
 # This workflow is for explicit manual launches from ChatGPT/web-chat work.
 # It is not triggered on push, so commits that prepare the run do not silently burn GitHub Actions time.
 # Default seconds is a smoke-test value. For the full run, set seconds=21000.
+#
 # Candidate-bank rule:
 # keep candidates with covered_count >= 56 and links <= 22, but treat the unique 59/64
 # candidates from run 28275850889 as the main seed bank for this search.
+# After every useful run, merge all unique eligible candidates into candidates/bank.jsonl using
+# scripts/merge_candidate_bank.py or the same canonical rule: coordinate permutations, cube reflections,
+# and trail reversal. Do not only save the single best candidate.
+#
+# Standard post-run order:
+# 1. Read this workflow first.
+# 2. Inspect jobs, logs, and artifacts for the given run id.
+# 3. Compare the results with frontier/latest.md, frontier/latest.json, previous runs, and candidates/bank.jsonl.
+# 4. Save the best candidate, top candidates, run summary, and conclusions under runs/.
+# 5. Update frontier/latest.md and frontier/latest.json if the run is useful.
+# 6. Merge all new eligible unique candidates into candidates/bank.jsonl.
+# 7. Only then recommend the next smart run.
 
 name: smart-search-7-core5
 run-name: smart-search-7-core5
