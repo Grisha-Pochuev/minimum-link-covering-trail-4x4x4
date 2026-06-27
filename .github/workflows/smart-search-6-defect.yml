@@ -21,9 +21,9 @@ on:
         required: false
         default: "20260627"
       prior_run_id:
-        description: "Latest useful run whose artifacts are used as seed material."
+        description: "Latest useful run whose artifacts are used as seed material. Defaults to the 59/64 smoke run."
         required: false
-        default: "28200925016"
+        default: "28275666411"
       min_covered_to_save:
         description: "Candidate preservation threshold."
         required: false
@@ -56,7 +56,8 @@ jobs:
       SEARCH_SECONDS: ${{ github.event.inputs.seconds || '21000' }}
       SEARCH_THREADS: ${{ github.event.inputs.threads || '4' }}
       SEARCH_SEED: ${{ github.event.inputs.seed || '20260627' }}
-      PRIOR_RUN_ID: ${{ github.event.inputs.prior_run_id || '28200925016' }}
+      PRIOR_RUN_ID: ${{ github.event.inputs.prior_run_id || '28275666411' }}
+      BASE_REPAIR_RUN_ID: "28200925016"
       MIN_COVERED_TO_SAVE: ${{ github.event.inputs.min_covered_to_save || '56' }}
     steps:
       - name: Check out repository
@@ -67,15 +68,16 @@ jobs:
           python-version: "3.11"
       - name: Download latest useful repair artifacts
         run: |
-          mkdir -p seed-material/prior-artifacts
-          gh run download "$PRIOR_RUN_ID" --dir seed-material/prior-artifacts
+          mkdir -p seed-material/base-repair-artifacts seed-material/latest-artifacts
+          gh run download "$BASE_REPAIR_RUN_ID" --dir seed-material/base-repair-artifacts
+          gh run download "$PRIOR_RUN_ID" --dir seed-material/latest-artifacts
       - name: Export candidate bank into seed JSON files
         run: |
           python scripts/export_candidate_bank_jsons.py \
             --out seed-material/from-candidate-bank \
             --min-covered "$MIN_COVERED_TO_SAVE" \
             candidates/bank.jsonl
-      - name: Prepare 58/64 defect repair engine
+      - name: Prepare current defect repair engine
         run: python scripts/prepare_repair58_engine.py --out build/repair58_search.cpp
       - name: Compile C++ defect repair engine
         run: g++ -O3 -std=c++17 -pthread -DNDEBUG build/repair58_search.cpp -o repair58_search
@@ -83,7 +85,8 @@ jobs:
         run: |
           mkdir -p results/defect
           ./repair58_search \
-            --input-dir seed-material/prior-artifacts \
+            --input-dir seed-material/base-repair-artifacts \
+            --input-dir seed-material/latest-artifacts \
             --input-dir seed-material/from-candidate-bank \
             --input-dir runs/2026-06-26-repair-search-5 \
             --input-dir experiments/2026-06-25-repair57-local-smoke \
