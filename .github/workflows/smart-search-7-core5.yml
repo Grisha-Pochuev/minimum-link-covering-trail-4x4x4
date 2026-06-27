@@ -1,0 +1,159 @@
+# Web-chat operating rule:
+# This workflow is for explicit manual launches from ChatGPT/web-chat work.
+# It is not triggered on push, so commits that prepare the run do not silently burn GitHub Actions time.
+# Default seconds is a smoke-test value. For the full run, set seconds=21000.
+# Candidate-bank rule:
+# keep candidates with covered_count >= 56 and links <= 22, but treat the unique 59/64
+# candidates from run 28275850889 as the main seed bank for this search.
+
+name: smart-search-7-core5
+run-name: smart-search-7-core5
+
+on:
+  workflow_dispatch:
+    inputs:
+      seconds:
+        description: "Seconds per shard. Default 180 = safe smoke; full run 21000 = 5h50m."
+        required: false
+        default: "180"
+      threads:
+        description: "C++ worker threads per GitHub job. Use 4 on GitHub runners."
+        required: false
+        default: "4"
+      seed:
+        description: "Random seed for reproducibility. Use a new seed for the full run if repeating smoke."
+        required: false
+        default: "20260628"
+      prior_run_id:
+        description: "Latest full useful run with 59/64 artifacts."
+        required: false
+        default: "28275850889"
+      secondary_run_id:
+        description: "Previous 59/64 smoke run, used as additional seed material."
+        required: false
+        default: "28275666411"
+      base_repair_run_id:
+        description: "Earlier 58/64 repair run, used as broad seed material."
+        required: false
+        default: "28200925016"
+      min_covered_to_save:
+        description: "Candidate preservation threshold for bank export."
+        required: false
+        default: "56"
+
+jobs:
+  check-known-23:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Verify the known 23-link trail
+        run: python scripts/check_trail.py data/ripa_23_trail.json --expected-links 23 --require-full
+
+  core5-repair-search:
+    runs-on: ubuntu-latest
+    needs: check-known-23
+    timeout-minutes: 359
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    env:
+      GH_TOKEN: ${{ github.token }}
+      SEARCH_SECONDS: ${{ github.event.inputs.seconds || '180' }}
+      SEARCH_THREADS: ${{ github.event.inputs.threads || '4' }}
+      SEARCH_SEED: ${{ github.event.inputs.seed || '20260628' }}
+      PRIOR_RUN_ID: ${{ github.event.inputs.prior_run_id || '28275850889' }}
+      SECONDARY_RUN_ID: ${{ github.event.inputs.secondary_run_id || '28275666411' }}
+      BASE_REPAIR_RUN_ID: ${{ github.event.inputs.base_repair_run_id || '28200925016' }}
+      MIN_COVERED_TO_SAVE: ${{ github.event.inputs.min_covered_to_save || '56' }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Download previous useful artifacts
+        run: |
+          mkdir -p seed-material/base-repair-artifacts seed-material/secondary-artifacts seed-material/latest-artifacts
+          gh run download "$BASE_REPAIR_RUN_ID" --dir seed-material/base-repair-artifacts
+          gh run download "$SECONDARY_RUN_ID" --dir seed-material/secondary-artifacts
+          gh run download "$PRIOR_RUN_ID" --dir seed-material/latest-artifacts
+      - name: Export candidate bank into seed JSON files
+        run: |
+          python scripts/export_candidate_bank_jsons.py \
+            --out seed-material/from-candidate-bank \
+            --min-covered "$MIN_COVERED_TO_SAVE" \
+            candidates/bank.jsonl
+      - name: Prepare core5 repair engine
+        run: python scripts/prepare_core5_engine.py --out build/core5_search.cpp
+      - name: Compile C++ core5 repair engine
+        run: g++ -O3 -std=c++17 -pthread -DNDEBUG build/core5_search.cpp -o core5_search
+      - name: Run core5 repair shard
+        run: |
+          mkdir -p results/core5
+          ./core5_search \
+            --input-dir seed-material/base-repair-artifacts \
+            --input-dir seed-material/secondary-artifacts \
+            --input-dir seed-material/latest-artifacts \
+            --input-dir seed-material/from-candidate-bank \
+            --input-dir runs/2026-06-27-smart-search-6-defect-full \
+            --input-dir runs/2026-06-26-repair-search-5 \
+            --input-dir experiments/2026-06-25-repair57-local-smoke \
+            --seconds "$SEARCH_SECONDS" \
+            --threads "$SEARCH_THREADS" \
+            --seed "$SEARCH_SEED" \
+            --shard "${{ matrix.shard }}" \
+            --shards 20 \
+            --out "results/core5/core5_best_shard_${{ matrix.shard }}.json"
+      - name: Check shard result
+        if: always()
+        run: |
+          if [ -f "results/core5/core5_best_shard_${{ matrix.shard }}.json" ]; then
+            python scripts/check_scaled_trail.py "results/core5/core5_best_shard_${{ matrix.shard }}.json" --max-links 22
+          fi
+      - name: Upload core5 shard result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: core5-22-shard-${{ matrix.shard }}
+          path: results/core5/core5_best_shard_${{ matrix.shard }}.json
+          if-no-files-found: warn
+      - name: Upload seed manifest
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: core5-seed-manifest-${{ matrix.shard }}
+          path: seed-material/from-candidate-bank/manifest.json
+          if-no-files-found: warn
+
+  aggregate-core5-results:
+    runs-on: ubuntu-latest
+    needs: core5-repair-search
+    if: always()
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Download core5 shard artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: core5-22-shard-*
+          path: collected
+          merge-multiple: true
+      - name: Build core5 run summary
+        run: python scripts/build_smart_summary.py
+      - name: Upload core5 run summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: core5-run-summary
+          path: |
+            collected/smart_run_summary.json
+            collected/smart_run_summary.md
+          if-no-files-found: warn
