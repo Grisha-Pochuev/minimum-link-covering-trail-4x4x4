@@ -1,29 +1,53 @@
 {
   "counts": {
-    "source_records": 20,
-    "source_records_by_coverage": {
-      "57": 7,
+    "source_records_scanned_at_or_above_threshold": 1109,
+    "source_records_scanned_by_coverage": {
+      "56": 1088,
+      "57": 8,
       "58": 13
     },
-    "unique_candidates": 5,
+    "unique_candidates": 16,
     "unique_candidates_by_coverage": {
+      "56": 11,
       "57": 3,
       "58": 2
     }
   },
   "current_seeded_from": [
     {
-      "note": "This completed run preserved one best JSON per shard, so the initial bank is built from 20 shard-best source records.",
+      "note": "All available unique 56/64 candidates were extracted from smart-22-shard-* artifacts; artifacts contain many repeated top-result occurrences.",
+      "run_id": 28103660449,
+      "workflow": "smart-search-4"
+    },
+    {
+      "note": "This completed run preserved one best JSON per shard; 20 source records produced 5 unique candidate geometries.",
       "run_id": 28200925016,
       "workflow": "repair-search-5"
+    },
+    {
+      "note": "This repo seed is a duplicate of one 57/64 geometry already seen in repair-search-5, but is recorded as an additional source.",
+      "source_file": "experiments/2026-06-25-repair57-local-smoke/repair57_candidate.json",
+      "workflow": "local-prelaunch-smoke"
     }
   ],
+  "deduplication": {
+    "key": "exact ordered vertices2 path",
+    "verified": "Each unique record was rechecked by exact integer collinearity; recorded covered_count and links match vertices2."
+  },
   "files": {
     "by_coverage_dir": "candidates/by_coverage/",
+    "local_smoke_record": "candidates/by_run/local-prelaunch-repair57.jsonl",
+    "source_records_for_run_28103660449": "candidates/by_run/28103660449.jsonl",
     "source_records_for_run_28200925016": "candidates/by_run/28200925016.jsonl",
     "unique_bank": "candidates/bank.jsonl"
   },
   "important_note": "Runs folders remain the historical experiment log. This candidates directory is the reusable unified seed bank.",
+  "not_included": [
+    {
+      "reason": "Recorded best was 54/64, below the current 56/64 threshold.",
+      "run_id": 28029809039
+    }
+  ],
   "purpose": "Unified bank of strong 22-link candidates for the 4x4x4 minimum-link covering trail search.",
   "schema": "mlct-candidate-bank-index-v1",
   "threshold_rule": {
