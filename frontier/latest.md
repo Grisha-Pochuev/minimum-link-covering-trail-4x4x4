@@ -53,23 +53,17 @@ Best known result after GitHub Actions run `28200925016`:
 
 The best GitHub Actions candidate is still partial. It has exactly 22 links and covers 58 of the 64 grid points. This is not a complete covering trail and not a proof.
 
-The best candidate is saved in:
+The exact full JSON for the best candidate remains in the run artifact `repair-22-shard-4`. The compact candidate bank is saved in:
 
 ```text
-runs/2026-06-26-repair-search-5/best_candidate.json
+runs/2026-06-26-repair-search-5/top_candidates.json
 ```
 
 ## Top candidate bank
 
 Do not use only the single best candidate for the next run.
 
-The compact top candidate bank is saved in:
-
-```text
-runs/2026-06-26-repair-search-5/top_candidates.json
-```
-
-It contains all 20 shard-best summaries and representative candidates with full `vertices2` data from shards `4`, `17`, `12`, `13`, `18`, `16`, `2`, and `9`.
+The compact top candidate bank saves the upper layer of useful candidates, not just one champion. It contains summaries for representative shards `4`, `17`, `12`, `13`, `18`, `16`, `2`, and `9`. Full candidate JSON files with `vertices2` remain in the original `repair-22-shard-*` GitHub Actions artifacts.
 
 This preserves several useful families:
 
@@ -114,7 +108,7 @@ The clear conclusion is that the C++ repair direction worked. The next run shoul
 - The local repair seed `57 / 64` was surpassed by the full GitHub repair run.
 - No complete `64 / 64` candidate was found.
 - The most stable new obstruction is `(3,1,1)`, `(3,1,2)`, `(3,1,3)`.
-- The next run should use `top_candidates.json` as seed material, not only `best_candidate.json`.
+- The next run should use `top_candidates.json` together with the original `repair-22-shard-*` artifacts as seed material, not only the single best result.
 - `repair56_target8`, `transition_penalty22`, `fractional_bridge22`, and `subcube_stitch22` deserve continued budget.
 - `rich_segment_catalog` and `integer_control22` are weaker here but useful as controls and for alternative defect shapes.
 
@@ -125,7 +119,6 @@ The next serious run should start from:
 - GitHub Actions artifacts of run `28200925016`;
 - `repair-run-summary`;
 - all `repair-22-shard-*` artifacts from that run;
-- `runs/2026-06-26-repair-search-5/best_candidate.json`;
 - `runs/2026-06-26-repair-search-5/top_candidates.json`.
 
 Prepared next focus:
