@@ -26,9 +26,9 @@ Important caution: a search result is not a proof. A partial candidate is eviden
 
 Read these in this order:
 
-1. `START_HERE.md` — this file.
+1. `START_HERE.md` — this file; top-level memory of the whole project.
 2. `frontier/latest.md` and `frontier/latest.json` — current best frontier and latest useful run.
-3. The latest relevant workflow in `.github/workflows/` — current executable recipe for the next or completed run.
+3. The relevant workflow in `.github/workflows/` — for a completed run, read the workflow that launched that run; for a new run, read the current or prepared workflow. Do not assume the newest workflow is automatically the right one for an old run.
 4. `docs/*-plan.md` and `docs/web-chat-memento-prompts.md` — current planning notes and web-chat operating prompts.
 5. `candidates/bank.jsonl` — global candidate bank / reusable seed memory.
 6. The latest relevant folder in `runs/` — saved summaries, best candidates, and top candidates.
@@ -37,8 +37,35 @@ Read these in this order:
 Short invariant:
 
 ```text
-START_HERE → frontier → workflow → plans → bank → runs/artifacts → action
+START_HERE → frontier → relevant workflow → plans → bank → runs/artifacts → action
 ```
+
+## What START_HERE is, and what workflow is
+
+`START_HERE.md` is the global project memory. It answers: what is this project, what is the current frontier, where is the candidate bank, which workflow is currently prepared, and what is the next strategic direction.
+
+A workflow file is not the global project memory. A workflow is the executable recipe and local memory for one search line or one completed run. It answers: what inputs were used, which old artifacts were downloaded, how many shards and threads were launched, what artifacts were saved, and what candidate-saving threshold applied.
+
+So the rule is:
+
+```text
+START_HERE tells where we are.
+The relevant workflow tells how that particular run works.
+```
+
+## Maintenance rule for this file
+
+Update `START_HERE.md` after every useful run or important preparation step if any of these changed:
+
+- current best frontier;
+- latest useful run id;
+- current best candidate or missing points;
+- prepared next workflow;
+- full-run parameters;
+- candidate-saving rule;
+- main next mathematical strategy.
+
+If nothing important changed, say that `START_HERE.md` was checked and did not need an update.
 
 ## Current frontier to remember
 
@@ -166,13 +193,15 @@ Use this style when the user says a run has finished:
 ```text
 Прогон завершился: <ссылка на GitHub Actions run>.
 
-Сначала открой START_HERE.md, затем workflow, которым был запущен этот run, и следуй правилам из него.
+Сначала открой START_HERE.md, чтобы понять текущее состояние проекта. Затем открой workflow, которым был запущен этот run, и следуй правилам из него. Не подменяй workflow завершенного run самым новым workflow.
 
 Сними результаты: проверь jobs, logs и artifacts; найди лучшее покрытие из 64, links, mode, source artifact и пропущенные точки.
 
 Сравни с frontier/latest.md, frontier/latest.json, последними runs/ и candidates/bank.jsonl.
 
 Сохрани результаты по правилам workflow: кандидатов-чемпионов для frontier, лучших оригинальных кандидатов этого run в runs/, всех новых уникальных кандидатов выше порога — в candidates/bank.jsonl.
+
+Обнови START_HERE.md, если изменился текущий frontier, актуальный следующий workflow или главный следующий шаг.
 
 В конце коротко скажи: что дал прогон, сколько кандидатов какого уровня найдено, какой режим что дал, какие точки остались проблемными, что записано в GitHub и какой следующий шаг лучше для поиска 64/64.
 ```
@@ -184,15 +213,13 @@ Use this style when the user asks to prepare the next run:
 ```text
 Подготовь следующий умный прогон smart-search-<следующий номер>-<1-2 слова>.
 
-Сначала открой START_HERE.md, затем последний релевантный workflow и следуй его правилам.
+Сначала открой START_HERE.md, чтобы понять текущее состояние проекта. Затем открой актуальный workflow, frontier/latest.md, frontier/latest.json, последние runs/, candidates/bank.jsonl, планы в docs/ и artifacts последних полезных запусков.
 
-Изучи frontier/latest.md, frontier/latest.json, последние runs/, candidates/bank.jsonl, docs/*-plan.md и artifacts последнего полезного run.
+Новый прогон не должен начинаться с нуля. Он должен использовать старые данные: лучшие кандидаты, общий банк кривых, artifacts, частые пропущенные точки, defect patterns и выводы прошлых прогонов.
 
-Новый прогон не должен стартовать с нуля. Он должен использовать старые данные: лучшие кандидаты, общий банк кривых, artifacts, частые пропущенные точки, defect patterns и выводы прошлых запусков.
+Цель нового прогона — умнее приблизиться к 64/64: закрыть оставшиеся дырки, отремонтировать лучшие 22-звенные кандидаты или проверить новую математическую идею на основе прошлых неудач.
 
-Цель нового прогона — приблизиться к 64/64 умнее, чем прошлый: закрыть оставшиеся дырки, отремонтировать лучшие 22-звенные кандидаты или проверить новую математическую идею на основе прошлых неудач.
-
-Если нужно, обнови workflow/C++/Python-код. Новый workflow делай ручным workflow_dispatch, без trigger on push. Сначала подготовь безопасный smoke-test, затем дай точные параметры полного запуска на 20 jobs × 4 threads примерно на 5ч50м.
+Если нужно, обнови START_HERE.md как главную память проекта, а также workflow/C++/Python-код. Новый workflow делай ручным workflow_dispatch, без trigger on push. Сначала подготовь безопасный smoke-test, затем дай точные параметры полного запуска на 20 jobs × 4 threads примерно на 5ч50м.
 ```
 
 ## How to explain progress to the user
