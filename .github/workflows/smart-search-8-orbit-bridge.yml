@@ -18,6 +18,10 @@
 name: smart-search-8-orbit-bridge
 run-name: smart-search-8-orbit-bridge
 
+permissions:
+  contents: read
+  actions: read
+
 on:
   workflow_dispatch:
     inputs:
@@ -95,11 +99,29 @@ jobs:
           python-version: "3.11"
       - name: Download previous useful artifacts
         run: |
+          set +e
           mkdir -p seed-material/base-repair-artifacts seed-material/secondary-artifacts seed-material/old-59-artifacts seed-material/latest-artifacts
-          gh run download "$BASE_REPAIR_RUN_ID" --dir seed-material/base-repair-artifacts
-          gh run download "$SECONDARY_RUN_ID" --dir seed-material/secondary-artifacts
-          gh run download "$OLD_59_RUN_ID" --dir seed-material/old-59-artifacts
-          gh run download "$PRIOR_RUN_ID" --dir seed-material/latest-artifacts
+
+          download_all() {
+            local run_id="$1"
+            local out_dir="$2"
+            local label="$3"
+            echo "Downloading artifacts for $label: run $run_id -> $out_dir"
+            gh run download "$run_id" --dir "$out_dir"
+            local rc=$?
+            if [ "$rc" -ne 0 ]; then
+              echo "::warning::Could not download all artifacts for $label from run $run_id. Continuing with repository seed files and any artifacts that are available."
+            fi
+            return 0
+          }
+
+          download_all "$BASE_REPAIR_RUN_ID" seed-material/base-repair-artifacts base-repair
+          download_all "$SECONDARY_RUN_ID" seed-material/secondary-artifacts secondary-59-smoke
+          download_all "$OLD_59_RUN_ID" seed-material/old-59-artifacts old-59-full
+          download_all "$PRIOR_RUN_ID" seed-material/latest-artifacts latest-core5-full
+
+          echo "Artifact directories after best-effort download:"
+          find seed-material -maxdepth 2 -type f | sort | head -200 || true
       - name: Export candidate memory into seed JSON files
         run: |
           python scripts/export_candidate_bank_jsons.py \
