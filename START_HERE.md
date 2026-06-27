@@ -26,13 +26,13 @@ Important caution: a search result is not a proof. A partial candidate is eviden
 
 Read these in this order:
 
-1. `START_HERE.md` — this file; top-level memory of the whole project.
+1. `START_HERE.md` — this file.
 2. `frontier/latest.md` and `frontier/latest.json` — current best frontier and latest useful run.
-3. The relevant workflow in `.github/workflows/` — for a completed run, read the workflow that launched that run; for a new run, read the current or prepared workflow. Do not assume the newest workflow is automatically the right one for an old run.
-4. `docs/*-plan.md` and `docs/web-chat-memento-prompts.md` — current planning notes and web-chat operating prompts.
+3. The relevant workflow in `.github/workflows/` — for a completed run, read the workflow that launched that run. Do not assume the newest workflow is automatically the right one for an old run.
+4. `docs/*-plan.md` and `docs/web-chat-memento-prompts.md` — planning notes and web-chat operating prompts.
 5. `candidates/bank.jsonl` — global candidate bank / reusable seed memory.
-6. The latest relevant folder in `runs/` — saved summaries, best candidates, and top candidates.
-7. GitHub Actions artifacts of the latest useful runs, when analyzing or preparing computation.
+6. The latest relevant folder in `runs/`.
+7. GitHub Actions artifacts of the latest useful runs.
 
 Short invariant:
 
@@ -44,7 +44,7 @@ START_HERE → frontier → relevant workflow → plans → bank → runs/artifa
 
 `START_HERE.md` is the global project memory. It answers: what is this project, what is the current frontier, where is the candidate bank, which workflow is currently prepared, and what is the next strategic direction.
 
-A workflow file is not the global project memory. A workflow is the executable recipe and local memory for one search line or one completed run. It answers: what inputs were used, which old artifacts were downloaded, how many shards and threads were launched, what artifacts were saved, and what candidate-saving threshold applied.
+A workflow file is not the global project memory. A workflow is the executable recipe and local memory for one search line or one completed run.
 
 So the rule is:
 
@@ -53,27 +53,13 @@ START_HERE tells where we are.
 The relevant workflow tells how that particular run works.
 ```
 
-## Maintenance rule for this file
-
-Update `START_HERE.md` after every useful run or important preparation step if any of these changed:
-
-- current best frontier;
-- latest useful run id;
-- current best candidate or missing points;
-- prepared next workflow;
-- full-run parameters;
-- candidate-saving rule;
-- main next mathematical strategy.
-
-If nothing important changed, say that `START_HERE.md` was checked and did not need an update.
-
 ## Current frontier to remember
 
 Latest useful completed full run recorded in `frontier/latest.md`:
 
 ```text
-run id: 28275850889
-workflow: smart-search-6-defect
+run id: 28292425390
+workflow: smart-search-7-core5
 status: success
 seconds per shard: 21000
 threads per shard: 4
@@ -86,79 +72,98 @@ missing count: 5
 Best recorded candidate:
 
 ```text
-candidate id: mlct22-278a7d8dc1d65f25
-source artifact: defect-22-shard-6
-mode: fractional_bridge22
-saved at: runs/2026-06-27-smart-search-6-defect-full/best_candidate.json
-reusable copy: candidates/mlct22-278a7d8dc1d65f25-run28275850889.json
+candidate id: mlct22-a584fa7e488e0279
+source artifact: core5-22-shard-15
+mode: subcube_stitch22
+saved at: runs/2026-06-27-smart-search-7-core5-full/best_candidate.json
+reusable copy: candidates/mlct22-a584fa7e488e0279-run28292425390.json
 ```
 
 Missing points for the selected best candidate:
 
 ```text
-(1, 2, 2)
-(2, 0, 2)
-(2, 0, 3)
-(3, 1, 2)
+(0, 1, 0)
+(1, 2, 3)
+(2, 1, 0)
+(3, 1, 1)
 (3, 1, 3)
 ```
 
-Dominant recurring defect core from the full 20-shard run:
+Important comparison:
+
+The previous selected 59/64 best from run `28275850889` missed:
 
 ```text
-(1,2,2), (2,0,2), (2,0,3), (3,1,0), (3,1,2)
+(1,2,2), (2,0,2), (2,0,3), (3,1,2), (3,1,3)
 ```
 
-Important observation: all major modes reached `59/64`, but none reached `60/64` or `64/64`. So the next improvement probably needs a better repair idea, not only more of the same search.
+The new selected 59/64 best from run `28292425390` misses a different set. So the numeric frontier did not improve beyond `59/64`, but we now have more than one useful 59/64 defect orbit. This is valuable evidence for the next search.
+
+Dominant recurring defect patterns from run `28292425390`:
+
+```text
+13/20: (1,2,1), (2,1,2), (2,2,3), (3,1,0), (3,1,3)
+4/20:  (0,1,0), (1,2,3), (2,1,0), (3,1,1), (3,1,3)
+2/20:  (1,2,2), (2,0,2), (2,0,3), (3,1,0), (3,1,2)
+1/20:  (0,2,2), (2,1,2), (2,2,3), (3,1,0), (3,1,2)
+```
+
+Important observation: all 20 shard-best artifacts reached `59/64`, and all major modes represented in this run reached `59/64`, but none reached `60/64` or `64/64`. The next improvement probably needs a new repair idea, not simply another identical core5 run.
 
 ## Current next workflow
 
-Prepared next workflow:
+No new workflow has been prepared yet after analyzing run `28292425390`.
+
+Recommended next workflow to prepare:
 
 ```text
-.github/workflows/smart-search-7-core5.yml
+.github/workflows/smart-search-8-orbit-bridge.yml
 ```
 
-Workflow name:
+Recommended workflow name:
 
 ```text
-smart-search-7-core5
+smart-search-8-orbit-bridge
 ```
 
 Purpose:
 
-Repair the stable 5-point defect core of the `59/64` frontier using old artifacts, the candidate bank, exact checking, and transition-aware local repair windows.
+Compare and bridge the distinct `59/64` defect orbits from runs `28275850889` and `28292425390`. The search should try to combine what each orbit covers well, with targeted local surgery around the shared hard region near `(3,1,3)` and the `x=3,y=1` transition zone.
 
 It should not start from zero. It should use:
 
 ```text
-prior_run_id: 28275850889        # latest full 59/64 run
-secondary_run_id: 28275666411    # previous 59/64 smoke run
-base_repair_run_id: 28200925016  # earlier 58/64 repair run
+prior_run_id: 28292425390          # latest full core5 run with new 59/64 orbit
+old_59_run_id: 28275850889         # previous full 59/64 run with old defect core
+secondary_run_id: 28275666411      # previous 59/64 smoke run
+base_repair_run_id: 28200925016    # earlier 58/64 repair run
 candidates/bank.jsonl
+candidates/bank-additions-run28292425390.jsonl
+runs/2026-06-27-smart-search-7-core5-full/
 runs/2026-06-27-smart-search-6-defect-full/
 runs/2026-06-26-repair-search-5/
 experiments/2026-06-25-repair57-local-smoke/
 ```
 
-Default smoke-test parameters:
+Suggested smoke-test parameters:
 
 ```text
 seconds: 180
 threads: 4
-seed: 20260628
+seed: 20260629
 min_covered_to_save: 56
 jobs/shards: 20
 max-parallel: 20
 ```
 
-Full serious-run parameters:
+Suggested full serious-run parameters:
 
 ```text
 seconds: 21000
 threads: 4
-seed: 20260628
-prior_run_id: 28275850889
+seed: 20260629
+prior_run_id: 28292425390
+old_59_run_id: 28275850889
 secondary_run_id: 28275666411
 base_repair_run_id: 28200925016
 min_covered_to_save: 56
@@ -171,10 +176,10 @@ Important: workflows for expensive searches should be manual `workflow_dispatch`
 
 ## Candidate-saving rules
 
-There are three different candidate layers:
+There are three candidate layers:
 
 1. Per-run champion candidate: one or several best candidates from a run, saved for easy reference in `frontier/latest.*`.
-2. Per-run top candidates: useful best candidates from that particular run, saved under that run folder, for example `runs/.../top_candidates.json`.
+2. Per-run top candidates: useful best candidates from that particular run, saved under that run folder.
 3. Global candidate bank: `candidates/bank.jsonl`, the reusable seed memory across runs.
 
 Normal bank threshold unless the workflow says otherwise:
@@ -184,7 +189,16 @@ covered_count >= 56
 links <= 22
 ```
 
-Do not only save the single best candidate. Merge all new unique eligible candidates into `candidates/bank.jsonl` using `scripts/merge_candidate_bank.py` or the same canonical idea: coordinate permutations, cube reflections, and trail reversal.
+Do not only save the single best candidate. Merge all new unique eligible candidates into reusable seed memory using `scripts/merge_candidate_bank.py` or the same canonical idea: coordinate permutations, cube reflections, and trail reversal.
+
+For run `28292425390`, the 6 unique eligible candidates were saved in:
+
+```text
+candidates/bank-additions-run28292425390.jsonl
+candidates/bank-additions-run28292425390.summary.json
+```
+
+These additions must be included as seed material in the next run even if `candidates/bank.jsonl` has not yet been physically merged.
 
 ## Standard command: analyze a completed run
 
@@ -199,7 +213,7 @@ Use this style when the user says a run has finished:
 
 Сравни с frontier/latest.md, frontier/latest.json, последними runs/ и candidates/bank.jsonl.
 
-Сохрани результаты по правилам workflow: кандидатов-чемпионов для frontier, лучших оригинальных кандидатов этого run в runs/, всех новых уникальных кандидатов выше порога — в candidates/bank.jsonl.
+Сохрани результаты по правилам workflow: кандидатов-чемпионов для frontier, лучших оригинальных кандидатов этого run в runs/, всех новых уникальных кандидатов выше порога — в reusable candidate memory.
 
 Обнови START_HERE.md, если изменился текущий frontier, актуальный следующий workflow или главный следующий шаг.
 
@@ -242,16 +256,14 @@ When explaining results, say:
 
 Do not merely search wider.
 
-The current frontier is a stable `59/64`, 22-link partial candidate. The useful direction is to understand and repair the final defect core, especially around:
-
-```text
-(1,2,2), (2,0,2), (2,0,3), (3,1,0), (3,1,2), with variant (3,1,3)
-```
+The current frontier is still `59/64`, 22 links, but now there are multiple useful `59/64` defect orbits. The next search should not target only one missing set. It should compare or bridge the old and new 59/64 candidates.
 
 Prioritize:
 
 - local repair of good 22-link candidates;
-- defect-set analysis;
+- comparison of distinct 59/64 defect orbits;
+- defect-set analysis around `(3,1,3)`;
+- transition repair in the `x=3,y=1` region;
 - rich 3-point and 4-point segment skeletons;
 - transition penalties between rich segments;
 - half-integer or outside vertices only as targeted local tools;
