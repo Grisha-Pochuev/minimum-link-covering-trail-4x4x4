@@ -1,6 +1,10 @@
 # Web-chat operating rule:
 # This workflow is for explicit manual launches from ChatGPT/web-chat work.
 # It is not triggered on push, so commits that prepare the run do not silently burn GitHub Actions time.
+# Naming rule for future smart runs:
+# every new serious search workflow should be named smart-search-<next-number>-<short-tag>.
+# Examples: smart-search-7-repair, smart-search-7-defect, smart-search-8-bridge.
+# The short tag should be one or two words describing the main idea of the run.
 
 name: smart-search-6-defect
 run-name: smart-search-6-defect
