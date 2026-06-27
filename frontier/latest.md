@@ -6,131 +6,130 @@ It records the latest useful GitHub Actions run whose artifacts should be used a
 
 ## Current status
 
-Status: latest completed smart search analyzed and recorded. A new local pre-launch repair seed has also been recorded.
+Status: latest completed repair search analyzed and recorded.
 
 Latest useful completed run:
 
 - Repository: `Grisha-Pochuev/minimum-link-covering-trail-4x4x4`
-- Final run id: `28103660449`
-- Run URL: https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/28103660449
-- Workflow: `smart-search-4`
-- Commit SHA: `585556feb5c6bcc9dadc74b4ce875caad66ae481`
+- Final run id: `28200925016`
+- Run URL: https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/28200925016
+- Workflow: `repair-search-5`
+- Commit SHA: `960b3c357689eecd1378b2c0affe59bd6bd73573`
 - Status: `success`
-- Duration: core search `20400` seconds per shard, about 5h 40m
+- Duration: core search `21000` seconds per shard, about 5h 50m
 - Result type: heuristic search, not a proof
-- Artifact set: `smart-run-summary`, `smart-22-shard-*`
+- Artifact set: `repair-run-summary`, `repair-22-shard-*`
 
 ## Parameters
 
-- seconds: `20400`
-- workers: `4` per shard
-- top_k: `64`
-- shards: `16`
-- seed: `28103660449`
-- prior run id used by this run: `28059258009`
-- prior seed count: `9`
+- seconds: `21000`
+- threads: `4` per shard
+- shards: `20`
+- max parallel jobs: `20`
+- seed: `28200925016`
+- prior run id used by this run: `28103660449`
 - coordinate scale: `2`
-- prior best values loaded by shards: `[56, 56, 56, 56, 56, 56, 56, 56]`
+- engine: `cpp/repair56_search.cpp`
+- checker: `scripts/check_scaled_trail.py`
 
 ## Best GitHub Actions run result
 
-Best known result after GitHub Actions run `28103660449`:
+Best known result after GitHub Actions run `28200925016`:
 
-- covered_count: `56 / 64`
-- coverage percent: `87.5%`
+- covered_count: `58 / 64`
+- coverage percent: `90.625%`
 - links: `22`
 - links target: `22`
-- mode selected by summary: `targeted_warm22`
-- tied strong modes: `warm22`, `targeted_warm22`
+- mode selected by summary: `repair56_target8`
 - status: `partial_candidate`
-- missing count: `8`
+- missing count: `6`
 - missing:
-  - `(1, 0, 0)`
+  - `(1, 1, 0)`
   - `(1, 2, 1)`
-  - `(1, 2, 2)`
-  - `(1, 2, 3)`
-  - `(2, 0, 1)`
-  - `(2, 1, 0)`
-  - `(3, 0, 2)`
-  - `(3, 0, 3)`
-
-The best GitHub Actions candidate is still partial. It has exactly 22 links and covers 56 of the 64 grid points. This is not a complete covering trail and not a proof.
-
-## New local pre-launch repair seed
-
-A short local smoke test of the new C++ repair engine found a stronger partial candidate:
-
-- source: `experiments/2026-06-25-repair57-local-smoke/repair57_candidate.json`
-- covered_count: `57 / 64`
-- coverage percent: `89.0625%`
-- links: `22`
-- mode: `repair56_target8`
-- status: `partial_candidate`
-- missing count: `7`
-- missing:
-  - `(1, 2, 1)`
-  - `(1, 2, 2)`
-  - `(1, 2, 3)`
   - `(2, 1, 0)`
   - `(3, 1, 1)`
   - `(3, 1, 2)`
   - `(3, 1, 3)`
 
-This local seed has been checked by exact integer collinearity with `scripts/check_scaled_trail.py`. It is not yet a full GitHub Actions run result, but it should be used by the next repair search as seed material.
+The best GitHub Actions candidate is still partial. It has exactly 22 links and covers 58 of the 64 grid points. This is not a complete covering trail and not a proof.
 
-## Top recurring missing points from run 28103660449
+The best candidate is saved in:
 
-Counted over the 80 JSON result files from this run: 16 shard best files plus 64 worker files.
+```text
+runs/2026-06-26-repair-search-5/best_candidate.json
+```
 
-- `(1, 2, 3)`: 57 / 80
-- `(3, 0, 2)`: 53 / 80
-- `(2, 0, 1)`: 52 / 80
-- `(1, 2, 1)`: 51 / 80
-- `(1, 0, 0)`: 50 / 80
-- `(1, 2, 2)`: 50 / 80
-- `(3, 0, 3)`: 50 / 80
-- `(2, 1, 0)`: 48 / 80
-- `(1, 0, 1)`: 22 / 80
-- `(3, 2, 3)`: 19 / 80
-- `(3, 0, 1)`: 18 / 80
-- `(0, 2, 2)`: 18 / 80
-- `(0, 2, 0)`: 18 / 80
-- `(1, 0, 3)`: 17 / 80
-- `(1, 0, 2)`: 14 / 80
-- `(0, 2, 3)`: 14 / 80
-- `(1, 1, 2)`: 14 / 80
-- `(2, 2, 1)`: 14 / 80
-- `(3, 2, 0)`: 14 / 80
-- `(3, 2, 2)`: 14 / 80
+## Top candidate bank
 
-## Which modes worked best in run 28103660449
+Do not use only the single best candidate for the next run.
 
-- `targeted_warm22`: best 56/64, average 56.0/64 over 8 worker results; distribution {56: 8}
-- `warm22`: best 56/64, average 56.0/64 over 24 worker results; distribution {56: 24}
-- `layer_cube22`: best 48/64, average 46.38/64 over 8 worker results; distribution {45: 2, 46: 2, 47: 3, 48: 1}
-- `integer22_control`: best 47/64, average 47.0/64 over 4 worker results; distribution {47: 4}
-- `catalog22`: best 47/64, average 46.25/64 over 8 worker results; distribution {45: 2, 46: 2, 47: 4}
-- `fractional22`: best 46/64, average 45.5/64 over 8 worker results; distribution {45: 4, 46: 4}
-- `strict21`: best 41/64, average 40.75/64 over 4 worker results; distribution {40: 1, 41: 3}
+The compact top candidate bank is saved in:
 
-The clear winners remain `warm22` and `targeted_warm22`. They reached `56/64` across all their worker results. The new C++ `repair56_target8` direction has now produced a local `57/64` seed and should be tested in a full GitHub Actions run.
+```text
+runs/2026-06-26-repair-search-5/top_candidates.json
+```
+
+It contains all 20 shard-best summaries and representative candidates with full `vertices2` data from shards `4`, `17`, `12`, `13`, `18`, `16`, `2`, and `9`.
+
+This preserves several useful families:
+
+- `58/64` repair candidates;
+- `58/64` transition-penalty candidates;
+- `58/64` fractional/subcube candidates;
+- diverse `57/64` candidates with different defect geometry.
+
+## Top recurring missing points from run 28200925016
+
+Counted over the 20 shard-best JSON result files:
+
+- `(3, 1, 1)`: 20 / 20
+- `(3, 1, 2)`: 20 / 20
+- `(3, 1, 3)`: 20 / 20
+- `(2, 1, 0)`: 18 / 20
+- `(1, 1, 0)`: 15 / 20
+- `(1, 2, 1)`: 12 / 20
+- `(1, 2, 3)`: 12 / 20
+- `(1, 2, 2)`: 5 / 20
+- `(2, 0, 0)`: 2 / 20
+- `(0, 0, 0)`: 1 / 20
+- `(0, 1, 0)`: 1 / 20
+- `(2, 3, 0)`: 1 / 20
+
+The new hard core is the vertical triple `(3,1,1)`, `(3,1,2)`, `(3,1,3)`: it appears as missing in every shard-best candidate.
+
+## Which modes worked best in run 28200925016
+
+- `transition_penalty22`: best `58/64`, average `58.0/64` over 3 results.
+- `repair56_target8`: best `58/64`, average `57.875/64` over 8 results.
+- `subcube_stitch22`: best `58/64`, average `58.0/64` over 1 result.
+- `fractional_bridge22`: best `58/64`, average `57.667/64` over 3 results.
+- `rich_segment_catalog`: best `57/64`, average `57.0/64` over 4 results.
+- `integer_control22`: best `57/64`, average `57.0/64` over 1 result.
+
+The clear conclusion is that the C++ repair direction worked. The next run should repair around the new 6-point defect set, not go back to broad warm search.
 
 ## What became clear for the next run
 
-- The numerical best GitHub Actions result stayed `56 / 64`.
-- The local repair seed improved the working candidate to `57 / 64`.
-- The defect evidence improved: the same 8 missing points from run `28103660449` were reproduced very strongly.
-- The new run should not just repeat warm search. It should focus on local repair of the 8-point defect set and use the local `57/64` seed.
-- `repair-search-5` should use artifacts from run `28103660449` and `experiments/2026-06-25-repair57-local-smoke/repair57_candidate.json` as seed material.
-- `strict21` is still only reconnaissance.
+- The official GitHub Actions frontier improved from `56 / 64` to `58 / 64`.
+- The local repair seed `57 / 64` was surpassed by the full GitHub repair run.
+- No complete `64 / 64` candidate was found.
+- The most stable new obstruction is `(3,1,1)`, `(3,1,2)`, `(3,1,3)`.
+- The next run should use `top_candidates.json` as seed material, not only `best_candidate.json`.
+- `repair56_target8`, `transition_penalty22`, `fractional_bridge22`, and `subcube_stitch22` deserve continued budget.
+- `rich_segment_catalog` and `integer_control22` are weaker here but useful as controls and for alternative defect shapes.
 
 ## Next run seed source
 
 The next serious run should start from:
 
-- GitHub Actions artifacts of run `28103660449`;
-- `smart-run-summary`;
-- all `smart-22-shard-*` artifacts from that run;
-- local repair seed `experiments/2026-06-25-repair57-local-smoke/repair57_candidate.json`.
+- GitHub Actions artifacts of run `28200925016`;
+- `repair-run-summary`;
+- all `repair-22-shard-*` artifacts from that run;
+- `runs/2026-06-26-repair-search-5/best_candidate.json`;
+- `runs/2026-06-26-repair-search-5/top_candidates.json`.
 
-The prepared workflow is `.github/workflows/repair-search-5.yml`.
+Prepared next focus:
+
+```text
+repair the new 6-point defect patterns, especially the vertical triple at x=3, y=1.
+```
