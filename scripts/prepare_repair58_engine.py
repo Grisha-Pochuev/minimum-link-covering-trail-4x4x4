@@ -43,7 +43,7 @@ def main() -> int:
     # Keep more diverse bank seeds now that candidates/bank.jsonl is exported into seed JSON files.
     text = text.replace("if (seeds.size() > 256) seeds.resize(256);", "if (seeds.size() > 512) seeds.resize(512);")
     text = text.replace("repair56_search parameters:", "repair58_defect_search parameters:")
-    text = text.replace('\"schema\": \"repair-mlct-shard-v1\"', '\"schema\": \"repair58-defect-shard-v1\"')
+    text = text.replace(r'\"schema\": \"repair-mlct-shard-v1\"', r'\"schema\": \"repair58-defect-shard-v1\"')
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(text)
     print(f"wrote {out} with new 6-point target defects and smart mode allocation")
