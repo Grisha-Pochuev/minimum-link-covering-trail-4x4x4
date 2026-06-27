@@ -63,14 +63,15 @@ runs/2026-06-26-repair-search-5/top_candidates.json
 
 Do not use only the single best candidate for the next run.
 
-The compact top candidate bank saves the upper layer of useful candidates, not just one champion. It contains summaries for representative shards `4`, `17`, `12`, `13`, `18`, `16`, `2`, and `9`. Full candidate JSON files with `vertices2` remain in the original `repair-22-shard-*` GitHub Actions artifacts.
+The compact top candidate bank now stores all available shard-best candidates from this completed run:
 
-This preserves several useful families:
+- `13` candidates with `58/64`;
+- `7` candidates with `57/64`;
+- `0` candidates with `56/64` were available in this run artifact set, because the completed workflow preserved only one best JSON per shard.
 
-- `58/64` repair candidates;
-- `58/64` transition-penalty candidates;
-- `58/64` fractional/subcube candidates;
-- diverse `57/64` candidates with different defect geometry.
+Future runs should save every candidate at `58/64`, `57/64`, and `56/64` when produced, not only the shard-best champion. This lower belt may contain repair material that a later run can improve.
+
+Full candidate JSON files with `vertices2` remain in the original `repair-22-shard-*` GitHub Actions artifacts.
 
 ## Top recurring missing points from run 28200925016
 
@@ -109,6 +110,7 @@ The clear conclusion is that the C++ repair direction worked. The next run shoul
 - No complete `64 / 64` candidate was found.
 - The most stable new obstruction is `(3,1,1)`, `(3,1,2)`, `(3,1,3)`.
 - The next run should use `top_candidates.json` together with the original `repair-22-shard-*` artifacts as seed material, not only the single best result.
+- The next workflow should preserve every found candidate at `58/64`, `57/64`, and `56/64`.
 - `repair56_target8`, `transition_penalty22`, `fractional_bridge22`, and `subcube_stitch22` deserve continued budget.
 - `rich_segment_catalog` and `integer_control22` are weaker here but useful as controls and for alternative defect shapes.
 
@@ -124,5 +126,5 @@ The next serious run should start from:
 Prepared next focus:
 
 ```text
-repair the new 6-point defect patterns, especially the vertical triple at x=3, y=1.
+repair the new 6-point defect patterns, especially the vertical triple at x=3, y=1, while preserving all candidates at 58/57/56 coverage tiers.
 ```
