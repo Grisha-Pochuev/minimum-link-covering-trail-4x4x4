@@ -69,7 +69,25 @@ The compact top candidate bank now stores all available shard-best candidates fr
 - `7` candidates with `57/64`;
 - `0` candidates with `56/64` were available in this run artifact set, because the completed workflow preserved only one best JSON per shard.
 
-Future runs should save every candidate at `58/64`, `57/64`, and `56/64` when produced, not only the shard-best champion. This lower belt may contain repair material that a later run can improve.
+## Candidate preservation rule for future runs
+
+Future workflows must use a threshold rule, not a fixed list of levels.
+
+For the next run, set:
+
+```text
+min_covered_to_save = 56
+```
+
+Then save every unique candidate with:
+
+```text
+covered_count >= min_covered_to_save
+```
+
+In plain words: save all `56/64` candidates and everyone above that level: `57/64`, `58/64`, `59/64`, ..., up to a possible full `64/64`.
+
+This lower belt may contain repair material that a later run can improve. The workflow should not keep only the shard-best champion.
 
 Full candidate JSON files with `vertices2` remain in the original `repair-22-shard-*` GitHub Actions artifacts.
 
@@ -110,7 +128,7 @@ The clear conclusion is that the C++ repair direction worked. The next run shoul
 - No complete `64 / 64` candidate was found.
 - The most stable new obstruction is `(3,1,1)`, `(3,1,2)`, `(3,1,3)`.
 - The next run should use `top_candidates.json` together with the original `repair-22-shard-*` artifacts as seed material, not only the single best result.
-- The next workflow should preserve every found candidate at `58/64`, `57/64`, and `56/64`.
+- The next workflow should preserve every unique candidate with `covered_count >= 56`, not only candidates exactly at `56`, `57`, and `58`.
 - `repair56_target8`, `transition_penalty22`, `fractional_bridge22`, and `subcube_stitch22` deserve continued budget.
 - `rich_segment_catalog` and `integer_control22` are weaker here but useful as controls and for alternative defect shapes.
 
@@ -126,5 +144,5 @@ The next serious run should start from:
 Prepared next focus:
 
 ```text
-repair the new 6-point defect patterns, especially the vertical triple at x=3, y=1, while preserving all candidates at 58/57/56 coverage tiers.
+repair the new 6-point defect patterns, especially the vertical triple at x=3, y=1, while preserving every unique candidate with covered_count >= 56.
 ```
