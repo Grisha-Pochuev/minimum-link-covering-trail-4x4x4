@@ -42,7 +42,7 @@ START_HERE → frontier → relevant workflow → plans → bank/additions/origi
 
 ## What START_HERE is, and what workflow is
 
-`START_HERE.md` is the global project memory. It answers: what is this project, what is the current frontier, where is the candidate bank, which workflow is currently prepared, and what is the next strategic direction.
+`START_HERE.md` is the global project memory. It answers: what is this project, what is the current frontier, where is the candidate bank, which workflow or next direction is current, and what is the next strategic direction.
 
 A workflow file is not the global project memory. A workflow is the executable recipe and local memory for one search line or one completed run.
 
@@ -58,8 +58,8 @@ The relevant workflow tells how that particular run works.
 Latest useful completed full run recorded in `frontier/latest.md`:
 
 ```text
-run id: 28292425390
-workflow: smart-search-7-core5
+run id: 28304497479
+workflow: smart-search-8-orbit-bridge
 status: success
 seconds per shard: 21000
 threads per shard: 4
@@ -69,117 +69,95 @@ links: 22
 missing count: 5
 ```
 
-Best recorded candidate:
+Best recorded candidate from this run:
 
 ```text
-candidate id: mlct22-a584fa7e488e0279
-source artifact: core5-22-shard-15
+candidate id: mlct22-9c80a2741db704ad
+source artifact: orbit-bridge-22-shard-10
 mode: subcube_stitch22
-saved at: runs/2026-06-27-smart-search-7-core5-full/best_candidate.json
-reusable copy: candidates/mlct22-a584fa7e488e0279-run28292425390.json
+saved at: runs/2026-06-28-smart-search-8-orbit-bridge-full/best_candidate.json
 ```
 
 Missing points for the selected best candidate:
 
 ```text
-(0, 1, 0)
-(1, 2, 3)
-(2, 1, 0)
-(3, 1, 1)
-(3, 1, 3)
+(0, 2, 2)
+(2, 1, 3)
+(2, 2, 3)
+(3, 1, 0)
+(3, 1, 2)
 ```
 
 Important comparison:
 
-The previous selected 59/64 best from run `28275850889` missed:
+The previous selected 59/64 best from run `28292425390` missed:
 
 ```text
-(1,2,2), (2,0,2), (2,0,3), (3,1,2), (3,1,3)
+(0,1,0), (1,2,3), (2,1,0), (3,1,1), (3,1,3)
 ```
 
-The new selected 59/64 best from run `28292425390` misses a different set. The numeric frontier did not improve beyond `59/64`, but we now have more than one useful 59/64 defect orbit. This is valuable evidence for the next search.
+The new selected 59/64 best from run `28304497479` misses a different set. The numeric frontier did not improve beyond `59/64`, but the run changed the defect picture: `(3,1,3)` appears only `2/20` times instead of being the dominant hard point.
 
-Dominant recurring defect patterns from run `28292425390`:
+Dominant recurring defect patterns from run `28304497479`:
 
 ```text
-13/20: (1,2,1), (2,1,2), (2,2,3), (3,1,0), (3,1,3)
-4/20:  (0,1,0), (1,2,3), (2,1,0), (3,1,1), (3,1,3)
-2/20:  (1,2,2), (2,0,2), (2,0,3), (3,1,0), (3,1,2)
-1/20:  (0,2,2), (2,1,2), (2,2,3), (3,1,0), (3,1,2)
+11/20: (0,2,2), (2,1,3), (2,2,3), (3,1,0), (3,1,2)
+7/20:  (1,0,1), (1,2,2), (1,3,2), (2,0,3), (2,2,2)
+2/20:  (1,2,1), (2,1,2), (2,2,3), (3,1,0), (3,1,3)
 ```
 
-Important observation: all 20 shard-best artifacts reached `59/64`, and all major modes represented in this run reached `59/64`, but none reached `60/64` or `64/64`. The next improvement probably needs a new repair idea, not simply another identical core5 run.
+Important observation: all 20 shard-best artifacts reached `59/64`, but none reached `60/64` or `64/64`. `smart-search-8-orbit-bridge` did not break the frontier; it moved the obstruction. The next improvement probably needs a specialized repair of the new A/B defect families, not simply another identical orbit-bridge run.
 
-## Current prepared workflow
+## Current next direction
 
-The next workflow is now prepared:
+No new workflow has been prepared yet after analyzing run `28304497479`.
 
-```text
-.github/workflows/smart-search-8-orbit-bridge.yml
-```
-
-Workflow name:
+Recommended next workflow name:
 
 ```text
-smart-search-8-orbit-bridge
-```
-
-Supporting files prepared:
-
-```text
-scripts/prepare_orbit_bridge_engine.py
-docs/smart-search-8-orbit-bridge-plan.md
+smart-search-9-new-defect-repair
 ```
 
 Purpose:
 
-Compare and bridge the distinct `59/64` defect orbits from runs `28275850889` and `28292425390`. The search should try to combine what each orbit covers well, with targeted local surgery around the shared hard point `(3,1,3)` and the `x=3,y=1` transition zone.
+Repair the new A/B defect patterns from run `28304497479`. Pattern A appeared `11/20`; pattern B appeared `7/20`. Keep `(3,1,3)` as a control point, but do not keep treating it as the only center: smart-search-8 mostly closed it and exposed a different obstruction.
 
-It should not start from zero. It should use:
+The next run should not start from zero. It should use:
 
 ```text
-prior_run_id: 28292425390          # latest full core5 run with new 59/64 orbit
-old_59_run_id: 28275850889         # previous full 59/64 run with old defect core
-secondary_run_id: 28275666411      # previous 59/64 smoke run
-base_repair_run_id: 28200925016    # earlier 58/64 repair run
+prior_run_id: 28304497479           # latest full orbit-bridge run with new A/B defects
+previous_core5_run_id: 28292425390  # prior 59/64 run, old selected best had (3,1,3)
+old_59_run_id: 28275850889          # previous full 59/64 run with old defect core
+secondary_run_id: 28275666411       # previous 59/64 smoke run
+base_repair_run_id: 28200925016     # earlier 58/64 repair run
 candidates/bank.jsonl
+candidates/bank-additions-run28304497479.jsonl
 candidates/bank-additions-run28292425390.jsonl
-runs/2026-06-27-smart-search-7-core5-full/
-runs/2026-06-27-smart-search-6-defect-full/
-runs/2026-06-26-repair-search-5/
-experiments/2026-06-25-repair57-local-smoke/
-GitHub Actions artifacts from the listed runs, especially core5-22-shard-* from 28292425390
+runs/2026-06-28-smart-search-8-orbit-bridge-full/
+GitHub Actions artifacts from the listed runs, especially orbit-bridge-22-shard-* from 28304497479
 ```
 
-The 20 original shard-best candidates from run `28292425390` are preserved as GitHub Actions artifacts and are used through the downloaded `core5-22-shard-*` artifact folders. The persistent repo bank keeps symmetry-unique candidates; do not confuse that with the original per-shard artifact layer.
-
-Suggested smoke-test parameters:
+Suggested smoke-test parameters for the next prepared workflow:
 
 ```text
-workflow: smart-search-8-orbit-bridge
+workflow: smart-search-9-new-defect-repair
 seconds: 180
 threads: 4
-seed: 20260629
-prior_run_id: 28292425390
-old_59_run_id: 28275850889
-secondary_run_id: 28275666411
-base_repair_run_id: 28200925016
+seed: new fixed seed or github.run_id
+prior_run_id: 28304497479
 min_covered_to_save: 56
 jobs/shards: 20
 max-parallel: 20
 ```
 
-Suggested full serious-run parameters:
+Suggested full serious-run parameters after the smoke-test succeeds:
 
 ```text
-workflow: smart-search-8-orbit-bridge
+workflow: smart-search-9-new-defect-repair
 seconds: 21000
 threads: 4
-seed: 20260629
-prior_run_id: 28292425390
-old_59_run_id: 28275850889
-secondary_run_id: 28275666411
-base_repair_run_id: 28200925016
+seed: new fixed seed or github.run_id
+prior_run_id: 28304497479
 min_covered_to_save: 56
 jobs/shards: 20
 max-parallel: 20
@@ -187,31 +165,6 @@ expected wall time: about 5h50m per shard
 ```
 
 Important: workflows for expensive searches should be manual `workflow_dispatch`, not automatic `push`, unless there is an explicit reason. Do not silently burn GitHub Actions time from a preparation commit.
-
-## Workflow robustness lesson from smart-search-8
-
-This is a known assistant failure mode, not just a random one-off.
-
-When preparing a new GitHub Actions workflow, the assistant may overfocus on the mathematical search idea and under-check operational fragility. The concrete failure from run `28303978510` was: all shard jobs failed before C++ generation/search because `gh run download` for old artifacts was a hard-failing step. The run died in under a minute; this was not a mathematical result.
-
-Rules for future workflow preparation:
-
-- Add explicit permissions when downloading artifacts:
-
-```yaml
-permissions:
-  contents: read
-  actions: read
-```
-
-- Treat old GitHub Actions artifacts as useful but fragile. They can be missing, expired, inaccessible, renamed, or intermittently fail to download.
-- Do not make the whole expensive search fail merely because one old artifact download failed, unless that artifact is absolutely required and no repository seed fallback exists.
-- Prefer best-effort artifact download wrappers: create the target directories, run `gh run download`, log a warning on failure, and continue with `candidates/bank.jsonl`, `bank-additions`, saved `runs/`, and whatever artifacts did download.
-- A smoke-test must verify more than the 23-link checker. It should reach artifact download, seed export, C++ generation, compilation, shard execution, result checking, artifact upload, and summary aggregation.
-- If a failed run used an old workflow commit, do not press `Re-run jobs` after fixing the workflow. Start a new manual workflow run from current `main`, otherwise GitHub may rerun the old broken commit.
-- In explanations to the user, distinguish clearly between: a workflow infrastructure failure, a smoke-test failure, and a real mathematical search result.
-
-For `smart-search-8-orbit-bridge`, the workflow was fixed after the failed run by adding `actions: read` and making the artifact downloads best-effort. After this fix, run a new smoke-test from the workflow page rather than rerunning failed jobs from the red run.
 
 ## Candidate-saving rules
 
@@ -233,15 +186,15 @@ Use it as seed fuel for future workflows. Do not treat it as a complete historic
 candidates/bank-additions-*.jsonl
 ```
 
-These files are append records from specific completed runs. They store new compact eligible candidates from that run, also symmetry-deduplicated, before or alongside merging into `candidates/bank.jsonl`.
+These files are append records from specific completed runs. They store compact eligible candidates from that run, also symmetry-deduplicated, before or alongside merging into `candidates/bank.jsonl`.
 
 Use them as seed fuel together with `candidates/bank.jsonl`, especially when the additions have not yet been physically merged into the main bank. Do not ignore them just because they are separate files.
 
-For run `28292425390`, the 6 unique eligible additions were saved in:
+For run `28304497479`, the 3 unique eligible additions are saved in:
 
 ```text
-candidates/bank-additions-run28292425390.jsonl
-candidates/bank-additions-run28292425390.summary.json
+candidates/bank-additions-run28304497479.jsonl
+candidates/bank-additions-run28304497479.summary.json
 ```
 
 ### 3. Original trail archive
@@ -256,36 +209,11 @@ This is the permanent scientific archive of original, non-deduplicated lomanaya/
 
 Do not collapse cube symmetries, reflections, coordinate permutations, or trail reversal here. Exact byte-identical duplicates may be compressed into one row with `source_occurrence_count`, `source_shards`, and `source_artifacts`, but do not lose the fact that several shards/runs found the same trail.
 
-For each completed useful run, create a file like:
-
-```text
-candidates/originals/run-<run_id>-<workflow_short_name>.jsonl
-```
-
-Example:
-
-```text
-candidates/originals/run-28292425390-smart-search-7-core5.jsonl
-```
-
-Also append/update one summary line in:
-
-```text
-candidates/originals/index.jsonl
-```
-
 Normal eligibility threshold for both compact memory and original archive unless the workflow says otherwise:
 
 ```text
 covered_count >= 56
 links <= 22
-```
-
-Each original-archive JSONL row should contain at least:
-
-```text
-schema, run_id, workflow, source_artifact, source_shard, candidate_id,
-covered_count, links, missing, coordinate_scale, vertices2
 ```
 
 Post-run saving rule:
@@ -327,8 +255,6 @@ Possible next actions include:
 - build an orbit/defect comparison workflow if several `59/64` families disagree on the missing set;
 - pause search and write a structural note if repeated failures point to a stable obstruction;
 - update banks/archives first if the run produced valuable candidates but the memory layer is incomplete.
-
-The assistant should make a reasoned recommendation based on the latest run, the compact bank, the original archive, prior runs, artifacts, and current frontier. The recommendation can be exploratory; it does not need to be a rigid recipe.
 
 ## Standard command: analyze a completed run
 
@@ -387,14 +313,14 @@ When explaining results, say:
 
 Do not merely search wider.
 
-The current frontier is still `59/64`, 22 links, but now there are multiple useful `59/64` defect orbits. The next search should not target only one missing set. It should compare or bridge the old and new 59/64 candidates.
+The current frontier is still `59/64`, 22 links, but now there are multiple useful `59/64` defect families. Run `28304497479` showed that targeting the old shared hard point `(3,1,3)` can mostly close it, but the obstruction moves into two new dominant 5-point patterns.
 
 Prioritize:
 
-- local repair of good 22-link candidates;
+- local repair of the new A/B 5-point defect patterns;
 - comparison of distinct 59/64 defect orbits;
-- defect-set analysis around `(3,1,3)`;
-- transition repair in the `x=3,y=1` region;
+- transition repair around `(3,1,0)`, `(3,1,2)`, `(2,2,3)`, `(2,1,3)`, `(0,2,2)`;
+- keeping `(3,1,3)` as a control point, not the only target;
 - rich 3-point and 4-point segment skeletons;
 - transition penalties between rich segments;
 - half-integer or outside vertices only as targeted local tools;
@@ -407,7 +333,8 @@ Low priority for now:
 - serious 21-link search;
 - broad free fractional search;
 - vague layer bonuses;
-- exact global proof search before local structure is understood.
+- exact global proof search before local structure is understood;
+- repeating `smart-search-8-orbit-bridge` unchanged.
 
 ## Human reminder
 
