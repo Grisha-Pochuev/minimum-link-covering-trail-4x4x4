@@ -215,40 +215,36 @@ For `smart-search-8-orbit-bridge`, the workflow was fixed after the failed run b
 
 ## Candidate-saving rules
 
-There are now two different candidate-memory layers. Do not mix them up.
+There are three concrete candidate-memory locations. They have two roles: compact search fuel and scientific original archive. Do not mix them up.
 
-### Compact working bank
-
-This is the small reusable search memory:
+### 1. Main compact working bank
 
 ```text
 candidates/bank.jsonl
+```
+
+This is the main small reusable search memory. It stores the best known eligible trail candidates from previous runs as symmetry-deduplicated representatives. Cube symmetries, coordinate permutations/reflections, trail reversal, and exact duplicates should be collapsed here.
+
+Use it as seed fuel for future workflows. Do not treat it as a complete historical archive.
+
+### 2. Run-level compact additions
+
+```text
 candidates/bank-additions-*.jsonl
 ```
 
-This layer should be symmetry-deduplicated and convenient for future workflows. It is fuel for the next search, not a full scientific archive.
+These files are append records from specific completed runs. They store new compact eligible candidates from that run, also symmetry-deduplicated, before or alongside merging into `candidates/bank.jsonl`.
 
-Normal compact-bank threshold unless the workflow says otherwise:
+Use them as seed fuel together with `candidates/bank.jsonl`, especially when the additions have not yet been physically merged into the main bank. Do not ignore them just because they are separate files.
 
-```text
-covered_count >= 56
-links <= 22
-```
-
-Merge new unique eligible candidates into this layer using `scripts/merge_candidate_bank.py` or the same canonical idea: coordinate permutations, cube reflections, and trail reversal.
-
-For run `28292425390`, the 6 unique eligible candidates were saved in:
+For run `28292425390`, the 6 unique eligible additions were saved in:
 
 ```text
 candidates/bank-additions-run28292425390.jsonl
 candidates/bank-additions-run28292425390.summary.json
 ```
 
-These additions must be included as seed material in the next run even if `candidates/bank.jsonl` has not yet been physically merged.
-
-### Original trail archive
-
-This is the permanent archive of original, non-deduplicated lomanaya/trail candidates:
+### 3. Original trail archive
 
 ```text
 candidates/originals/
@@ -256,7 +252,9 @@ candidates/originals/README.md
 candidates/originals/index.jsonl
 ```
 
-This layer is for scientific analysis. It should preserve original shard-best candidates before symmetry deduplication. Do not collapse cube symmetries, reflections, coordinate permutations, or trail reversal here. Exact byte-identical duplicates may be compressed into one row with `source_occurrence_count`, `source_shards`, and `source_artifacts`, but do not lose the fact that several shards/runs found the same trail.
+This is the permanent scientific archive of original, non-deduplicated lomanaya/trail candidates from completed runs. It is for analysis of real diversity, repeated patterns, mode behavior, and possible structural obstructions.
+
+Do not collapse cube symmetries, reflections, coordinate permutations, or trail reversal here. Exact byte-identical duplicates may be compressed into one row with `source_occurrence_count`, `source_shards`, and `source_artifacts`, but do not lose the fact that several shards/runs found the same trail.
 
 For each completed useful run, create a file like:
 
@@ -276,30 +274,31 @@ Also append/update one summary line in:
 candidates/originals/index.jsonl
 ```
 
-Normally archive every original shard-best candidate satisfying:
+Normal eligibility threshold for both compact memory and original archive unless the workflow says otherwise:
 
 ```text
 covered_count >= 56
 links <= 22
 ```
 
-Each JSONL row should contain at least:
+Each original-archive JSONL row should contain at least:
 
 ```text
 schema, run_id, workflow, source_artifact, source_shard, candidate_id,
 covered_count, links, missing, coordinate_scale, vertices2
 ```
 
-Important: the original archive is not a replacement for GitHub Actions artifacts. It is protection against losing them. Artifacts can expire or become hard to rediscover; the original archive should keep the scientific evidence in the repository.
-
 Post-run saving rule:
 
 ```text
 1. Save champion candidate(s) and update frontier/latest.* if needed.
-2. Save compact unique eligible candidates into bank/additions.
+2. Save new compact unique eligible candidates into bank/additions.
 3. Save all original eligible shard-best candidates into candidates/originals/.
-4. Update START_HERE.md if the frontier, prepared workflow, or next step changed.
+4. Update candidates/originals/index.jsonl with a summary line for the run.
+5. Update START_HERE.md if the frontier, prepared workflow, or next step changed.
 ```
+
+Important: `candidates/originals/` is protection against losing scientific evidence. GitHub Actions artifacts are useful but fragile: they can expire, be inaccessible, or be hard to rediscover in a new chat.
 
 ## Flexible post-run reasoning loop
 
