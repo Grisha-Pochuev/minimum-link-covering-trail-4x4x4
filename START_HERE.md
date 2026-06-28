@@ -37,7 +37,7 @@ Read these in this order:
 Short invariant:
 
 ```text
-START_HERE → frontier → relevant workflow → plans → bank/additions/originals → runs/artifacts → action
+START_HERE -> frontier -> relevant workflow -> plans -> bank/additions/originals -> runs/artifacts -> action
 ```
 
 ## What START_HERE is, and what workflow is
@@ -108,15 +108,23 @@ Dominant recurring defect patterns from run `28304497479`:
 
 Important observation: all 20 shard-best artifacts reached `59/64`, but none reached `60/64` or `64/64`. `smart-search-8-orbit-bridge` did not break the frontier; it moved the obstruction. The next improvement probably needs a specialized repair of the new A/B defect families, not simply another identical orbit-bridge run.
 
-## Current next direction
+## Current prepared next workflow
 
-No new workflow has been prepared yet after analyzing run `28304497479`.
-
-Recommended next workflow name:
+Prepared workflow:
 
 ```text
 smart-search-9-new-defect-repair
+.github/workflows/smart-search-9-new-defect-repair.yml
 ```
+
+Prepared support files:
+
+```text
+scripts/prepare_new_defect_repair_engine.py
+docs/smart-search-9-new-defect-repair-plan.md
+```
+
+The workflow is manual-only with `workflow_dispatch`. It has no push trigger. A preparation commit should not silently burn GitHub Actions time.
 
 Purpose:
 
@@ -137,34 +145,40 @@ runs/2026-06-28-smart-search-8-orbit-bridge-full/
 GitHub Actions artifacts from the listed runs, especially orbit-bridge-22-shard-* from 28304497479
 ```
 
-Suggested smoke-test parameters for the next prepared workflow:
+Safe smoke-test parameters:
 
 ```text
 workflow: smart-search-9-new-defect-repair
 seconds: 180
 threads: 4
-seed: new fixed seed or github.run_id
+seed: 20260630
 prior_run_id: 28304497479
+previous_core5_run_id: 28292425390
+old_59_run_id: 28275850889
+secondary_run_id: 28275666411
+base_repair_run_id: 28200925016
 min_covered_to_save: 56
 jobs/shards: 20
 max-parallel: 20
 ```
 
-Suggested full serious-run parameters after the smoke-test succeeds:
+Full serious-run parameters after the smoke-test succeeds:
 
 ```text
 workflow: smart-search-9-new-defect-repair
 seconds: 21000
 threads: 4
-seed: new fixed seed or github.run_id
+seed: 20260630
 prior_run_id: 28304497479
+previous_core5_run_id: 28292425390
+old_59_run_id: 28275850889
+secondary_run_id: 28275666411
+base_repair_run_id: 28200925016
 min_covered_to_save: 56
 jobs/shards: 20
 max-parallel: 20
 expected wall time: about 5h50m per shard
 ```
-
-Important: workflows for expensive searches should be manual `workflow_dispatch`, not automatic `push`, unless there is an explicit reason. Do not silently burn GitHub Actions time from a preparation commit.
 
 ## Candidate-saving rules
 
@@ -234,7 +248,7 @@ After a completed run, do not merely fill a template. Use `START_HERE.md` as mem
 
 A good post-run analysis should ask, in free form:
 
-- Did the numeric frontier improve: `56→57→58→59→60→64`, or did it stay the same?
+- Did the numeric frontier improve: `56 -> 57 -> 58 -> 59 -> 60 -> 64`, or did it stay the same?
 - If the best coverage stayed the same, did the run still discover new defect sets, new modes, or new geometric families?
 - Are the new missing points the same as before, a symmetry of old ones, or genuinely different?
 - Did many shards converge to one pattern, or did they spread across several patterns?
@@ -261,7 +275,7 @@ Possible next actions include:
 Use this style when the user says a run has finished:
 
 ```text
-Прогон завершился: <ссылка на GitHub Actions run>.
+Прогон завершился: вставь ссылку на GitHub Actions run.
 
 Сначала открой START_HERE.md, чтобы понять текущее состояние проекта. Затем открой workflow, которым был запущен этот run, и следуй правилам из него. Не подменяй workflow завершенного run самым новым workflow.
 
@@ -281,7 +295,7 @@ Use this style when the user says a run has finished:
 Use this style when the user asks to prepare the next run:
 
 ```text
-Подготовь следующий умный прогон smart-search-<следующий номер>-<1-2 слова>.
+Подготовь следующий умный прогон smart-search-N-short-name.
 
 Сначала открой START_HERE.md, чтобы понять текущее состояние проекта. Затем открой актуальный workflow, frontier/latest.md, frontier/latest.json, последние runs/, candidates/bank.jsonl, candidates/originals/, планы в docs/ и artifacts последних полезных запусков.
 
