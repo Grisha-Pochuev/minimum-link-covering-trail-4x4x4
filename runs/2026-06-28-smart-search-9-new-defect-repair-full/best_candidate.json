@@ -1,0 +1,22 @@
+{
+  "candidate_id": "mlct22-a495eb7a0c4f489d",
+  "canonical_key_sha256": "a495eb7a0c4f489dd6646cf3cd41ee09e369de2e64671f3bdd3b8b2539da90e3",
+  "coordinate_scale": 2,
+  "status": "partial_candidate",
+  "mode": "transition_penalty22",
+  "links_target": 22,
+  "links": 22,
+  "covered_count": 59,
+  "coverage_percent": 92.1875,
+  "missing_count": 5,
+  "target_defect_hits": 14,
+  "missing": [[1, 2, 2], [1, 3, 1], [1, 3, 2], [2, 0, 2], [2, 0, 3]],
+  "vertices2": [[2, 12, 6], [2, 0, 6], [2, 0, 0], [2, 6, 0], [6, 2, 8], [6, 2, 2], [-6, 2, 2], [6, 6, 6], [6, 6, 0], [0, 0, 6], [0, 0, 0], [0, 6, 0], [0, 0, 6], [0, 6, 6], [0, 6, -2], [6, 0, 10], [6, 0, 0], [6, 4, 0], [6, 4, 7], [4, 4, 6], [4, -2, 0], [4, 6, 0], [4, 6, 14]],
+  "parameters": {"mode": "transition_penalty22", "seconds": 21000, "threads": 4, "shard": 0, "shards": 20, "seed": 20260630, "prior_seed_count": 38, "vertex_count": 1379, "directed_edge_count": 133912},
+  "total_attempts": 348925178,
+  "source_run_id": 28327372242,
+  "workflow": "smart-search-9-new-defect-repair",
+  "source_artifact": "new-defect-22-shard-0",
+  "source_shard": 0,
+  "source_file": "runs/2026-06-28-smart-search-9-new-defect-repair-full/best_candidate.json"
+}
