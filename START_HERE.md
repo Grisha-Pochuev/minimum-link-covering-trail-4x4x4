@@ -256,7 +256,7 @@ candidates/originals/README.md
 candidates/originals/index.jsonl
 ```
 
-This layer is for scientific analysis. It should preserve original shard-best candidates before symmetry deduplication. Do not collapse cube symmetries, reflections, coordinate permutations, trail reversal, or repeated missing-set patterns here.
+This layer is for scientific analysis. It should preserve original shard-best candidates before symmetry deduplication. Do not collapse cube symmetries, reflections, coordinate permutations, or trail reversal here. Exact byte-identical duplicates may be compressed into one row with `source_occurrence_count`, `source_shards`, and `source_artifacts`, but do not lose the fact that several shards/runs found the same trail.
 
 For each completed useful run, create a file like:
 
@@ -300,6 +300,36 @@ Post-run saving rule:
 3. Save all original eligible shard-best candidates into candidates/originals/.
 4. Update START_HERE.md if the frontier, prepared workflow, or next step changed.
 ```
+
+## Flexible post-run reasoning loop
+
+After a completed run, do not merely fill a template. Use `START_HERE.md` as memory, then think from the evidence of this particular run.
+
+A good post-run analysis should ask, in free form:
+
+- Did the numeric frontier improve: `56→57→58→59→60→64`, or did it stay the same?
+- If the best coverage stayed the same, did the run still discover new defect sets, new modes, or new geometric families?
+- Are the new missing points the same as before, a symmetry of old ones, or genuinely different?
+- Did many shards converge to one pattern, or did they spread across several patterns?
+- Did the compact bank gain genuinely useful new representatives, or only near-duplicates?
+- Did the original archive show real diversity hidden by symmetry deduplication?
+- Did any mode underperform so badly that it should be reduced or removed next time?
+- Did any mode produce a new kind of near-miss that deserves a specialized repair workflow?
+- Are we learning a possible obstruction/lemma, not just collecting candidates?
+- Was the workflow itself trustworthy: no artifact failures, no skipped aggregation, no accidental old commit, no missing seed layer?
+
+Then decide the next action. Do not automatically launch the same style of run again.
+
+Possible next actions include:
+
+- repeat the same workflow only if it clearly produced new useful diversity;
+- adjust weights or targets if it found near-misses but missed the intended defect region;
+- build a local repair workflow if several candidates differ only in a small window;
+- build an orbit/defect comparison workflow if several `59/64` families disagree on the missing set;
+- pause search and write a structural note if repeated failures point to a stable obstruction;
+- update banks/archives first if the run produced valuable candidates but the memory layer is incomplete.
+
+The assistant should make a reasoned recommendation based on the latest run, the compact bank, the original archive, prior runs, artifacts, and current frontier. The recommendation can be exploratory; it does not need to be a rigid recipe.
 
 ## Standard command: analyze a completed run
 
