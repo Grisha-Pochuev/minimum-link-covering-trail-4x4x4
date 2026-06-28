@@ -2,7 +2,7 @@
 
 This file is the human-readable working memory of the project.
 
-Status: `smart-search-8-orbit-bridge` full run analyzed. Numeric frontier remains `59/64`, but the run exposed new 59/64 defect families after mostly closing the old shared hard point `(3,1,3)`.
+Status: `smart-search-9-new-defect-repair` has been prepared as the next manual workflow. Numeric frontier remains `59/64`, but the next workflow now targets the new A/B defect families exposed by `smart-search-8-orbit-bridge` instead of repeating smart-search-8 unchanged.
 
 Latest useful completed run:
 
@@ -137,13 +137,21 @@ So run `28304497479` did not raise the numeric frontier, but it is useful: it sh
 
 ## Prepared next run
 
-No new workflow has been prepared yet after this analysis.
-
-Recommended next workflow name:
+Prepared workflow:
 
 ```text
 smart-search-9-new-defect-repair
+.github/workflows/smart-search-9-new-defect-repair.yml
 ```
+
+Prepared support files:
+
+```text
+scripts/prepare_new_defect_repair_engine.py
+docs/smart-search-9-new-defect-repair-plan.md
+```
+
+The new workflow is manual-only with `workflow_dispatch`. It has no push trigger.
 
 Prepared next focus:
 
@@ -164,19 +172,39 @@ The next serious run should start from:
 - older runs `28292425390`, `28275850889`, `28275666411`, and `28200925016`;
 - `candidates/bank.jsonl` as broad seed memory.
 
-## Full serious-run launch idea for next workflow
+## Smoke-test launch idea
 
-Do not launch this exact workflow unchanged as the next serious run. First prepare a new repair workflow around the new defect families.
+Use the default manual workflow inputs first:
 
-Likely parameters after a smoke-test:
+```text
+workflow: smart-search-9-new-defect-repair
+seconds: 180
+threads: 4
+seed: 20260630
+prior_run_id: 28304497479
+previous_core5_run_id: 28292425390
+old_59_run_id: 28275850889
+secondary_run_id: 28275666411
+base_repair_run_id: 28200925016
+min_covered_to_save: 56
+jobs/shards: 20
+max-parallel: 20
+```
+
+## Full serious-run launch idea after smoke-test succeeds
 
 ```text
 workflow: smart-search-9-new-defect-repair
 seconds: 21000
 threads: 4
-seed: new fixed seed or github.run_id
+seed: 20260630
 prior_run_id: 28304497479
+previous_core5_run_id: 28292425390
+old_59_run_id: 28275850889
+secondary_run_id: 28275666411
+base_repair_run_id: 28200925016
 min_covered_to_save: 56
 jobs/shards: 20
 max-parallel: 20
+expected wall time: about 5h50m per shard
 ```
