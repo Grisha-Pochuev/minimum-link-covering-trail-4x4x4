@@ -2,7 +2,7 @@
 
 This file is the human-readable working memory of the project.
 
-Status: `smart-search-9-new-defect-repair` completed successfully. Numeric frontier remains `59/64`, but the run exposed a new dominant D-family defect pattern. Do not repeat this workflow unchanged before a local repair preflight.
+Status: `smart-search-10-d-family-repair` has been prepared as the next manual GitHub smoke-test workflow. Numeric frontier remains `59/64`; the latest completed useful run is still `smart-search-9-new-defect-repair` run `28327372242`.
 
 Latest useful completed run:
 
@@ -41,6 +41,7 @@ Saved run memory:
 ```text
 runs/2026-06-28-smart-search-9-new-defect-repair-full/summary.md
 runs/2026-06-28-smart-search-9-new-defect-repair-full/best_candidate.json
+runs/2026-06-28-smart-search-9-new-defect-repair-full/local_preflight.md
 candidates/bank-additions-run28327372242.jsonl
 ```
 
@@ -64,6 +65,63 @@ candidates/bank-additions-run28327372242.jsonl
 - `(2, 1, 3)`: 4 / 20
 - `(3, 1, 2)`: 4 / 20
 
-## Next local preflight
+## Prepared next workflow
 
-Before another expensive GitHub run, compare the new D-family champion against the previous A-family champion. Locally test whether a 4-12 link window replacement can close `(1,3,1)`, `(1,3,2)`, `(2,0,2)`, and `(2,0,3)` without recreating `(0,2,2)`, `(2,1,3)`, `(2,2,3)`, `(3,1,0)`, `(3,1,2)`.
+Prepared workflow:
+
+```text
+smart-search-10-d-family-repair
+.github/workflows/smart-search-10-d-family-repair.yml
+```
+
+Prepared support files:
+
+```text
+scripts/prepare_d_family_repair_engine.py
+docs/smart-search-10-d-family-repair-plan.md
+```
+
+The workflow is manual-only with `workflow_dispatch`. It has no push trigger.
+
+Purpose:
+
+```text
+Repair the D-family wall exposed by run 28327372242, especially (1,3,1), (1,3,2), (2,0,2), and (2,0,3), while keeping the old A-family from run 28304497479 as a guardrail so the search does not merely rotate back to the previous obstruction.
+```
+
+## Smoke-test launch inputs
+
+```text
+workflow: smart-search-10-d-family-repair
+seconds: 180
+threads: 4
+seed: 20260701
+prior_run_id: 28327372242
+orbit_bridge_run_id: 28304497479
+previous_core5_run_id: 28292425390
+old_59_run_id: 28275850889
+secondary_run_id: 28275666411
+base_repair_run_id: 28200925016
+min_covered_to_save: 56
+jobs/shards: 20
+max-parallel: 20
+```
+
+## Full serious-run inputs after smoke-test succeeds
+
+```text
+workflow: smart-search-10-d-family-repair
+seconds: 21000
+threads: 4
+seed: 20260701
+prior_run_id: 28327372242
+orbit_bridge_run_id: 28304497479
+previous_core5_run_id: 28292425390
+old_59_run_id: 28275850889
+secondary_run_id: 28275666411
+base_repair_run_id: 28200925016
+min_covered_to_save: 56
+jobs/shards: 20
+max-parallel: 20
+expected wall time: about 5h50m per shard
+```
