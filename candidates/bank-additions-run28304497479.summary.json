@@ -1,0 +1,14 @@
+{
+  "candidate_ids": [
+    "mlct22-9c80a2741db704ad",
+    "mlct22-252fb1171852b9db",
+    "mlct22-a7b17a52b1969f31"
+  ],
+  "dedupe_rule": "canonical modulo coordinate permutations, cube reflections, and trail reversal",
+  "eligible_original_shard_best_occurrences": 20,
+  "eligible_unique_candidate_count": 3,
+  "note": "Two canonical candidates appear to be new relative to the previous named additions; the a7b17a52... representative was already present from run 28292425390 but is preserved here as a run occurrence.",
+  "run_id": 28304497479,
+  "schema": "mlct-bank-additions-summary-v1",
+  "workflow": "smart-search-8-orbit-bridge"
+}
