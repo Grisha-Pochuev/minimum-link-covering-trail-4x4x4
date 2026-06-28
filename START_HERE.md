@@ -1,6 +1,6 @@
 # START HERE — project memory
 
-Last updated: 2026-06-28
+Last updated: 2026-06-29
 
 This is the first file to read when starting work in a new ChatGPT web chat.
 
@@ -90,24 +90,73 @@ Saved run memory:
 
 ```text
 frontier/latest.md
+frontier/latest.json
 runs/2026-06-28-smart-search-9-new-defect-repair-full/summary.md
 runs/2026-06-28-smart-search-9-new-defect-repair-full/best_candidate.json
+runs/2026-06-28-smart-search-9-new-defect-repair-full/local_preflight.md
 candidates/bank-additions-run28327372242.jsonl
 ```
 
-## Current next step
+## Current prepared next workflow
 
-There is no new GitHub full-run workflow to launch immediately.
-
-Before another expensive GitHub run, do a local chat preflight:
+Prepared workflow:
 
 ```text
-Compare the new D-family champion from run 28327372242 with the previous A-family champion from run 28304497479.
-Test 4-12 link local surgery around the new missing set.
-Goal: close the D-family points without recreating the old A-family missing set.
+smart-search-10-d-family-repair
+.github/workflows/smart-search-10-d-family-repair.yml
 ```
 
-Do not repeat `smart-search-9-new-defect-repair` unchanged. It already saturated at `59/64`.
+Prepared support files:
+
+```text
+scripts/prepare_d_family_repair_engine.py
+docs/smart-search-10-d-family-repair-plan.md
+```
+
+The workflow is manual-only with `workflow_dispatch`. It has no push trigger. A preparation commit should not silently burn GitHub Actions time.
+
+Purpose:
+
+```text
+Repair the D-family wall exposed by run 28327372242, especially (1,3,1), (1,3,2), (2,0,2), and (2,0,3), while keeping the old A-family from run 28304497479 as a guardrail so the search does not merely rotate back to the previous obstruction.
+```
+
+Safe smoke-test parameters:
+
+```text
+workflow: smart-search-10-d-family-repair
+seconds: 180
+threads: 4
+seed: 20260701
+prior_run_id: 28327372242
+orbit_bridge_run_id: 28304497479
+previous_core5_run_id: 28292425390
+old_59_run_id: 28275850889
+secondary_run_id: 28275666411
+base_repair_run_id: 28200925016
+min_covered_to_save: 56
+jobs/shards: 20
+max-parallel: 20
+```
+
+Full serious-run parameters after the smoke-test succeeds:
+
+```text
+workflow: smart-search-10-d-family-repair
+seconds: 21000
+threads: 4
+seed: 20260701
+prior_run_id: 28327372242
+orbit_bridge_run_id: 28304497479
+previous_core5_run_id: 28292425390
+old_59_run_id: 28275850889
+secondary_run_id: 28275666411
+base_repair_run_id: 28200925016
+min_covered_to_save: 56
+jobs/shards: 20
+max-parallel: 20
+expected wall time: about 5h50m per shard
+```
 
 ## Candidate-saving rules
 
