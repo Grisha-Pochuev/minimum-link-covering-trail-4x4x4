@@ -1,6 +1,6 @@
 # START HERE — project memory
 
-Last updated: 2026-06-29
+Last updated: 2026-06-30
 
 This is the first file to read when starting work in a new ChatGPT web chat.
 
@@ -95,11 +95,57 @@ runs/2026-06-29-smart-search-11-d2-bridge-repair-full/compact_representatives.md
 
 Note: `candidates/bank.jsonl` was inspected for comparison, but it was not merged in this step. The next hypothesis step should decide whether the 16 compact representatives are useful enough to formalize as `bank-additions` for future search seeding.
 
+## Prepared next workflow
+
+A broader follow-up workflow now exists:
+
+```text
+.github/workflows/smart-search-12-skeleton-diversity.yml
+scripts/prepare_skeleton_diversity_engine.py
+```
+
+Purpose: do not simply repeat D2 bridge repair. The working hypothesis is that repeated `59/64` runs are hitting a skeleton-level obstruction: local repair moves the five missing points but does not remove the five-hole wall. The next run should search for different 22-link skeletons and better transitions between rich segments.
+
+Shard split in the prepared workflow:
+
+```text
+0-5   fresh_rich_skeleton
+6-9   transition_graph22
+10-13 diversity_repair22
+14-16 anti_wall22
+17    cross_family22
+18    integer_control22
+19    d2_control22
+```
+
+Suggested launch order from web chat:
+
+```text
+First smoke-test:
+seconds=180
+threads=4
+seed=20260703
+latest_run_id=28378489636
+latest_d2_run_id=28338041580
+prior_d_run_id=28327372242
+orbit_bridge_run_id=28304497479
+previous_core5_run_id=28292425390
+old_59_run_id=28275850889
+secondary_run_id=28275666411
+base_repair_run_id=28200925016
+min_covered_to_save=56
+
+If smoke is green, full run:
+seconds=21000
+threads=4
+same run ids and seed unless there is a reason to change seed
+```
+
+Important: the workflow is `workflow_dispatch` only. Do not add a push trigger for these expensive runs.
+
 ## Current next step
 
-The next step is not to launch a new run immediately.
-
-First do a hypothesis step: compare the new `16` compact representatives against old A/D/D2 families and decide whether the project should continue D2 bridge repair, design a small diagnostic around `(2,1,2)/(2,2,3)`, or switch to a broader new-skeleton search.
+Run a short smoke-test of `smart-search-12-skeleton-diversity` from the GitHub Actions UI. If it compiles, downloads artifacts, runs shards, and uploads a summary, then launch the full `21000` second run. After completion, analyze both numeric frontier and structural diversity: a new `59/64` family with different missing points can still be useful.
 
 ## Candidate-saving rules
 
