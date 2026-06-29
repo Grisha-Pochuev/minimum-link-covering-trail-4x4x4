@@ -26,16 +26,23 @@ Important caution: a search result is not a proof. A partial candidate is eviden
 
 1. `START_HERE.md` — this file.
 2. `frontier/latest.md` and `frontier/latest.json` — current frontier and latest useful run.
-3. The exact workflow in `.github/workflows/` that launched the completed run. Do not substitute the newest workflow for an old run.
-4. Planning docs and web-chat operating prompts.
-5. `candidates/bank.jsonl`, `candidates/bank-additions-*.jsonl`, and `candidates/originals/`.
-6. The latest relevant folder in `runs/`.
-7. GitHub Actions artifacts of the latest useful runs.
+3. `docs/web-chat-runbook-prompts.md` — optimized web-chat prompts and launch checklist.
+4. The exact workflow in `.github/workflows/` that launched the completed run. Do not substitute the newest workflow for an old run.
+5. Planning docs for the prepared or completed workflow.
+6. `candidates/bank.jsonl`, `candidates/bank-additions-*.jsonl`, and `candidates/originals/`.
+7. The latest relevant folder in `runs/`.
+8. GitHub Actions artifacts of the latest useful runs.
 
 Short invariant:
 
 ```text
-START_HERE -> frontier -> relevant workflow -> plans -> bank/additions/originals -> runs/artifacts -> action
+START_HERE -> frontier -> web-chat runbook -> relevant workflow -> plan -> bank/additions/originals -> runs/artifacts -> action
+```
+
+Web-chat optimization rule:
+
+```text
+Do not rescan everything blindly. Use frontier/latest.* and saved run summaries as the index, then inspect only the relevant exact workflow, run folder, candidate additions, originals, and artifacts. Do not promise to check a run later; either check it now from available GitHub data or say what the user must do manually.
 ```
 
 ## Current frontier to remember
@@ -110,6 +117,7 @@ Prepared support files:
 ```text
 scripts/prepare_d2_bridge_repair_engine.py
 docs/smart-search-11-d2-bridge-repair-plan.md
+docs/web-chat-runbook-prompts.md
 ```
 
 There is no automatic launch. The workflow is manual-only with `workflow_dispatch`; it has no push trigger.
