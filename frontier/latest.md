@@ -2,7 +2,7 @@
 
 This file is the human-readable working memory of the project.
 
-Status: `smart-search-10-d-family-repair` full run completed successfully. Numeric frontier remains `59/64`; the latest useful completed run is now run `28338041580`.
+Status: `smart-search-10-d-family-repair` full run completed successfully. Numeric frontier remains `59/64`; the latest useful completed run is run `28338041580`.
 
 Latest useful completed run:
 
@@ -76,16 +76,65 @@ Previous latest useful run was `28327372242`, also `59/64`, with dominant D-fami
 
 This run did not improve the number. It did improve the map of the obstruction: `(2,0,2)` is no longer common, but `(1,0,1)` and `(2,2,2)` became very common. So the next useful target is the new D2-family wall, not a blind repeat of the same workflow.
 
-## Current next step
+## Current prepared next workflow
 
-No new full GitHub workflow is prepared yet. Do not rerun `smart-search-10-d-family-repair` unchanged with the same seed.
-
-Before a new expensive run, do local or short smoke-style work focused on:
+Prepared workflow:
 
 ```text
-new D2 wall: (1,0,1), (1,3,2), (2,0,3), (2,2,2)
-secondary point: (1,2,2) or (1,2,1) depending on the pattern
-guardrail families: old A-family from run 28304497479 and old D-family from run 28327372242
+smart-search-11-d2-bridge-repair
+.github/workflows/smart-search-11-d2-bridge-repair.yml
 ```
 
-The next workflow, if created, should explicitly test how to cover `(1,0,1)` and `(2,2,2)` without reopening `(2,0,2)` or the old A-family holes.
+Prepared support files:
+
+```text
+scripts/prepare_d2_bridge_repair_engine.py
+docs/smart-search-11-d2-bridge-repair-plan.md
+```
+
+The workflow is manual-only with `workflow_dispatch`. It has no push trigger.
+
+Purpose:
+
+```text
+Attack the new D2 wall around (1,0,1), (1,3,2), (2,0,3), and (2,2,2), with (1,2,2)/(1,2,1) as variable fifth points, while keeping old A/D families as guardrails.
+```
+
+Safe smoke-test parameters:
+
+```text
+workflow: smart-search-11-d2-bridge-repair
+seconds: 180
+threads: 4
+seed: 20260702
+latest_d2_run_id: 28338041580
+prior_d_run_id: 28327372242
+orbit_bridge_run_id: 28304497479
+previous_core5_run_id: 28292425390
+old_59_run_id: 28275850889
+secondary_run_id: 28275666411
+base_repair_run_id: 28200925016
+min_covered_to_save: 56
+jobs/shards: 20
+max-parallel: 20
+```
+
+Full serious-run parameters after the smoke-test succeeds:
+
+```text
+workflow: smart-search-11-d2-bridge-repair
+seconds: 21000
+threads: 4
+seed: 20260702
+latest_d2_run_id: 28338041580
+prior_d_run_id: 28327372242
+orbit_bridge_run_id: 28304497479
+previous_core5_run_id: 28292425390
+old_59_run_id: 28275850889
+secondary_run_id: 28275666411
+base_repair_run_id: 28200925016
+min_covered_to_save: 56
+jobs/shards: 20
+max-parallel: 20
+expected wall time: about 5h50m per shard
+```
