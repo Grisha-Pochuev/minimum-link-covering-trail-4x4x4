@@ -1,0 +1,155 @@
+name: smart-search-12-skeleton-diversity
+run-name: smart-search-12-skeleton-diversity
+
+permissions:
+  contents: read
+  actions: read
+
+on:
+  workflow_dispatch:
+    inputs:
+      seconds:
+        description: "Seconds per shard. Use 180 for smoke, 21000 for full."
+        required: false
+        default: "180"
+      threads:
+        description: "Threads per shard. Use 4."
+        required: false
+        default: "4"
+      seed:
+        description: "Seed. Use 20260703 for the first skeleton-diversity run."
+        required: false
+        default: "20260703"
+      latest_run_id:
+        description: "Latest useful full run: smart-search-11 D2 bridge repair."
+        required: false
+        default: "28378489636"
+      latest_d2_run_id:
+        description: "Previous smart-search-10 D2-wall run."
+        required: false
+        default: "28338041580"
+      prior_d_run_id:
+        description: "Previous smart-search-9 D-family run."
+        required: false
+        default: "28327372242"
+      orbit_bridge_run_id:
+        description: "Previous orbit-bridge A-family guardrail run."
+        required: false
+        default: "28304497479"
+      previous_core5_run_id:
+        description: "Previous core5 59/64 run."
+        required: false
+        default: "28292425390"
+      old_59_run_id:
+        description: "Older full 59/64 run."
+        required: false
+        default: "28275850889"
+      secondary_run_id:
+        description: "Previous 59/64 smoke run."
+        required: false
+        default: "28275666411"
+      base_repair_run_id:
+        description: "Earlier 58/64 repair run."
+        required: false
+        default: "28200925016"
+      min_covered_to_save:
+        description: "Candidate bank export threshold."
+        required: false
+        default: "56"
+
+jobs:
+  check-known-23:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python scripts/check_trail.py data/ripa_23_trail.json --expected-links 23 --require-full
+
+  skeleton-diversity-search:
+    runs-on: ubuntu-latest
+    needs: check-known-23
+    timeout-minutes: 359
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    env:
+      SEARCH_SECONDS: ${{ github.event.inputs.seconds || '180' }}
+      SEARCH_THREADS: ${{ github.event.inputs.threads || '4' }}
+      SEARCH_SEED: ${{ github.event.inputs.seed || '20260703' }}
+      LATEST_RUN_ID: ${{ github.event.inputs.latest_run_id || '28378489636' }}
+      LATEST_D2_RUN_ID: ${{ github.event.inputs.latest_d2_run_id || '28338041580' }}
+      PRIOR_D_RUN_ID: ${{ github.event.inputs.prior_d_run_id || '28327372242' }}
+      ORBIT_BRIDGE_RUN_ID: ${{ github.event.inputs.orbit_bridge_run_id || '28304497479' }}
+      PREVIOUS_CORE5_RUN_ID: ${{ github.event.inputs.previous_core5_run_id || '28292425390' }}
+      OLD_59_RUN_ID: ${{ github.event.inputs.old_59_run_id || '28275850889' }}
+      SECONDARY_RUN_ID: ${{ github.event.inputs.secondary_run_id || '28275666411' }}
+      BASE_REPAIR_RUN_ID: ${{ github.event.inputs.base_repair_run_id || '28200925016' }}
+      MIN_COVERED_TO_SAVE: ${{ github.event.inputs.min_covered_to_save || '56' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Download previous artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set +e
+          mkdir -p seed-material/latest-artifacts seed-material/latest-d2-artifacts seed-material/prior-d-artifacts seed-material/orbit-bridge-artifacts seed-material/previous-core5-artifacts seed-material/old-59-artifacts seed-material/secondary-artifacts seed-material/base-repair-artifacts
+          gh run download "$LATEST_RUN_ID" --dir seed-material/latest-artifacts || true
+          gh run download "$LATEST_D2_RUN_ID" --dir seed-material/latest-d2-artifacts || true
+          gh run download "$PRIOR_D_RUN_ID" --dir seed-material/prior-d-artifacts || true
+          gh run download "$ORBIT_BRIDGE_RUN_ID" --dir seed-material/orbit-bridge-artifacts || true
+          gh run download "$PREVIOUS_CORE5_RUN_ID" --dir seed-material/previous-core5-artifacts || true
+          gh run download "$OLD_59_RUN_ID" --dir seed-material/old-59-artifacts || true
+          gh run download "$SECONDARY_RUN_ID" --dir seed-material/secondary-artifacts || true
+          gh run download "$BASE_REPAIR_RUN_ID" --dir seed-material/base-repair-artifacts || true
+          find seed-material -maxdepth 2 -type f | sort | head -500 || true
+      - name: Export candidate bank
+        run: |
+          python scripts/export_candidate_bank_jsons.py --out seed-material/from-candidate-bank --min-covered "$MIN_COVERED_TO_SAVE" candidates/bank.jsonl candidates/bank-additions-run28378489636.jsonl candidates/bank-additions-run28338041580.jsonl candidates/bank-additions-run28327372242.jsonl candidates/bank-additions-run28304497479.jsonl candidates/bank-additions-run28292425390.jsonl
+      - name: Prepare C++ engine
+        run: python scripts/prepare_skeleton_diversity_engine.py --out build/skeleton_diversity_search.cpp
+      - name: Compile C++ engine
+        run: g++ -O3 -std=c++17 -pthread -DNDEBUG build/skeleton_diversity_search.cpp -o skeleton_diversity_search
+      - name: Run shard
+        run: |
+          mkdir -p results/skeleton_diversity
+          ./skeleton_diversity_search --input-dir seed-material/latest-artifacts --input-dir seed-material/latest-d2-artifacts --input-dir seed-material/prior-d-artifacts --input-dir seed-material/orbit-bridge-artifacts --input-dir seed-material/previous-core5-artifacts --input-dir seed-material/old-59-artifacts --input-dir seed-material/secondary-artifacts --input-dir seed-material/base-repair-artifacts --input-dir seed-material/from-candidate-bank --input-dir runs/2026-06-29-smart-search-11-d2-bridge-repair-full --input-dir runs/2026-06-29-smart-search-10-d-family-repair-full --input-dir runs/2026-06-28-smart-search-9-new-defect-repair-full --input-dir runs/2026-06-28-smart-search-8-orbit-bridge-full --input-dir runs/2026-06-27-smart-search-7-core5-full --input-dir runs/2026-06-27-smart-search-6-defect-full --input-dir runs/2026-06-27-smart-search-6-defect-smoke --input-dir runs/2026-06-26-repair-search-5 --input-dir experiments/2026-06-25-repair57-local-smoke --seconds "$SEARCH_SECONDS" --threads "$SEARCH_THREADS" --seed "$SEARCH_SEED" --shard "${{ matrix.shard }}" --shards 20 --out "results/skeleton_diversity/skeleton_diversity_best_shard_${{ matrix.shard }}.json"
+      - name: Check shard result
+        if: always()
+        run: |
+          if [ -f "results/skeleton_diversity/skeleton_diversity_best_shard_${{ matrix.shard }}.json" ]; then
+            python scripts/check_scaled_trail.py "results/skeleton_diversity/skeleton_diversity_best_shard_${{ matrix.shard }}.json" --max-links 22
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: skeleton-diversity-22-shard-${{ matrix.shard }}
+          path: results/skeleton_diversity/skeleton_diversity_best_shard_${{ matrix.shard }}.json
+          if-no-files-found: warn
+
+  aggregate-skeleton-diversity-results:
+    runs-on: ubuntu-latest
+    needs: skeleton-diversity-search
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: skeleton-diversity-22-shard-*
+          path: collected
+          merge-multiple: true
+      - run: python scripts/build_smart_summary.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: skeleton-diversity-run-summary
+          path: |
+            collected/smart_run_summary.json
+            collected/smart_run_summary.md
+          if-no-files-found: warn
