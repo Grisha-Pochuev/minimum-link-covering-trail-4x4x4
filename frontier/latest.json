@@ -1,1 +1,93 @@
-{"schema":"mlct-frontier-v1","repository":"Grisha-Pochuev/minimum-link-covering-trail-4x4x4","status":"smart_search_10_d_family_repair_prepared","updated_utc":"2026-06-29T00:00:00Z","candidate_preservation_rule_for_future_runs":{"rule_type":"threshold_and_above","save_condition":"covered_count >= 56 and links <= 22","min_covered_to_save":56,"max_links":22,"plain_language":"Keep old 56/57/58 evidence and all unique 59/64 candidates. Use artifacts and originals archive to preserve concrete shard occurrences; use bank/additions as reusable compact memory."},"latest_useful_run":{"run_id":28327372242,"workflow_name":"smart-search-9-new-defect-repair","run_url":"https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/28327372242","head_commit_sha":"23ed729adbed07ca1dd4983f2de20276383bc633","status":"success","result_type":"heuristic_search_not_proof","parameters":{"seconds":21000,"threads":4,"shards":20,"max_parallel":20,"seed":20260630,"prior_run_id":28304497479,"previous_core5_run_id":28292425390,"old_59_run_id":28275850889,"secondary_run_id":28275666411,"base_repair_run_id":28200925016,"min_covered_to_save":56},"artifacts":{"run_summary":"new-defect-run-summary","shard_results":"new-defect-22-shard-*"},"jobs_observed":{"check_known_23":"success","new_defect_repair_jobs":"20 success","aggregate":"success"},"best_result":{"candidate_id":"mlct22-a495eb7a0c4f489d","covered_count":59,"grid_points":64,"coverage_percent":92.1875,"missing_count":5,"links":22,"links_target":22,"mode":"transition_penalty22","source_file":"runs/2026-06-28-smart-search-9-new-defect-repair-full/best_candidate.json","source_artifact":"new-defect-22-shard-0","source_shard":0,"status":"partial_candidate","missing":[[1,2,2],[1,3,1],[1,3,2],[2,0,2],[2,0,3]]},"top_missing_patterns":[{"count":12,"missing":[[1,2,2],[1,3,1],[1,3,2],[2,0,2],[2,0,3]]},{"count":4,"missing":[[0,2,2],[2,1,3],[2,2,3],[3,1,0],[3,1,2]]},{"count":3,"missing":[[0,0,2],[1,2,3],[2,0,1],[2,1,0],[3,1,1]]},{"count":1,"missing":[[1,3,1],[2,1,2],[2,2,3],[3,1,0],[3,1,3]]}],"top_missing_points":[{"point":[1,3,1],"count":13},{"point":[1,2,2],"count":12},{"point":[1,3,2],"count":12},{"point":[2,0,2],"count":12},{"point":[2,0,3],"count":12},{"point":[2,2,3],"count":5},{"point":[3,1,0],"count":5},{"point":[0,2,2],"count":4},{"point":[2,1,3],"count":4},{"point":[3,1,2],"count":4}],"comparison_with_previous_frontier":{"numeric_frontier_changed":false,"previous_latest_useful_run_id":28304497479,"previous_best_covered_count":59,"new_best_covered_count":59,"important_observation":"smart-search-9 did not break 59/64 but moved the obstruction into a dominant D-family."},"files_saved":{"summary_md":"runs/2026-06-28-smart-search-9-new-defect-repair-full/summary.md","best_candidate":"runs/2026-06-28-smart-search-9-new-defect-repair-full/best_candidate.json","local_preflight":"runs/2026-06-28-smart-search-9-new-defect-repair-full/local_preflight.md","bank_additions":"candidates/bank-additions-run28327372242.jsonl"}},"prepared_next_workflow":{"workflow_name":"smart-search-10-d-family-repair","workflow_file":".github/workflows/smart-search-10-d-family-repair.yml","engine_prep_script":"scripts/prepare_d_family_repair_engine.py","plan_file":"docs/smart-search-10-d-family-repair-plan.md","status":"prepared_manual_workflow_not_launched","trigger":"workflow_dispatch_only_no_push_trigger","focus":"Repair the D-family wall exposed by run 28327372242 while keeping the old A-family from run 28304497479 as a guardrail.","smoke_test":{"seconds":180,"threads":4,"seed":20260701,"prior_run_id":28327372242,"orbit_bridge_run_id":28304497479,"previous_core5_run_id":28292425390,"old_59_run_id":28275850889,"secondary_run_id":28275666411,"base_repair_run_id":28200925016,"min_covered_to_save":56,"jobs":20,"max_parallel":20},"full_run_after_smoke":{"seconds":21000,"threads":4,"seed":20260701,"prior_run_id":28327372242,"orbit_bridge_run_id":28304497479,"previous_core5_run_id":28292425390,"old_59_run_id":28275850889,"secondary_run_id":28275666411,"base_repair_run_id":28200925016,"min_covered_to_save":56,"jobs":20,"max_parallel":20,"expected_wall_time":"about 5h50m per shard"}},"conclusions_for_next_run":["The numeric frontier remains 59/64; no 60/64 or 64/64 candidate was found.","All 20 shard-best results from smart-search-9 reached 59/64, so the method is strong but saturated.","The next GitHub action should be a short smoke-test of smart-search-10-d-family-repair, not a direct full run.","If the smoke-test passes artifact download, candidate export, C++ generation, compilation, checking, artifact upload, and aggregation, then run the full 21000-second version."]}
+{
+  "schema": "mlct-frontier-v1",
+  "repository": "Grisha-Pochuev/minimum-link-covering-trail-4x4x4",
+  "status": "smart_search_10_d_family_repair_completed_numeric_frontier_unchanged",
+  "updated_utc": "2026-06-29T04:20:00Z",
+  "candidate_preservation_rule_for_future_runs": {
+    "rule_type": "threshold_and_above",
+    "save_condition": "covered_count >= 56 and links <= 22",
+    "min_covered_to_save": 56,
+    "max_links": 22
+  },
+  "latest_useful_run": {
+    "run_id": 28338041580,
+    "workflow_name": "smart-search-10-d-family-repair",
+    "head_commit_sha": "226397ba84fbd8e5415c9be188f651f4af909588",
+    "status": "success",
+    "result_type": "heuristic_search_not_proof",
+    "parameters": {
+      "seconds": 21000,
+      "threads": 4,
+      "shards": 20,
+      "max_parallel": 20,
+      "seed": 20260701,
+      "prior_run_id": 28327372242,
+      "orbit_bridge_run_id": 28304497479,
+      "previous_core5_run_id": 28292425390,
+      "old_59_run_id": 28275850889,
+      "secondary_run_id": 28275666411,
+      "base_repair_run_id": 28200925016,
+      "min_covered_to_save": 56
+    },
+    "artifacts": {
+      "run_summary": "d-family-run-summary",
+      "shard_results": "d-family-22-shard-*"
+    },
+    "jobs_observed": {
+      "check_known_23": "success",
+      "d_family_repair_jobs": "20 success",
+      "aggregate": "success"
+    },
+    "best_result": {
+      "candidate_id": "mlct22-252fb1171852b9db",
+      "canonical_key_sha256": "252fb1171852b9db31f581036fa12cf06fd9b23f274097badfc6caa9b5084005",
+      "covered_count": 59,
+      "grid_points": 64,
+      "coverage_percent": 92.1875,
+      "missing_count": 5,
+      "links": 22,
+      "links_target": 22,
+      "mode": "repair56_target8",
+      "source_file": "runs/2026-06-29-smart-search-10-d-family-repair-full/best_candidate.json",
+      "source_artifact": "d-family-22-shard-16",
+      "source_shard": 16,
+      "status": "partial_candidate",
+      "missing": [[1,0,1],[1,2,2],[1,3,2],[2,0,3],[2,2,2]]
+    },
+    "mode_breakdown": [
+      {"mode":"transition_penalty22","curves_saved":6,"jobs":6,"threads_per_job":4,"worker_processes":24,"best_covered_count":59,"total_attempts":2054058073},
+      {"mode":"fractional_bridge22","curves_saved":5,"jobs":5,"threads_per_job":4,"worker_processes":20,"best_covered_count":59,"total_attempts":1767617770},
+      {"mode":"subcube_stitch22","curves_saved":3,"jobs":3,"threads_per_job":4,"worker_processes":12,"best_covered_count":59,"total_attempts":969131096},
+      {"mode":"repair56_target8","curves_saved":3,"jobs":3,"threads_per_job":4,"worker_processes":12,"best_covered_count":59,"total_attempts":994043668},
+      {"mode":"rich_segment_catalog","curves_saved":2,"jobs":2,"threads_per_job":4,"worker_processes":8,"best_covered_count":59,"total_attempts":3307812707},
+      {"mode":"integer_control22","curves_saved":1,"jobs":1,"threads_per_job":4,"worker_processes":4,"best_covered_count":59,"total_attempts":375196832}
+    ],
+    "top_missing_patterns": [
+      {"count":9,"missing":[[1,0,1],[1,2,2],[1,3,2],[2,0,3],[2,2,2]]},
+      {"count":7,"missing":[[1,0,1],[1,2,1],[1,3,2],[2,0,3],[2,2,2]]},
+      {"count":2,"missing":[[0,2,2],[2,1,3],[2,2,3],[3,1,0],[3,1,2]]},
+      {"count":1,"missing":[[0,2,2],[1,0,1],[1,3,2],[2,0,3],[2,2,2]]},
+      {"count":1,"missing":[[1,2,2],[2,0,2],[2,0,3],[3,1,0],[3,1,2]]}
+    ],
+    "comparison_with_previous_frontier": {
+      "numeric_frontier_changed": false,
+      "previous_latest_useful_run_id": 28327372242,
+      "previous_best_covered_count": 59,
+      "new_best_covered_count": 59,
+      "important_observation": "The old D-family point (2,0,2) was almost eliminated, but the search rotated into a new D2 wall around (1,0,1) and (2,2,2)."
+    },
+    "files_saved": {
+      "summary_md": "runs/2026-06-29-smart-search-10-d-family-repair-full/summary.md",
+      "best_candidate": "runs/2026-06-29-smart-search-10-d-family-repair-full/best_candidate.json",
+      "mode_breakdown": "runs/2026-06-29-smart-search-10-d-family-repair-full/mode_breakdown.json",
+      "bank_additions": "candidates/bank-additions-run28338041580.jsonl",
+      "original_archive": "candidates/originals/run-28338041580-smart-search-10-d-family-repair.jsonl"
+    }
+  },
+  "prepared_next_workflow": null,
+  "conclusions_for_next_run": [
+    "The numeric frontier remains 59/64; no 60/64 or 64/64 candidate was found.",
+    "All 20 shard-best results reached 59/64, so the method is strong but saturated.",
+    "Do not rerun smart-search-10 unchanged with the same seed. Prepare a new local repair or workflow aimed at the D2 wall while keeping old A/D guardrails."
+  ]
+}
