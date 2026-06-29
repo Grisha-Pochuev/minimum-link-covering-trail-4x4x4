@@ -50,8 +50,8 @@ Do not rescan everything blindly. Use frontier/latest.* and saved run summaries 
 Latest useful completed full run:
 
 ```text
-run id: 28338041580
-workflow: smart-search-10-d-family-repair
+run id: 28378489636
+workflow: smart-search-11-d2-bridge-repair
 status: success
 seconds per shard: 21000
 threads per shard: 4
@@ -61,115 +61,44 @@ links: 22
 missing count: 5
 ```
 
-Best recorded candidate:
+Best recorded candidate from the latest run:
 
 ```text
-candidate id: mlct22-252fb1171852b9db
-source artifact: d-family-22-shard-16
+candidate id: mlct22-a77764189bd3e13a
+source artifact: d2-bridge-22-shard-0
 mode: repair56_target8
-saved at: runs/2026-06-29-smart-search-10-d-family-repair-full/best_candidate.json
+saved at: runs/2026-06-29-smart-search-11-d2-bridge-repair-full/best_candidate.json
 ```
 
 Missing points:
 
 ```text
-(1, 0, 1)
-(1, 2, 2)
-(1, 3, 2)
-(2, 0, 3)
-(2, 2, 2)
+(0, 2, 2)
+(2, 1, 2)
+(2, 2, 3)
+(3, 1, 0)
+(3, 1, 2)
 ```
 
-Dominant recurring defect patterns from run `28338041580`:
-
-```text
-9/20: (1,0,1), (1,2,2), (1,3,2), (2,0,3), (2,2,2)
-7/20: (1,0,1), (1,2,1), (1,3,2), (2,0,3), (2,2,2)
-2/20: (0,2,2), (2,1,3), (2,2,3), (3,1,0), (3,1,2)
-1/20: (0,2,2), (1,0,1), (1,3,2), (2,0,3), (2,2,2)
-1/20: (1,2,2), (2,0,2), (2,0,3), (3,1,0), (3,1,2)
-```
-
-Observation: all 20 shard-best artifacts reached `59/64`, but none reached `60/64` or `64/64`. The numeric frontier did not improve. The obstruction moved away from old point `(2,0,2)` and into a new D2-style wall centered on `(1,0,1)`, `(1,3,2)`, `(2,0,3)`, and `(2,2,2)`.
+Observation: all 20 shard-best artifacts reached `59/64`, but none reached `60/64` or `64/64`. The numeric frontier did not improve over run `28338041580`. The useful change is diversity: run `28338041580` produced `7` compact representatives, while run `28378489636` produced `16` compact representatives. The new common defect wall is centered on `(2,1,2)` and `(2,2,3)`, each appearing in `16 / 20` shard-best candidates.
 
 Saved run memory:
 
 ```text
 frontier/latest.md
 frontier/latest.json
-runs/2026-06-29-smart-search-10-d-family-repair-full/summary.md
-runs/2026-06-29-smart-search-10-d-family-repair-full/best_candidate.json
-runs/2026-06-29-smart-search-10-d-family-repair-full/mode_breakdown.json
-candidates/bank-additions-run28338041580.jsonl
+runs/2026-06-29-smart-search-11-d2-bridge-repair-full/summary.md
+runs/2026-06-29-smart-search-11-d2-bridge-repair-full/best_candidate.json
+runs/2026-06-29-smart-search-11-d2-bridge-repair-full/mode_breakdown.json
+candidates/bank-additions-run28378489636.jsonl
+candidates/originals/run-28378489636-smart-search-11-d2-bridge-repair.jsonl
 ```
 
-## Current prepared next workflow
+## Current next step
 
-Prepared workflow:
+The next step is not to launch a new run immediately.
 
-```text
-smart-search-11-d2-bridge-repair
-.github/workflows/smart-search-11-d2-bridge-repair.yml
-```
-
-Prepared support files:
-
-```text
-scripts/prepare_d2_bridge_repair_engine.py
-docs/smart-search-11-d2-bridge-repair-plan.md
-docs/web-chat-runbook-prompts.md
-```
-
-There is no automatic launch. The workflow is manual-only with `workflow_dispatch`; it has no push trigger.
-
-Purpose:
-
-```text
-Attack the new D2 wall: (1,0,1), (1,3,2), (2,0,3), (2,2,2).
-Variable fifth point: usually (1,2,2) or (1,2,1).
-Guardrails: old A-family from run 28304497479 and old D-family from run 28327372242.
-```
-
-The local web-chat preflight after run `28338041580` tried simple recombination of existing shard-best material and did not beat `59/64`. Therefore the next workflow widens bridge windows and keeps more bridge candidates; it is not just a repeated `smart-search-10` seed rerun.
-
-Smoke-test:
-
-```text
-workflow: smart-search-11-d2-bridge-repair
-seconds: 180
-threads: 4
-seed: 20260702
-latest_d2_run_id: 28338041580
-prior_d_run_id: 28327372242
-orbit_bridge_run_id: 28304497479
-previous_core5_run_id: 28292425390
-old_59_run_id: 28275850889
-secondary_run_id: 28275666411
-base_repair_run_id: 28200925016
-min_covered_to_save: 56
-jobs/shards: 20
-max-parallel: 20
-```
-
-Full run after green smoke-test:
-
-```text
-workflow: smart-search-11-d2-bridge-repair
-seconds: 21000
-threads: 4
-seed: 20260702
-latest_d2_run_id: 28338041580
-prior_d_run_id: 28327372242
-orbit_bridge_run_id: 28304497479
-previous_core5_run_id: 28292425390
-old_59_run_id: 28275850889
-secondary_run_id: 28275666411
-base_repair_run_id: 28200925016
-min_covered_to_save: 56
-jobs/shards: 20
-max-parallel: 20
-expected wall time: about 5h50m per shard
-```
+First do a hypothesis step: compare the new `16` compact representatives against old A/D/D2 families and decide whether the project should continue D2 bridge repair, design a small diagnostic around `(2,1,2)/(2,2,3)`, or switch to a broader new-skeleton search.
 
 ## Candidate-saving rules
 
