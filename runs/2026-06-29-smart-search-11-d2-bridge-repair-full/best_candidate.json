@@ -1,0 +1,178 @@
+{
+  "archive_note": "Best candidate selected from smart-search-11-d2-bridge-repair run 28378489636; exact scaled coverage check reproduced 59/64.",
+  "candidate_id": "mlct22-a77764189bd3e13a",
+  "canonical_key_sha256": "a77764189bd3e13a5188d47572db3a2efa46198e4b05aba471c010230c20f596",
+  "coordinate_scale": 2,
+  "coverage_percent": 92.1875,
+  "covered_count": 59,
+  "head_commit_sha": "cb70091df2faa27d14d7921ec8779ab7256b25ff",
+  "links": 22,
+  "links_target": 22,
+  "missing": [
+    [
+      0,
+      2,
+      2
+    ],
+    [
+      2,
+      1,
+      2
+    ],
+    [
+      2,
+      2,
+      3
+    ],
+    [
+      3,
+      1,
+      0
+    ],
+    [
+      3,
+      1,
+      2
+    ]
+  ],
+  "missing_count": 5,
+  "mode": "repair56_target8",
+  "modes_seen": [
+    "repair56_target8"
+  ],
+  "run_id": 28378489636,
+  "schema": "mlct-best-candidate-v1",
+  "source_artifact": "d2-bridge-22-shard-0",
+  "source_artifacts": [
+    "d2-bridge-22-shard-0"
+  ],
+  "source_file": "collected/d2_bridge_best_shard_0.json",
+  "source_occurrence_count": 1,
+  "source_runs": [
+    "28378489636"
+  ],
+  "source_shard": 0,
+  "source_shards": [
+    0
+  ],
+  "status": "partial_candidate",
+  "target_defect_hits": 15,
+  "vertices2": [
+    [
+      2,
+      12,
+      6
+    ],
+    [
+      2,
+      -6,
+      0
+    ],
+    [
+      2,
+      12,
+      0
+    ],
+    [
+      2,
+      -6,
+      6
+    ],
+    [
+      2,
+      6,
+      6
+    ],
+    [
+      6,
+      2,
+      2
+    ],
+    [
+      -2,
+      2,
+      2
+    ],
+    [
+      6,
+      6,
+      6
+    ],
+    [
+      6,
+      6,
+      0
+    ],
+    [
+      0,
+      0,
+      6
+    ],
+    [
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      6,
+      0
+    ],
+    [
+      0,
+      0,
+      6
+    ],
+    [
+      0,
+      6,
+      6
+    ],
+    [
+      0,
+      6,
+      -2
+    ],
+    [
+      6,
+      0,
+      10
+    ],
+    [
+      6,
+      0,
+      0
+    ],
+    [
+      6,
+      4,
+      12
+    ],
+    [
+      6,
+      4,
+      -2
+    ],
+    [
+      4,
+      0,
+      6
+    ],
+    [
+      4,
+      0,
+      0
+    ],
+    [
+      4,
+      6,
+      0
+    ],
+    [
+      4,
+      6,
+      14
+    ]
+  ],
+  "workflow": "smart-search-11-d2-bridge-repair"
+}
