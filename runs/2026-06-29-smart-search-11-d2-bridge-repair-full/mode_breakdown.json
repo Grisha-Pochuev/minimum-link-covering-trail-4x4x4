@@ -1,0 +1,526 @@
+{
+  "all_raw_shard_bests_covered_count": 59,
+  "compact_symmetry_representatives": 16,
+  "max_covered_count": 59,
+  "missing_set_patterns": [
+    {
+      "count": 4,
+      "missing": [
+        [
+          1,
+          2,
+          2
+        ],
+        [
+          2,
+          1,
+          2
+        ],
+        [
+          2,
+          2,
+          3
+        ],
+        [
+          3,
+          1,
+          0
+        ],
+        [
+          3,
+          1,
+          2
+        ]
+      ]
+    },
+    {
+      "count": 4,
+      "missing": [
+        [
+          1,
+          2,
+          1
+        ],
+        [
+          2,
+          1,
+          2
+        ],
+        [
+          2,
+          2,
+          3
+        ],
+        [
+          3,
+          1,
+          0
+        ],
+        [
+          3,
+          1,
+          3
+        ]
+      ]
+    },
+    {
+      "count": 3,
+      "missing": [
+        [
+          1,
+          0,
+          1
+        ],
+        [
+          1,
+          2,
+          2
+        ],
+        [
+          1,
+          3,
+          2
+        ],
+        [
+          2,
+          0,
+          3
+        ],
+        [
+          2,
+          2,
+          2
+        ]
+      ]
+    },
+    {
+      "count": 2,
+      "missing": [
+        [
+          1,
+          2,
+          2
+        ],
+        [
+          1,
+          3,
+          1
+        ],
+        [
+          1,
+          3,
+          2
+        ],
+        [
+          2,
+          1,
+          2
+        ],
+        [
+          2,
+          2,
+          3
+        ]
+      ]
+    },
+    {
+      "count": 2,
+      "missing": [
+        [
+          0,
+          2,
+          2
+        ],
+        [
+          2,
+          1,
+          2
+        ],
+        [
+          2,
+          2,
+          3
+        ],
+        [
+          3,
+          1,
+          2
+        ],
+        [
+          3,
+          1,
+          3
+        ]
+      ]
+    },
+    {
+      "count": 1,
+      "missing": [
+        [
+          0,
+          2,
+          2
+        ],
+        [
+          2,
+          1,
+          2
+        ],
+        [
+          2,
+          2,
+          3
+        ],
+        [
+          3,
+          1,
+          0
+        ],
+        [
+          3,
+          1,
+          2
+        ]
+      ]
+    },
+    {
+      "count": 1,
+      "missing": [
+        [
+          1,
+          2,
+          1
+        ],
+        [
+          2,
+          1,
+          2
+        ],
+        [
+          2,
+          2,
+          3
+        ],
+        [
+          3,
+          1,
+          2
+        ],
+        [
+          3,
+          1,
+          3
+        ]
+      ]
+    },
+    {
+      "count": 1,
+      "missing": [
+        [
+          0,
+          2,
+          2
+        ],
+        [
+          2,
+          1,
+          2
+        ],
+        [
+          2,
+          2,
+          3
+        ],
+        [
+          3,
+          1,
+          0
+        ],
+        [
+          3,
+          1,
+          3
+        ]
+      ]
+    },
+    {
+      "count": 1,
+      "missing": [
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          1,
+          2,
+          3
+        ],
+        [
+          2,
+          1,
+          0
+        ],
+        [
+          3,
+          1,
+          1
+        ],
+        [
+          3,
+          1,
+          3
+        ]
+      ]
+    },
+    {
+      "count": 1,
+      "missing": [
+        [
+          1,
+          2,
+          2
+        ],
+        [
+          2,
+          1,
+          2
+        ],
+        [
+          2,
+          2,
+          3
+        ],
+        [
+          3,
+          1,
+          0
+        ],
+        [
+          3,
+          1,
+          3
+        ]
+      ]
+    }
+  ],
+  "modes": {
+    "fractional_bridge22": {
+      "best_covered": 59,
+      "github_jobs": 4,
+      "saved_curves": 4,
+      "shards": [
+        6,
+        7,
+        8,
+        9
+      ],
+      "total_attempts": 797045841,
+      "worker_processes": 16
+    },
+    "integer_control22": {
+      "best_covered": 59,
+      "github_jobs": 1,
+      "saved_curves": 1,
+      "shards": [
+        18
+      ],
+      "total_attempts": 371388118,
+      "worker_processes": 4
+    },
+    "repair56_target8": {
+      "best_covered": 59,
+      "github_jobs": 6,
+      "saved_curves": 6,
+      "shards": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "total_attempts": 1170085623,
+      "worker_processes": 24
+    },
+    "rich_segment_catalog": {
+      "best_covered": 59,
+      "github_jobs": 2,
+      "saved_curves": 2,
+      "shards": [
+        16,
+        17
+      ],
+      "total_attempts": 3327804882,
+      "worker_processes": 8
+    },
+    "subcube_stitch22": {
+      "best_covered": 59,
+      "github_jobs": 3,
+      "saved_curves": 3,
+      "shards": [
+        13,
+        14,
+        15
+      ],
+      "total_attempts": 583096906,
+      "worker_processes": 12
+    },
+    "transition_penalty22": {
+      "best_covered": 59,
+      "github_jobs": 4,
+      "saved_curves": 4,
+      "shards": [
+        10,
+        11,
+        12,
+        19
+      ],
+      "total_attempts": 771362816,
+      "worker_processes": 16
+    }
+  },
+  "raw_shard_best_count": 20,
+  "run_id": 28378489636,
+  "schema": "mlct-mode-breakdown-v1",
+  "top_missing_points": [
+    {
+      "count": 16,
+      "point": [
+        2,
+        1,
+        2
+      ]
+    },
+    {
+      "count": 16,
+      "point": [
+        2,
+        2,
+        3
+      ]
+    },
+    {
+      "count": 11,
+      "point": [
+        3,
+        1,
+        0
+      ]
+    },
+    {
+      "count": 10,
+      "point": [
+        1,
+        2,
+        2
+      ]
+    },
+    {
+      "count": 10,
+      "point": [
+        3,
+        1,
+        3
+      ]
+    },
+    {
+      "count": 8,
+      "point": [
+        3,
+        1,
+        2
+      ]
+    },
+    {
+      "count": 5,
+      "point": [
+        1,
+        3,
+        2
+      ]
+    },
+    {
+      "count": 5,
+      "point": [
+        1,
+        2,
+        1
+      ]
+    },
+    {
+      "count": 4,
+      "point": [
+        0,
+        2,
+        2
+      ]
+    },
+    {
+      "count": 3,
+      "point": [
+        1,
+        0,
+        1
+      ]
+    },
+    {
+      "count": 3,
+      "point": [
+        2,
+        0,
+        3
+      ]
+    },
+    {
+      "count": 3,
+      "point": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "count": 2,
+      "point": [
+        1,
+        3,
+        1
+      ]
+    },
+    {
+      "count": 1,
+      "point": [
+        0,
+        1,
+        0
+      ]
+    },
+    {
+      "count": 1,
+      "point": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "count": 1,
+      "point": [
+        2,
+        1,
+        0
+      ]
+    },
+    {
+      "count": 1,
+      "point": [
+        3,
+        1,
+        1
+      ]
+    }
+  ],
+  "total_attempts": 7020784186,
+  "workflow": "smart-search-11-d2-bridge-repair"
+}
