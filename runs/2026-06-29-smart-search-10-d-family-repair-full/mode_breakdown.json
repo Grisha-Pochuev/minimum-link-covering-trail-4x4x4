@@ -1,0 +1,90 @@
+{
+  "schema": "mlct-run-mode-breakdown-v1",
+  "run_id": 28338041580,
+  "workflow": "smart-search-10-d-family-repair",
+  "seconds": 21000,
+  "threads_per_job": 4,
+  "jobs": 20,
+  "total_worker_processes": 80,
+  "total_saved_curves": 20,
+  "total_attempts": 9467860146,
+  "best_covered_count": 59,
+  "mode_breakdown": [
+    {
+      "mode": "transition_penalty22",
+      "curves_saved": 6,
+      "jobs": 6,
+      "threads_per_job": 4,
+      "worker_processes": 24,
+      "best_covered_count": 59,
+      "total_attempts": 2054058073,
+      "plain_explanation": "Stitch dense pieces while penalizing weak transitions."
+    },
+    {
+      "mode": "fractional_bridge22",
+      "curves_saved": 5,
+      "jobs": 5,
+      "threads_per_job": 4,
+      "worker_processes": 20,
+      "best_covered_count": 59,
+      "total_attempts": 1767617770,
+      "plain_explanation": "Use half-integer and bridge-like local moves to repair difficult transitions."
+    },
+    {
+      "mode": "subcube_stitch22",
+      "curves_saved": 3,
+      "jobs": 3,
+      "threads_per_job": 4,
+      "worker_processes": 12,
+      "best_covered_count": 59,
+      "total_attempts": 969131096,
+      "plain_explanation": "Try to connect dense pieces through subcube and layer structure."
+    },
+    {
+      "mode": "repair56_target8",
+      "curves_saved": 3,
+      "jobs": 3,
+      "threads_per_job": 4,
+      "worker_processes": 12,
+      "best_covered_count": 59,
+      "total_attempts": 994043668,
+      "plain_explanation": "Apply direct pressure to older defect points; the run champion came from this mode."
+    },
+    {
+      "mode": "rich_segment_catalog",
+      "curves_saved": 2,
+      "jobs": 2,
+      "threads_per_job": 4,
+      "worker_processes": 8,
+      "best_covered_count": 59,
+      "total_attempts": 3307812707,
+      "plain_explanation": "Favor rich 3-point and 4-point segment structure."
+    },
+    {
+      "mode": "integer_control22",
+      "curves_saved": 1,
+      "jobs": 1,
+      "threads_per_job": 4,
+      "worker_processes": 4,
+      "best_covered_count": 59,
+      "total_attempts": 375196832,
+      "plain_explanation": "Conservative integer-coordinate control mode."
+    }
+  ],
+  "missing_patterns": [
+    {"count": 9, "missing": [[1,0,1],[1,2,2],[1,3,2],[2,0,3],[2,2,2]]},
+    {"count": 7, "missing": [[1,0,1],[1,2,1],[1,3,2],[2,0,3],[2,2,2]]},
+    {"count": 2, "missing": [[0,2,2],[2,1,3],[2,2,3],[3,1,0],[3,1,2]]},
+    {"count": 1, "missing": [[0,2,2],[1,0,1],[1,3,2],[2,0,3],[2,2,2]]},
+    {"count": 1, "missing": [[1,2,2],[2,0,2],[2,0,3],[3,1,0],[3,1,2]]}
+  ],
+  "top_missing_points": [
+    {"point": [2,0,3], "count": 18},
+    {"point": [1,0,1], "count": 17},
+    {"point": [1,3,2], "count": 17},
+    {"point": [2,2,2], "count": 17},
+    {"point": [1,2,2], "count": 10},
+    {"point": [1,2,1], "count": 7},
+    {"point": [2,0,2], "count": 1}
+  ]
+}
