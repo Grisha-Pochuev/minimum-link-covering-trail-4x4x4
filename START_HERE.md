@@ -90,9 +90,10 @@ frontier/latest.json
 runs/2026-06-29-smart-search-11-d2-bridge-repair-full/summary.md
 runs/2026-06-29-smart-search-11-d2-bridge-repair-full/best_candidate.json
 runs/2026-06-29-smart-search-11-d2-bridge-repair-full/mode_breakdown.json
-candidates/bank-additions-run28378489636.jsonl
-candidates/originals/run-28378489636-smart-search-11-d2-bridge-repair.jsonl
+runs/2026-06-29-smart-search-11-d2-bridge-repair-full/compact_representatives.md
 ```
+
+Note: `candidates/bank.jsonl` was inspected for comparison, but it was not merged in this step. The next hypothesis step should decide whether the 16 compact representatives are useful enough to formalize as `bank-additions` for future search seeding.
 
 ## Current next step
 
