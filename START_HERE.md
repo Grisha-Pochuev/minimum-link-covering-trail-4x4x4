@@ -96,19 +96,72 @@ runs/2026-06-29-smart-search-10-d-family-repair-full/mode_breakdown.json
 candidates/bank-additions-run28338041580.jsonl
 ```
 
-## Current next step
+## Current prepared next workflow
 
-There is no new full GitHub workflow prepared yet. Do not rerun `smart-search-10-d-family-repair` unchanged with the same seed.
-
-Before another expensive run, do local analysis or a short preflight around the new D2 wall:
+Prepared workflow:
 
 ```text
-core new D2 wall: (1,0,1), (1,3,2), (2,0,3), (2,2,2)
-variable fifth point: usually (1,2,2) or (1,2,1)
-old guardrails: A-family from run 28304497479 and D-family from run 28327372242
+smart-search-11-d2-bridge-repair
+.github/workflows/smart-search-11-d2-bridge-repair.yml
 ```
 
-The next useful workflow should test how to cover `(1,0,1)` and `(2,2,2)` without reopening `(2,0,2)` or falling back into old A-family holes.
+Prepared support files:
+
+```text
+scripts/prepare_d2_bridge_repair_engine.py
+docs/smart-search-11-d2-bridge-repair-plan.md
+```
+
+There is no automatic launch. The workflow is manual-only with `workflow_dispatch`; it has no push trigger.
+
+Purpose:
+
+```text
+Attack the new D2 wall: (1,0,1), (1,3,2), (2,0,3), (2,2,2).
+Variable fifth point: usually (1,2,2) or (1,2,1).
+Guardrails: old A-family from run 28304497479 and old D-family from run 28327372242.
+```
+
+The local web-chat preflight after run `28338041580` tried simple recombination of existing shard-best material and did not beat `59/64`. Therefore the next workflow widens bridge windows and keeps more bridge candidates; it is not just a repeated `smart-search-10` seed rerun.
+
+Smoke-test:
+
+```text
+workflow: smart-search-11-d2-bridge-repair
+seconds: 180
+threads: 4
+seed: 20260702
+latest_d2_run_id: 28338041580
+prior_d_run_id: 28327372242
+orbit_bridge_run_id: 28304497479
+previous_core5_run_id: 28292425390
+old_59_run_id: 28275850889
+secondary_run_id: 28275666411
+base_repair_run_id: 28200925016
+min_covered_to_save: 56
+jobs/shards: 20
+max-parallel: 20
+```
+
+Full run after green smoke-test:
+
+```text
+workflow: smart-search-11-d2-bridge-repair
+seconds: 21000
+threads: 4
+seed: 20260702
+latest_d2_run_id: 28338041580
+prior_d_run_id: 28327372242
+orbit_bridge_run_id: 28304497479
+previous_core5_run_id: 28292425390
+old_59_run_id: 28275850889
+secondary_run_id: 28275666411
+base_repair_run_id: 28200925016
+min_covered_to_save: 56
+jobs/shards: 20
+max-parallel: 20
+expected wall time: about 5h50m per shard
+```
 
 ## Candidate-saving rules
 
