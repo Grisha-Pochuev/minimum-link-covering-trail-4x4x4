@@ -1,0 +1,201 @@
+{
+  "candidate_id": "mlct22-252fb1171852b9db",
+  "canonical_key_sha256": "252fb1171852b9db31f581036fa12cf06fd9b23f274097badfc6caa9b5084005",
+  "coordinate_scale": 2,
+  "covered_count": 59,
+  "links": 22,
+  "links_target": 22,
+  "missing": [
+    [
+      1,
+      0,
+      1
+    ],
+    [
+      1,
+      2,
+      2
+    ],
+    [
+      1,
+      3,
+      2
+    ],
+    [
+      2,
+      0,
+      3
+    ],
+    [
+      2,
+      2,
+      2
+    ]
+  ],
+  "mode": "repair56_target8",
+  "parameters": {
+    "directed_edge_count": 134666,
+    "mode": "repair56_target8",
+    "prior_seed_count": 41,
+    "seconds": 21000,
+    "seed": 20260701,
+    "shard": 16,
+    "shards": 20,
+    "threads": 4,
+    "vertex_count": 1384
+  },
+  "schema": "repair59-d-family-shard-v1",
+  "source_artifact": "d-family-22-shard-16",
+  "source_file": "collected/d_family_best_shard_16.json",
+  "source_shard": 16,
+  "status": "partial_candidate",
+  "target_defect_hits": 14,
+  "total_attempts": 333378992,
+  "vertices2": [
+    [
+      2,
+      12,
+      6
+    ],
+    [
+      2,
+      -6,
+      6
+    ],
+    [
+      2,
+      12,
+      0
+    ],
+    [
+      2,
+      -2,
+      0
+    ],
+    [
+      6,
+      2,
+      8
+    ],
+    [
+      6,
+      2,
+      2
+    ],
+    [
+      -6,
+      2,
+      2
+    ],
+    [
+      6,
+      6,
+      6
+    ],
+    [
+      6,
+      6,
+      0
+    ],
+    [
+      0,
+      0,
+      6
+    ],
+    [
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      6,
+      0
+    ],
+    [
+      0,
+      0,
+      6
+    ],
+    [
+      0,
+      6,
+      6
+    ],
+    [
+      0,
+      6,
+      -2
+    ],
+    [
+      6,
+      0,
+      10
+    ],
+    [
+      6,
+      0,
+      0
+    ],
+    [
+      6,
+      4,
+      0
+    ],
+    [
+      6,
+      4,
+      7
+    ],
+    [
+      4,
+      4,
+      6
+    ],
+    [
+      4,
+      -2,
+      0
+    ],
+    [
+      4,
+      6,
+      0
+    ],
+    [
+      4,
+      6,
+      14
+    ]
+  ],
+  "worker_summaries": [
+    {
+      "attempts": 83345730,
+      "covered_count": 59,
+      "elapsed_seconds": 21000.0,
+      "links": 22,
+      "worker_id": 0
+    },
+    {
+      "attempts": 83350700,
+      "covered_count": 59,
+      "elapsed_seconds": 21000.0,
+      "links": 22,
+      "worker_id": 1
+    },
+    {
+      "attempts": 83332928,
+      "covered_count": 59,
+      "elapsed_seconds": 21000.0,
+      "links": 22,
+      "worker_id": 2
+    },
+    {
+      "attempts": 83349634,
+      "covered_count": 59,
+      "elapsed_seconds": 21000.0,
+      "links": 22,
+      "worker_id": 3
+    }
+  ]
+}
