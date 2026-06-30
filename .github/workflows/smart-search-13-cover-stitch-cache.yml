@@ -9,11 +9,11 @@ on:
   workflow_dispatch:
     inputs:
       seconds:
-        description: "Seconds for smoke shard. Use 180."
+        description: "Seconds per shard. Use 180 for 20-job smoke, 21000 for full."
         required: false
         default: "180"
       threads:
-        description: "Threads for smoke shard. Use 4."
+        description: "Threads per shard. Use 4."
         required: false
         default: "4"
       seed:
@@ -35,10 +35,15 @@ jobs:
           python-version: "3.11"
       - run: python scripts/check_trail.py data/ripa_23_trail.json --expected-links 23 --require-full
 
-  cover-stitch-cache-smoke:
+  cover-stitch-cache-search:
     runs-on: ubuntu-latest
     needs: check-known-23
-    timeout-minutes: 20
+    timeout-minutes: 359
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -46,24 +51,79 @@ jobs:
           python-version: "3.11"
       - name: Export candidate bank
         run: |
-          python scripts/export_candidate_bank_jsons.py --out seed-material/from-candidate-bank --min-covered "${{ github.event.inputs.min_covered_to_save || '56' }}" candidates/bank.jsonl candidates/bank-additions-run28404861374.jsonl candidates/bank-additions-run28378489636.jsonl candidates/bank-additions-run28338041580.jsonl candidates/bank-additions-run28327372242.jsonl candidates/bank-additions-run28304497479.jsonl candidates/bank-additions-run28292425390.jsonl
+          python scripts/export_candidate_bank_jsons.py \
+            --out seed-material/from-candidate-bank \
+            --min-covered "${{ github.event.inputs.min_covered_to_save || '56' }}" \
+            candidates/bank.jsonl \
+            candidates/bank-additions-run28404861374.jsonl \
+            candidates/bank-additions-run28378489636.jsonl \
+            candidates/bank-additions-run28338041580.jsonl \
+            candidates/bank-additions-run28327372242.jsonl \
+            candidates/bank-additions-run28304497479.jsonl \
+            candidates/bank-additions-run28292425390.jsonl
       - name: Prepare C++ engine
         run: python scripts/prepare_cover_stitch_cache_engine.py --out build/cover_stitch_cache_search.cpp
       - name: Compile C++ engine
         run: g++ -O3 -std=c++17 -pthread -DNDEBUG build/cover_stitch_cache_search.cpp -o cover_stitch_cache_search
-      - name: Run tiny local smoke shard
+      - name: Run shard
         run: |
           mkdir -p results/cover_stitch_cache
-          ./cover_stitch_cache_search --input-dir seed-material/from-candidate-bank --input-dir runs --seconds "${{ github.event.inputs.seconds || '180' }}" --threads "${{ github.event.inputs.threads || '4' }}" --seed "${{ github.event.inputs.seed || '20260704' }}" --shard 0 --shards 20 --out results/cover_stitch_cache/cover_stitch_cache_best_shard_0.json
-      - name: Check smoke result
+          INPUT_DIRS=(
+            seed-material/from-candidate-bank
+            runs/2026-06-30-smart-search-12-skeleton-diversity-full
+            runs/2026-06-29-smart-search-11-d2-bridge-repair-full
+            runs/2026-06-29-smart-search-10-d-family-repair-full
+            runs/2026-06-28-smart-search-9-new-defect-repair-full
+            runs/2026-06-28-smart-search-8-orbit-bridge-full
+            runs/2026-06-27-smart-search-7-core5-full
+            runs/2026-06-27-smart-search-6-defect-full
+            runs/2026-06-27-smart-search-6-defect-smoke
+            runs/2026-06-26-repair-search-5
+            experiments/2026-06-25-repair57-local-smoke
+          )
+          ARGS=()
+          for d in "${INPUT_DIRS[@]}"; do
+            if [ -d "$d" ]; then
+              ARGS+=(--input-dir "$d")
+            fi
+          done
+          ./cover_stitch_cache_search "${ARGS[@]}" \
+            --seconds "${{ github.event.inputs.seconds || '180' }}" \
+            --threads "${{ github.event.inputs.threads || '4' }}" \
+            --seed "${{ github.event.inputs.seed || '20260704' }}" \
+            --shard "${{ matrix.shard }}" \
+            --shards 20 \
+            --out "results/cover_stitch_cache/cover_stitch_cache_best_shard_${{ matrix.shard }}.json"
+      - name: Check shard result
         if: always()
         run: |
-          if [ -f results/cover_stitch_cache/cover_stitch_cache_best_shard_0.json ]; then
-            python scripts/check_scaled_trail.py results/cover_stitch_cache/cover_stitch_cache_best_shard_0.json --max-links 22
+          if [ -f "results/cover_stitch_cache/cover_stitch_cache_best_shard_${{ matrix.shard }}.json" ]; then
+            python scripts/check_scaled_trail.py "results/cover_stitch_cache/cover_stitch_cache_best_shard_${{ matrix.shard }}.json" --max-links 22
           fi
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: cover-stitch-cache-smoke-shard-0
-          path: results/cover_stitch_cache/cover_stitch_cache_best_shard_0.json
+          name: cover-stitch-cache-22-shard-${{ matrix.shard }}
+          path: results/cover_stitch_cache/cover_stitch_cache_best_shard_${{ matrix.shard }}.json
+          if-no-files-found: warn
+
+  aggregate-cover-stitch-cache-results:
+    runs-on: ubuntu-latest
+    needs: cover-stitch-cache-search
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: cover-stitch-cache-22-shard-*
+          path: collected
+          merge-multiple: true
+      - run: python scripts/build_smart_summary.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cover-stitch-cache-run-summary
+          path: |
+            collected/smart_run_summary.json
+            collected/smart_run_summary.md
           if-no-files-found: warn
