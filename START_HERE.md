@@ -93,11 +93,37 @@ Note: `candidates/bank.jsonl` was not merged in this step. The three compact add
 
 Do not immediately launch another same-seed `smart-search-12-skeleton-diversity` full run. The run shows that the current skeleton-diversity generator still gets pulled back to a known `59/64` family.
 
-The next useful step should be a hypothesis and generator-revision step:
+A new smoke-test package has been prepared:
 
 ```text
-Revise the generator so it cannot simply reuse the dominant bank-seeded 59-family.
-Possible directions: hard novelty pressure against the missing set (1,2,2),(1,3,1),(1,3,2),(2,0,2),(2,0,3); deliberately start from structurally different 56-58 candidates; or run a small diagnostic that rewards new missing-set geometry over raw coverage.
+workflow: smart-search-13-cover-stitch-cache
+workflow file: .github/workflows/smart-search-13-cover-stitch-cache.yml
+engine generator: scripts/prepare_cover_stitch_cache_engine.py
+plan: docs/smart-search-13-cover-stitch-cache-plan.md
+manual instructions: docs/smart-search-13-manual-smoke-instructions.md
+```
+
+This is intentionally a smoke-test first, not the full expensive 20-shard run. The hypothesis is that repeated-state cache pressure plus an anti-wall archive should stop the search from spending most CPU on the same 59/64 families. The smoke-test should verify prepare/compile/run/check and the new `cache_rejects` / `wall_rejects` worker-summary fields before preparing the full 20-shard launch.
+
+Recommended smoke-test inputs:
+
+```text
+seconds: 180
+threads: 4
+seed: 20260704
+min_covered_to_save: 56
+```
+
+If the smoke-test is green, prepare the full 20-shard version with the same engine and these intended shard roles:
+
+```text
+0-4   cover_set_beam_cache
+5-8   stitch_with_transposition
+9-12  repair_window_cache
+13-15 anti_wall_archive
+16-17 novelty_56_58
+18    old_59_control
+19    integer_control22
 ```
 
 ## Candidate-saving rules
