@@ -1,103 +1,81 @@
 {
+  "schema": "mlct-frontier-v1",
+  "repository": "Grisha-Pochuev/minimum-link-covering-trail-4x4x4",
+  "updated_utc": "2026-06-30T15:25:00Z",
+  "status": "smart_search_12_skeleton_diversity_completed_numeric_frontier_unchanged",
   "candidate_preservation_rule_for_future_runs": {
-    "max_links": 22,
-    "min_covered_to_save": 56,
     "rule_type": "threshold_and_above",
+    "min_covered_to_save": 56,
+    "max_links": 22,
     "save_condition": "covered_count >= 56 and links <= 22"
+  },
+  "latest_useful_run": {
+    "run_id": 28404861374,
+    "workflow_name": "smart-search-12-skeleton-diversity",
+    "status": "success",
+    "head_commit_sha": "7d7960619fbbb5389cb873715e1b698e2576972f",
+    "result_type": "heuristic_search_not_proof",
+    "parameters": {
+      "seconds": 21000,
+      "threads": 4,
+      "shards": 20,
+      "max_parallel": 20,
+      "seed": 20260703,
+      "latest_run_id": 28378489636,
+      "latest_d2_run_id": 28338041580,
+      "prior_d_run_id": 28327372242,
+      "orbit_bridge_run_id": 28304497479,
+      "previous_core5_run_id": 28292425390,
+      "old_59_run_id": 28275850889,
+      "secondary_run_id": 28275666411,
+      "base_repair_run_id": 28200925016,
+      "min_covered_to_save": 56
+    },
+    "artifacts": {
+      "run_summary": "skeleton-diversity-run-summary",
+      "shard_results": "skeleton-diversity-22-shard-*"
+    },
+    "best_result": {
+      "candidate_id": "mlct22-dddd317f06883acd",
+      "covered_count": 59,
+      "grid_points": 64,
+      "coverage_percent": 92.1875,
+      "links": 22,
+      "missing_count": 5,
+      "missing": [[1, 2, 2], [1, 3, 1], [1, 3, 2], [2, 0, 2], [2, 0, 3]],
+      "mode": "anti_wall22",
+      "source_artifact": "skeleton-diversity-22-shard-15",
+      "source_shard": 15,
+      "source_file": "runs/2026-06-30-smart-search-12-skeleton-diversity-full/best_candidate.json",
+      "status": "partial_candidate"
+    },
+    "run_statistics": {
+      "raw_shard_best_count": 20,
+      "raw_shard_best_at_or_above_56": 20,
+      "unique_exact_vertices2_representatives": 3,
+      "compact_bank_additions": 3,
+      "total_attempts": 21924797355,
+      "total_workers": 80,
+      "approx_cpu_hours": 466.6667
+    },
+    "comparison_with_previous_frontier": {
+      "previous_latest_useful_run_id": 28378489636,
+      "previous_best_covered_count": 59,
+      "new_best_covered_count": 59,
+      "numeric_frontier_changed": false,
+      "previous_compact_representatives": 16,
+      "new_exact_representatives": 3,
+      "important_observation": "The skeleton-diversity generator collapsed back to a dominant 59/64 family: one exact candidate appeared in 18/20 shard-best artifacts."
+    }
   },
   "conclusions_for_next_run": [
     "Numeric frontier remains 59/64; no 60/64 or 64/64 candidate was found.",
-    "All 20 shard-best candidates reached 59/64, so the workflow is strong but saturated numerically.",
-    "The useful gain is diversity: 16 compact representatives versus 7 in the previous run.",
-    "The new frequent wall is centered on (2,1,2) and (2,2,3)."
+    "All 20 shard-best candidates reached 59/64, but diversity was low: only 3 exact vertices2 representatives.",
+    "The dominant missing set was (1,2,2),(1,3,1),(1,3,2),(2,0,2),(2,0,3), appearing in 18/20 shard-best candidates.",
+    "Do not immediately rerun the same workflow with the same seed; revise the generator to force genuinely new skeletons or missing-set geometry."
   ],
   "current_next_step": {
-    "instruction": "Do not launch an identical rerun. First decide whether the new 16 compact representatives indicate a new family worth mining, or whether search should switch to new-skeleton generation.",
-    "step_type": "hypothesis_before_next_run"
-  },
-  "latest_useful_run": {
-    "artifacts": {
-      "run_summary": "d2-bridge-run-summary",
-      "shard_results": "d2-bridge-22-shard-*"
-    },
-    "best_result": {
-      "candidate_id": "mlct22-a77764189bd3e13a",
-      "coverage_percent": 92.1875,
-      "covered_count": 59,
-      "grid_points": 64,
-      "links": 22,
-      "missing": [
-        [
-          0,
-          2,
-          2
-        ],
-        [
-          2,
-          1,
-          2
-        ],
-        [
-          2,
-          2,
-          3
-        ],
-        [
-          3,
-          1,
-          0
-        ],
-        [
-          3,
-          1,
-          2
-        ]
-      ],
-      "missing_count": 5,
-      "mode": "repair56_target8",
-      "source_artifact": "d2-bridge-22-shard-0",
-      "source_file": "runs/2026-06-29-smart-search-11-d2-bridge-repair-full/best_candidate.json",
-      "source_shard": 0,
-      "status": "partial_candidate"
-    },
-    "comparison_with_previous_frontier": {
-      "important_observation": "The run shifted the common defect wall toward (2,1,2) and (2,2,3); both appeared in 16/20 shard-best candidates.",
-      "new_best_covered_count": 59,
-      "new_compact_representatives": 16,
-      "numeric_frontier_changed": false,
-      "previous_best_covered_count": 59,
-      "previous_compact_representatives": 7,
-      "previous_latest_useful_run_id": 28338041580
-    },
-    "head_commit_sha": "cb70091df2faa27d14d7921ec8779ab7256b25ff",
-    "parameters": {
-      "base_repair_run_id": 28200925016,
-      "latest_d2_run_id": 28338041580,
-      "max_parallel": 20,
-      "min_covered_to_save": 56,
-      "old_59_run_id": 28275850889,
-      "orbit_bridge_run_id": 28304497479,
-      "previous_core5_run_id": 28292425390,
-      "prior_d_run_id": 28327372242,
-      "secondary_run_id": 28275666411,
-      "seconds": 21000,
-      "seed": 20260702,
-      "shards": 20,
-      "threads": 4
-    },
-    "result_type": "heuristic_search_not_proof",
-    "run_id": 28378489636,
-    "run_statistics": {
-      "compact_symmetry_representatives": 16,
-      "mode_breakdown_file": "runs/2026-06-29-smart-search-11-d2-bridge-repair-full/mode_breakdown.json",
-      "raw_shard_best_count": 20,
-      "total_attempts": 7020784186
-    },
-    "status": "success",
-    "workflow_name": "smart-search-11-d2-bridge-repair"
-  },
-  "repository": "Grisha-Pochuev/minimum-link-covering-trail-4x4x4",
-  "schema": "mlct-frontier-v1",
-  "status": "smart_search_11_d2_bridge_repair_completed_numeric_frontier_unchanged",
-  "updated_utc": "2026-06-29T20:20:00Z"
+    "step_type": "hypothesis_and_generator_revision_before_next_run",
+    "instruction": "Revise skeleton-diversity so it cannot simply reuse the dominant bank-seeded 59-family. Consider hard novelty pressure, structurally different 56-58 seeds, or a diagnostic that rewards new defect geometry over raw 59/64 reuse."
+  }
 }

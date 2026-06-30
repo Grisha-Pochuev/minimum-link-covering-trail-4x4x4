@@ -2,9 +2,7 @@
 
 Last updated: 2026-06-30
 
-This is the first file to read when starting work in a new ChatGPT web chat.
-
-The assistant may not remember enough from previous chats. Treat this repository as durable memory. Start here, then read the files listed below before analyzing a run or preparing a new one.
+This is the first file to read when starting work in a new ChatGPT web chat. Treat this repository as durable memory: read this file first, then continue from the current frontier and the exact workflow/run being analyzed.
 
 ## What this project is
 
@@ -39,19 +37,13 @@ Short invariant:
 START_HERE -> frontier -> web-chat runbook -> relevant workflow -> plan -> bank/additions/originals -> runs/artifacts -> action
 ```
 
-Web-chat optimization rule:
-
-```text
-Do not rescan everything blindly. Use frontier/latest.* and saved run summaries as the index, then inspect only the relevant exact workflow, run folder, candidate additions, originals, and artifacts. Do not promise to check a run later; either check it now from available GitHub data or say what the user must do manually.
-```
-
 ## Current frontier to remember
 
-Latest useful completed full run:
+Latest recorded completed full run:
 
 ```text
-run id: 28378489636
-workflow: smart-search-11-d2-bridge-repair
+run id: 28404861374
+workflow: smart-search-12-skeleton-diversity
 status: success
 seconds per shard: 21000
 threads per shard: 4
@@ -64,107 +56,49 @@ missing count: 5
 Best recorded candidate from the latest run:
 
 ```text
-candidate id: mlct22-a77764189bd3e13a
-source artifact: d2-bridge-22-shard-0
-mode: repair56_target8
-saved at: runs/2026-06-29-smart-search-11-d2-bridge-repair-full/best_candidate.json
+candidate id: mlct22-dddd317f06883acd
+source artifact: skeleton-diversity-22-shard-15
+mode: anti_wall22 in the run summary; exact same curve also appeared under other modes
+saved at: runs/2026-06-30-smart-search-12-skeleton-diversity-full/best_candidate.json
 ```
 
 Missing points:
 
 ```text
-(0, 2, 2)
-(2, 1, 2)
-(2, 2, 3)
-(3, 1, 0)
-(3, 1, 2)
+(1, 2, 2)
+(1, 3, 1)
+(1, 3, 2)
+(2, 0, 2)
+(2, 0, 3)
 ```
 
-Observation: all 20 shard-best artifacts reached `59/64`, but none reached `60/64` or `64/64`. The numeric frontier did not improve over run `28338041580`. The useful change is diversity: run `28338041580` produced `7` compact representatives, while run `28378489636` produced `16` compact representatives. The new common defect wall is centered on `(2,1,2)` and `(2,2,3)`, each appearing in `16 / 20` shard-best candidates.
+Observation: all 20 shard-best artifacts reached `59/64`, but none reached `60/64` or `64/64`. This run did not improve the numeric frontier. It also did not improve diversity: previous run `28378489636` had `16` compact representatives, while run `28404861374` has only `3` exact `vertices2` representatives. The dominant exact curve appeared in `18 / 20` shard-best artifacts.
 
 Saved run memory:
 
 ```text
 frontier/latest.md
 frontier/latest.json
-runs/2026-06-29-smart-search-11-d2-bridge-repair-full/summary.md
-runs/2026-06-29-smart-search-11-d2-bridge-repair-full/best_candidate.json
-runs/2026-06-29-smart-search-11-d2-bridge-repair-full/mode_breakdown.json
-runs/2026-06-29-smart-search-11-d2-bridge-repair-full/compact_representatives.md
+runs/2026-06-30-smart-search-12-skeleton-diversity-full/summary.md
+runs/2026-06-30-smart-search-12-skeleton-diversity-full/best_candidate.json
+runs/2026-06-30-smart-search-12-skeleton-diversity-full/mode_breakdown.json
+runs/2026-06-30-smart-search-12-skeleton-diversity-full/compact_representatives.md
+candidates/bank-additions-run28404861374.jsonl
+candidates/originals/run28404861374-shard-bests-index.jsonl
 ```
 
-Note: `candidates/bank.jsonl` was inspected for comparison, but it was not merged in this step. The next hypothesis step should decide whether the 16 compact representatives are useful enough to formalize as `bank-additions` for future search seeding.
-
-## Prepared next workflow
-
-A broader follow-up workflow now exists:
-
-```text
-.github/workflows/smart-search-12-skeleton-diversity.yml
-scripts/prepare_skeleton_diversity_engine.py
-docs/smart-search-12-skeleton-diversity-plan.md
-```
-
-Purpose: do not simply repeat D2 bridge repair. The working hypothesis is that repeated `59/64` runs are hitting a skeleton-level obstruction: local repair moves the five missing points but does not remove the five-hole wall. The next run should search for different 22-link skeletons and better transitions between rich segments.
-
-Shard split in the prepared workflow:
-
-```text
-0-5   fresh_rich_skeleton
-6-9   transition_graph22
-10-13 diversity_repair22
-14-16 anti_wall22
-17    cross_family22
-18    integer_control22
-19    d2_control22
-```
-
-Suggested launch order from web chat:
-
-```text
-First smoke-test:
-seconds=180
-threads=4
-seed=20260703
-latest_run_id=28378489636
-latest_d2_run_id=28338041580
-prior_d_run_id=28327372242
-orbit_bridge_run_id=28304497479
-previous_core5_run_id=28292425390
-old_59_run_id=28275850889
-secondary_run_id=28275666411
-base_repair_run_id=28200925016
-min_covered_to_save=56
-
-If smoke is green, full run:
-seconds=21000
-threads=4
-same run ids and seed unless there is a reason to change seed
-```
-
-Important: the workflow is `workflow_dispatch` only. Do not add a push trigger for these expensive runs.
+Note: `candidates/bank.jsonl` was not merged in this step. The three compact additions are saved in `candidates/bank-additions-run28404861374.jsonl`. The next hypothesis step should decide whether to merge them or whether they are too collapsed around the dominant family to be useful as general search fuel.
 
 ## Current next step
 
-Run a short smoke-test of `smart-search-12-skeleton-diversity` from the GitHub Actions UI. If it compiles, downloads artifacts, runs shards, and uploads a summary, then launch the full `21000` second run. After completion, analyze both numeric frontier and structural diversity: a new `59/64` family with different missing points can still be useful.
+Do not immediately launch another same-seed `smart-search-12-skeleton-diversity` full run. The run shows that the current skeleton-diversity generator still gets pulled back to a known `59/64` family.
 
-## Lessons from the 2026-06-30 web-chat process
-
-Do not confuse a plan with a repository change. In this chat, the workflow was first described before it actually existed, and the user correctly noticed that it was not visible in GitHub. Future assistants must create the file, fetch it back, and only then say it exists.
-
-When preparing expensive GitHub runs from web chat:
+The next useful step should be a hypothesis and generator-revision step:
 
 ```text
-1. Read START_HERE.md first.
-2. Read docs/web-chat-runbook-prompts.md.
-3. Read the workflow and plan file from GitHub, not from memory.
-4. Verify workflow_dispatch-only and no push trigger.
-5. Verify generator path, compile command, checker command, artifact names, and aggregation.
-6. If the connector lacks workflow_dispatch, do not claim the run was launched; give exact GitHub UI steps.
-7. After changing files, fetch them back from GitHub and update START_HERE.md.
+Revise the generator so it cannot simply reuse the dominant bank-seeded 59-family.
+Possible directions: hard novelty pressure against the missing set (1,2,2),(1,3,1),(1,3,2),(2,0,2),(2,0,3); deliberately start from structurally different 56-58 candidates; or run a small diagnostic that rewards new missing-set geometry over raw coverage.
 ```
-
-The current web-chat connector could create and update files but did not expose a workflow-dispatch action. Therefore smoke/full runs may need manual UI launch unless a future tool explicitly provides dispatch.
 
 ## Candidate-saving rules
 
@@ -181,7 +115,7 @@ covered_count >= 56
 links <= 22
 ```
 
-Post-run rule: save champion, save compact additions, save original shard-best candidates when available, update `frontier/latest.*`, and update `START_HERE.md` if the frontier or next step changed.
+Post-run rule: save champion, save compact additions, save original shard-best candidate index when available, update `frontier/latest.*`, and update `START_HERE.md` if the frontier or next step changed.
 
 ## Flexible post-run reasoning loop
 

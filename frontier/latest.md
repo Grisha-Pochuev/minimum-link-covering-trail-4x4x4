@@ -2,95 +2,85 @@
 
 This file is the human-readable working memory of the project.
 
-Status: `smart-search-11-d2-bridge-repair` full run completed successfully. Numeric frontier remains `59/64`; the latest useful completed run is run `28378489636`.
+Status: `smart-search-12-skeleton-diversity` full run completed successfully. Numeric frontier remains `59/64`; run `28404861374` is now recorded as the latest completed full run, but it did not improve the best coverage or structural diversity.
 
-Latest useful completed run:
+Latest recorded full run:
 
 - Repository: `Grisha-Pochuev/minimum-link-covering-trail-4x4x4`
-- Final run id: `28378489636`
-- Run URL: https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/28378489636
-- Workflow: `smart-search-11-d2-bridge-repair`
-- Commit SHA of the run: `cb70091df2faa27d14d7921ec8779ab7256b25ff`
+- Final run id: `28404861374`
+- Run URL: https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/28404861374
+- Workflow: `smart-search-12-skeleton-diversity`
+- Commit SHA of the run: `7d7960619fbbb5389cb873715e1b698e2576972f`
 - Status: `success`
 - Duration: full run, `21000` seconds per shard
+- Threads per shard: `4`
+- Shards/jobs: `20`
 - Result type: heuristic search, not a proof
-- Artifacts: `d2-bridge-run-summary`, `d2-bridge-22-shard-*`
+- Artifacts: `skeleton-diversity-run-summary`, `skeleton-diversity-22-shard-*`
 
 ## Best GitHub Actions result
 
-- candidate id: `mlct22-a77764189bd3e13a`
+- candidate id: `mlct22-dddd317f06883acd`
 - covered_count: `59 / 64`
 - coverage percent: `92.1875%`
 - links: `22`
-- selected mode: `repair56_target8`
-- source artifact: `d2-bridge-22-shard-0`
-- source shard: `0`
+- selected mode: `anti_wall22` in the run summary; the same exact curve also appeared under several other modes
+- source artifact: `skeleton-diversity-22-shard-15`
+- source shard: `15`
 - status: `partial_candidate`
 - missing count: `5`
 - missing:
-  - `(0, 2, 2)`
-  - `(2, 1, 2)`
-  - `(2, 2, 3)`
-  - `(3, 1, 0)`
-  - `(3, 1, 2)`
+  - `(1, 2, 2)`
+  - `(1, 3, 1)`
+  - `(1, 3, 2)`
+  - `(2, 0, 2)`
+  - `(2, 0, 3)`
 
 The best candidate is still partial. It has exactly 22 links and covers 59 of the 64 grid points. This is not a complete covering trail and not a proof.
 
 Saved run memory:
 
 ```text
-runs/2026-06-29-smart-search-11-d2-bridge-repair-full/summary.md
-runs/2026-06-29-smart-search-11-d2-bridge-repair-full/best_candidate.json
-runs/2026-06-29-smart-search-11-d2-bridge-repair-full/mode_breakdown.json
-runs/2026-06-29-smart-search-11-d2-bridge-repair-full/compact_representatives.md
+runs/2026-06-30-smart-search-12-skeleton-diversity-full/summary.md
+runs/2026-06-30-smart-search-12-skeleton-diversity-full/best_candidate.json
+runs/2026-06-30-smart-search-12-skeleton-diversity-full/mode_breakdown.json
+runs/2026-06-30-smart-search-12-skeleton-diversity-full/compact_representatives.md
+candidates/bank-additions-run28404861374.jsonl
+candidates/originals/run28404861374-shard-bests-index.jsonl
 ```
 
-Note: `candidates/bank.jsonl` was inspected for comparison, but it was not merged in this step. The next hypothesis step should decide whether the 16 compact representatives are useful enough to formalize as `bank-additions` for future search seeding.
+## Candidate memory from run 28404861374
 
-## Dominant missing patterns from run 28378489636
+- raw shard-best curves at the normal preservation threshold `covered_count >= 56`: `20`
+- all raw shard-best curves were `59/64`
+- exact unique `vertices2` curves among the 20: `3`
+- compact bank additions saved: `3`
+- original shard-best index records saved: `20`
 
-- 4 / 20: `(1,2,2)`, `(2,1,2)`, `(2,2,3)`, `(3,1,0)`, `(3,1,2)`
-- 4 / 20: `(1,2,1)`, `(2,1,2)`, `(2,2,3)`, `(3,1,0)`, `(3,1,3)`
-- 3 / 20: `(1,0,1)`, `(1,2,2)`, `(1,3,2)`, `(2,0,3)`, `(2,2,2)`
-- 2 / 20: `(1,2,2)`, `(1,3,1)`, `(1,3,2)`, `(2,1,2)`, `(2,2,3)`
-- 2 / 20: `(0,2,2)`, `(2,1,2)`, `(2,2,3)`, `(3,1,2)`, `(3,1,3)`
-- 1 / 20: `(0,2,2)`, `(2,1,2)`, `(2,2,3)`, `(3,1,0)`, `(3,1,2)`
-- 1 / 20: `(1,2,1)`, `(2,1,2)`, `(2,2,3)`, `(3,1,2)`, `(3,1,3)`
-- 1 / 20: `(0,2,2)`, `(2,1,2)`, `(2,2,3)`, `(3,1,0)`, `(3,1,3)`
-- 1 / 20: `(0,1,0)`, `(1,2,3)`, `(2,1,0)`, `(3,1,1)`, `(3,1,3)`
-- 1 / 20: `(1,2,2)`, `(2,1,2)`, `(2,2,3)`, `(3,1,0)`, `(3,1,3)`
+`candidates/bank.jsonl` was not merged in this step. The run-level additions were saved separately in `candidates/bank-additions-run28404861374.jsonl`.
+
+## Dominant missing patterns from run 28404861374
+
+- 18 / 20: `(1,2,2)`, `(1,3,1)`, `(1,3,2)`, `(2,0,2)`, `(2,0,3)`
+- 1 / 20: `(0,2,0)`, `(2,1,2)`, `(2,2,3)`, `(3,1,0)`, `(3,1,2)`
+- 1 / 20: `(0,1,2)`, `(1,2,1)`, `(1,3,2)`, `(2,1,3)`, `(2,2,2)`
 
 ## Top recurring missing points
 
-- `(2, 1, 2)`: 16 / 20
-- `(2, 2, 3)`: 16 / 20
-- `(3, 1, 0)`: 11 / 20
-- `(1, 2, 2)`: 10 / 20
-- `(3, 1, 3)`: 10 / 20
-- `(3, 1, 2)`: 8 / 20
-- `(1, 3, 2)`: 5 / 20
-- `(1, 2, 1)`: 5 / 20
-- `(0, 2, 2)`: 4 / 20
-- `(1, 0, 1)`: 3 / 20
-- `(2, 0, 3)`: 3 / 20
-- `(2, 2, 2)`: 3 / 20
-- `(1, 3, 1)`: 2 / 20
-- `(0, 1, 0)`: 1 / 20
-- `(1, 2, 3)`: 1 / 20
-- `(2, 1, 0)`: 1 / 20
-- `(3, 1, 1)`: 1 / 20
-
+- `(1, 3, 2)`: 19 / 20
+- `(1, 2, 2)`: 18 / 20
+- `(1, 3, 1)`: 18 / 20
+- `(2, 0, 2)`: 18 / 20
+- `(2, 0, 3)`: 18 / 20
 
 ## Comparison with previous frontier
 
-Previous latest useful run was `28338041580`, also `59/64`, with dominant D2-family missing set `(1,0,1)`, `(1,2,2)`, `(1,3,2)`, `(2,0,3)`, `(2,2,2)`.
+Previous latest useful run was `28378489636`, also `59/64`, with `16` compact representatives. This run again reached only `59/64`, and its diversity was lower: only `3` exact `vertices2` representatives, with one dominant candidate appearing in `18 / 20` shard-best artifacts.
 
-This run did not improve the number. It did improve the diversity of stored curves: previous run had `7` compact representatives from 20 shard-best curves; this run has `16` compact representatives from 20 shard-best curves.
-
-The most important new sign is a shifted defect wall. The points `(2,1,2)` and `(2,2,3)` became extremely common, appearing in `16 / 20` shard-best candidates. So the run seems to have escaped part of the previous D2 wall but saturated against a nearby new wall.
+So the intended skeleton-diversity launch did not really escape the old frontier. It mostly collapsed back to a strong `59/64` family. This is useful negative evidence: the next generator should impose stronger novelty pressure rather than trusting broad skeleton-diversity labels alone.
 
 ## Current next step
 
-Do not immediately launch another identical D2 bridge full run with the same seed and modes.
+Do not immediately launch another identical `smart-search-12-skeleton-diversity` full run with the same seed and modes.
 
-The next step should be a hypothesis step: compare the new compact representatives with old A/D/D2 families and decide whether to continue bridge repair, switch to new-skeleton search, or design a smaller diagnostic around the `(2,1,2)/(2,2,3)` wall.
+The next step should be a hypothesis and generator-revision step: either hard-block the dominant 5-hole family, deliberately seed from structurally different `56/64`-`58/64` curves, or run a smaller diagnostic that scores new missing-set geometry more strongly than raw `59/64` reuse.

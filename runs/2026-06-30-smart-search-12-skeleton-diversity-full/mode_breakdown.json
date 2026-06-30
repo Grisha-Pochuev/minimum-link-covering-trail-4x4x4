@@ -1,0 +1,17 @@
+{
+  "run_id": 28404861374,
+  "workflow": "smart-search-12-skeleton-diversity",
+  "seconds_per_shard": 21000,
+  "threads_per_shard": 4,
+  "total_workers": 80,
+  "total_attempts": 21924797355,
+  "modes": {
+    "fresh_rich_skeleton": {"shards": [0,1,2,3,4,5], "jobs": 6, "worker_processes": 24, "approx_cpu_hours": 140.0, "attempts": 19146471884, "best_covered": 59, "unique_exact_candidates": 1, "note": "collapsed to dominant family"},
+    "transition_graph22": {"shards": [6,7,8,9], "jobs": 4, "worker_processes": 16, "approx_cpu_hours": 93.3333, "attempts": 809989648, "best_covered": 59, "unique_exact_candidates": 2, "note": "found D2-like alternative on shard 7"},
+    "diversity_repair22": {"shards": [10,11,12,13], "jobs": 4, "worker_processes": 16, "approx_cpu_hours": 93.3333, "attempts": 746907432, "best_covered": 59, "unique_exact_candidates": 2, "note": "found alternate missing-set family on shard 13"},
+    "anti_wall22": {"shards": [14,15,16], "jobs": 3, "worker_processes": 12, "approx_cpu_hours": 70.0, "attempts": 551754716, "best_covered": 59, "unique_exact_candidates": 1, "note": "did not avoid dominant wall"},
+    "cross_family22": {"shards": [17], "jobs": 1, "worker_processes": 4, "approx_cpu_hours": 23.3333, "attempts": 192430995, "best_covered": 59, "unique_exact_candidates": 1, "note": "dominant family"},
+    "integer_control22": {"shards": [18], "jobs": 1, "worker_processes": 4, "approx_cpu_hours": 23.3333, "attempts": 292599102, "best_covered": 59, "unique_exact_candidates": 1, "note": "dominant family"},
+    "d2_control22": {"shards": [19], "jobs": 1, "worker_processes": 4, "approx_cpu_hours": 23.3333, "attempts": 184643578, "best_covered": 59, "unique_exact_candidates": 1, "note": "dominant family"}
+  }
+}
