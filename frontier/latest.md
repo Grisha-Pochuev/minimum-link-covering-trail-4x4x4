@@ -2,7 +2,9 @@
 
 This file is the human-readable working memory of the project.
 
-Status: `smart-search-13-cover-stitch-cache` full run completed successfully. Numeric frontier remains `59/64`; run `28460740781` is now recorded as the latest completed full run. It did not find `60/64`, but it did improve run-level exact diversity compared with run `28404861374`.
+Status: `smart-search-13-cover-stitch-cache` full run completed successfully. Numeric frontier remains `59/64`; run `28460740781` is recorded as the latest completed full run. It did not find `60/64`, but it did improve run-level exact diversity compared with run `28404861374`.
+
+The next prepared package is now `smart-search-14-rich-cover-stitch`. Do not treat the next step as an open-ended hypothesis discussion unless the prepared files are missing or inconsistent.
 
 Latest recorded full run:
 
@@ -89,4 +91,41 @@ So the cache/anti-wall launch gave a real but modest structural improvement: it 
 
 Do not immediately launch another identical `smart-search-13-cover-stitch-cache` full run with the same seed and modes.
 
-The next step should be a hypothesis and generator-revision step. The most natural direction is a stronger unordered cover-set / stitch-compress engine, or a generator that searches new skeletons before inherited 59-families can dominate. Keep `smart-search-13` as evidence that cache and anti-wall pressure are technically active, but not sufficient by themselves.
+The prepared next workflow is:
+
+```text
+workflow: smart-search-14-rich-cover-stitch
+workflow file: .github/workflows/smart-search-14-rich-cover-stitch.yml
+plan file: docs/smart-search-14-rich-cover-stitch-plan.md
+engine generator: scripts/prepare_rich_cover_stitch_engine.py
+summary artifact: rich-cover-stitch-run-summary
+shard artifacts: rich-cover-stitch-22-shard-*
+```
+
+The next step is a short smoke-test, not a full run yet. The smoke-test should verify that the workflow is still `workflow_dispatch`-only, that the generator path and artifact names match the plan, and that shard JSONs pass `scripts/check_scaled_trail.py --max-links 22`.
+
+Hypothesis for the prepared workflow:
+
+```text
+rich-cover -> endpoint-feasible stitch-compress
+```
+
+In simple words: first build richer 3-point and 4-point covering material, then stitch only through intervals whose chosen endpoints actually cover the intended grid points. This is intended to avoid another inherited 59-family repair loop.
+
+Smoke-test inputs:
+
+```text
+seconds: 180
+threads: 4
+seed: 20260705
+min_covered_to_save: 56
+latest_run_id: 28460740781
+previous_diversity_run_id: 28404861374
+d2_bridge_run_id: 28378489636
+d_family_run_id: 28338041580
+new_defect_run_id: 28327372242
+jobs/shards: 20
+max-parallel: 20
+```
+
+After a green smoke-test, use the same inputs with `seconds: 21000` for the full run. A useful full-run result is either any `60/64+` candidate with `links <= 22`, or a clearly new `59/64` family with weaker convergence than the `14/20` dominant wall from smart-search-13.
