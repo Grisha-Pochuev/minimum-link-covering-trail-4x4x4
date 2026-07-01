@@ -1,6 +1,6 @@
 # START HERE — project memory
 
-Last updated: 2026-07-01 wrap-up after user-reported smoke-test
+Last updated: 2026-07-01 wrap-up after four-prompt workflow clarification
 
 This is the first file to read when starting work in a new ChatGPT web chat. Treat this repository as durable memory: read this file first, then continue from the current frontier and the exact workflow/run being analyzed.
 
@@ -23,13 +23,13 @@ Important caution: a search result is not a proof. A partial candidate is eviden
 ## First reading order for a new chat
 
 1. `START_HERE.md` — this file.
-2. `frontier/latest.md` and `frontier/latest.json` — current frontier, latest useful run, and prepared next package.
+2. `frontier/latest.md` and `frontier/latest.json` — current frontier, latest useful full run, and prepared next package.
 3. `docs/web-chat-runbook-prompts.md` — optimized web-chat prompts and launch checklist.
-4. The exact workflow in `.github/workflows/` that launched the completed run or is prepared for the next smoke-test. Do not substitute the newest workflow for an old run.
+4. The exact workflow in `.github/workflows/` that launched the completed full run or is prepared for the next full run. Do not substitute the newest workflow for an old run.
 5. Planning docs for the prepared or completed workflow.
 6. `candidates/bank.jsonl`, `candidates/bank-additions-*.jsonl`, and `candidates/originals/`.
 7. The latest relevant folder in `runs/`.
-8. GitHub Actions artifacts of the latest useful runs.
+8. GitHub Actions artifacts of the latest useful full runs.
 
 Short invariant:
 
@@ -53,7 +53,7 @@ links: 22
 missing count: 5
 ```
 
-Best recorded candidate from the latest run:
+Best recorded candidate from the latest full run:
 
 ```text
 candidate id: mlct22-1c8736b46b59a730
@@ -89,6 +89,32 @@ candidates/originals/run28460740781-shard-bests-index.jsonl
 
 Note: `candidates/bank.jsonl` was not merged in this step. The five compact run-level additions are saved in `candidates/bank-additions-run28460740781.jsonl`. Four exact IDs are new relative to the recorded run `28404861374` additions; one exact ID, `mlct22-1c8736b46b59a730`, was already present there and reappeared strongly.
 
+## Standard four-prompt web-chat cycle
+
+Use the user's four-step rhythm. Do not add a fifth mandatory smoke-test analysis step.
+
+```text
+1. Result-taking prompt:
+   After a completed main/full GitHub run, record results, artifacts, candidates, frontier, and memory.
+
+2. Hypothesis prompt:
+   Look at recorded history, make a new non-repeating hypothesis, and do small local checks in chat if useful.
+
+3. Launch-preparation prompt:
+   Prepare files and exact GitHub inputs for the next run. A short smoke-test can be part of this launch gate, but it is not a separate scientific result-taking stage.
+
+4. Wrap-up prompt:
+   Review what went well, what was confusing, and update memory files so the next chat is faster.
+```
+
+Smoke-test rule:
+
+```text
+Smoke-test is only a technical green-light before the long run.
+If the user sees a green check and then launches the 5h+ full run, the next result-taking chat should normally record the full run, not the smoke-test.
+Only inspect or record the smoke-test separately if it failed, was suspicious, or the user explicitly asks to analyze it.
+```
+
 ## Whole-chat wrap-up from 2026-07-01
 
 What went well:
@@ -98,7 +124,7 @@ What went well:
 - The next idea was not chosen blindly: runs 9-13 were compared as a sequence of changing 59/64 defect walls.
 - The selected next hypothesis is different in kind: rich-cover first, then endpoint-feasible stitch-compress.
 - A smart-search-14 package exists in the repository and is documented.
-- User reported that the smart-search-14 smoke-test has already been run.
+- The user clarified that smoke-tests are just launch gates, not a separate mandatory result-taking stage.
 ```
 
 Where time was lost:
@@ -107,27 +133,24 @@ Where time was lost:
 - Some time was spent re-deriving history that should be read from START_HERE/frontier/run summaries first.
 - There was risk of confusing three things: a chat-level hypothesis, a locally checked prototype, and an actual GitHub workflow file.
 - frontier/latest.md and frontier/latest.json lagged behind START_HERE after the smart-search-14 package was prepared; this has now been corrected.
-- After the user reported that the smoke-test was already run, memory needed another correction so the next chat does not tell the user to launch the same smoke-test again.
+- I incorrectly treated an already-green smoke-test as something that must be recorded before the next full run. That was wrong for the user's workflow.
 ```
 
 Files that can mislead the next chat if read carelessly:
 
 ```text
 - docs/smart-search-13-cover-stitch-cache-plan.md is historical. It is not the next launch plan.
-- frontier/latest.* should be treated as the current index only after confirming it mentions smart-search-14 and user-reported smoke-test status.
+- frontier/latest.* should be treated as the current index only after confirming it mentions the four-prompt workflow and smart-search-14.
 - candidates/bank.jsonl is not the full recent memory by itself; also read bank-additions-run28460740781 and earlier additions.
-- Local/preflight notes are technical smoke evidence, not evidence that a 22-link solution exists.
+- Local/preflight notes are technical checks, not evidence that a 22-link solution exists.
+- Smoke-test artifacts are normally not the main thing to record; the main result-taking prompt is for completed full runs.
 ```
 
 ## Current next step
 
 Do not launch another same-seed `smart-search-13-cover-stitch-cache` full run. The run validates the cache/anti-wall machinery technically, but it still stayed at `59/64`.
 
-Do not tell the user to run the `smart-search-14-rich-cover-stitch` smoke-test again. The user reported in web chat on 2026-07-01 that the smoke-test has already been run.
-
-The next concrete step is to record and analyze the completed smart-search-14 smoke-test result. Start from the smoke-test run URL or run id supplied by the user. Then fetch its jobs/artifacts, check `rich-cover-stitch-run-summary`, inspect shard artifacts, and decide whether a full 21000-second run is justified.
-
-The hypothesis behind smart-search-14:
+The prepared next serious direction is `smart-search-14-rich-cover-stitch`, based on:
 
 ```text
 rich-cover -> endpoint-feasible stitch-compress
@@ -135,13 +158,17 @@ rich-cover -> endpoint-feasible stitch-compress
 
 In simple words: first build richer 3-point and 4-point covering material, then stitch only through intervals whose chosen endpoints actually cover the intended grid points. The goal is to avoid another inherited 59-family repair loop.
 
+If the user has already run a green smoke-test and then launched the 5h+ full run, the next chat should start from the completed full run URL and perform the normal result-taking prompt.
+
+If no full run has been launched yet, use the prepared full-run inputs below after the user confirms the smoke-test was green. Do not require a separate smoke-test analysis step unless the smoke failed or looked suspicious.
+
 Useful lesson from the latest full run:
 
 ```text
 cache/anti-wall pressure: technically active and somewhat useful
 numeric frontier: unchanged at 59/64
 structural diversity: 3 -> 5 exact representatives, dominant family 18/20 -> 14/20
-next search: analyze completed smart-search-14 smoke-test; do not repeat smart-search-13 or re-launch smoke blindly
+next search: smart-search-14 rich-cover / endpoint-feasible stitch-compress; smoke is only a launch gate
 ```
 
 ## Prepared next launch package
@@ -156,9 +183,9 @@ engine generator: scripts/prepare_rich_cover_stitch_engine.py
 generated C++: build/rich_cover_stitch_search.cpp
 ```
 
-This package is manual-only and was intended to be smoke-tested before any full run. The user has now reported that the smoke-test was already run, but the run result has not yet been recorded in project memory.
+This package is manual-only and was intended to be smoke-tested before any full run. The smoke-test is just a technical gate: green check means the user may launch the full run manually.
 
-Before analyzing the smoke-test result in a new chat, fetch back and verify:
+Before preparing or checking a full run in a new chat, fetch back and verify:
 
 ```text
 .github/workflows/smart-search-14-rich-cover-stitch.yml
@@ -184,7 +211,7 @@ jobs/shards: 20
 max-parallel: 20
 ```
 
-Full-run inputs only after the completed smoke-test is confirmed green and scientifically worthwhile:
+Full-run inputs after green smoke-test:
 
 ```text
 seconds: 21000
