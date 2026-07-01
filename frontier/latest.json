@@ -11,18 +11,18 @@
       "Do not treat docs/smart-search-13-cover-stitch-cache-plan.md as the next launch plan; it is historical.",
       "Do not read candidates/bank.jsonl alone as the full recent candidate memory; include bank-additions-run28460740781 and earlier additions.",
       "Do not treat local/preflight checks as evidence that a 22-link solution exists. They are technical checks only.",
-      "Do not tell the user to launch the smart-search-14 smoke-test again without first checking whether the already-run smoke-test has been recorded. The user reported on 2026-07-01 that the smoke-test has already been run."
+      "Do not add a fifth mandatory smoke-test result-taking step. Smoke-test is only a technical gate before the full run unless it failed or the user explicitly asks to analyze it."
     ],
     "what_went_well": [
       "Run 28460740781 was recorded with artifacts, best candidate, mode breakdown, bank additions, and originals index.",
       "Runs 9-13 were compared as a sequence of changing 59/64 defect walls rather than as isolated runs.",
       "The next hypothesis was changed to rich-cover -> endpoint-feasible stitch-compress instead of another smart-search-13 rerun.",
-      "The user reported that the smart-search-14 smoke-test has already been run."
+      "The user clarified the standard four-prompt workflow and the limited role of smoke-tests."
     ],
     "where_time_was_lost": [
       "Project state had to be reconstructed from several files; the next chat should start from START_HERE and frontier/latest.*.",
       "frontier/latest.md and frontier/latest.json lagged behind START_HERE after the smart-search-14 package was prepared; this update synchronizes them.",
-      "After the user reported that the smoke-test was already run, memory had to be corrected so the next chat does not repeat launch advice."
+      "Smoke-test was incorrectly treated as a separate result-taking stage; this has been corrected."
     ]
   },
   "conclusions_for_next_run": [
@@ -32,11 +32,11 @@
     "The dominant missing set was (0,1,2),(1,2,1),(1,3,2),(2,1,3),(2,2,2), appearing in 14/20 shard-best candidates.",
     "Do not immediately rerun smart-search-13-cover-stitch-cache with the same seed/modes.",
     "The prepared next package is smart-search-14-rich-cover-stitch.",
-    "The user reported that the smart-search-14 smoke-test has already been run, so the next step is to record/analyze that smoke-test result, not to launch it again."
+    "Follow the user's four-prompt cycle. Smoke-test is a technical gate in the launch-preparation step, not a separate mandatory result-taking stage."
   ],
   "current_next_step": {
-    "instruction": "Record and analyze the completed smart-search-14-rich-cover-stitch smoke-test using the run URL or run id supplied by the user. Inspect jobs, artifacts, summary, shard JSONs, candidate coverage, mode diversity, and whether old smart-search-13 families dominate. Only after that decide whether a full 20-job run is justified.",
-    "step_type": "record_completed_smoke_test_before_full_run"
+    "instruction": "Follow the user's four-prompt cycle. If a new full GitHub run has completed, record that full run's results. If preparing a launch, use smart-search-14-rich-cover-stitch with smoke-test only as a technical gate before the full run. Inspect smoke-test separately only if it failed, looked suspicious, or the user explicitly asks.",
+    "step_type": "follow_four_prompt_cycle_full_run_results_or_launch_preparation"
   },
   "latest_useful_run": {
     "artifacts": {
@@ -101,7 +101,7 @@
     "workflow_name": "smart-search-13-cover-stitch-cache"
   },
   "prepared_next_launch_package": {
-    "full_run_after_recorded_green_smoke": {
+    "full_run_after_green_smoke": {
       "d2_bridge_run_id": 28378489636,
       "d_family_run_id": 28338041580,
       "expected_wall_time": "about 5h50m per shard",
@@ -116,14 +116,8 @@
       "threads": 4
     },
     "hypothesis": "rich-cover -> endpoint-feasible stitch-compress",
-    "must_verify_before_full_run": [
-      "completed smoke-test run is recorded in project memory",
-      "smoke-test jobs succeeded or failures are understood",
-      "summary artifact rich-cover-stitch-run-summary exists and contains smart_run_summary.json/md",
-      "shard artifacts rich-cover-stitch-22-shard-* exist and produced JSONs pass check_scaled_trail --max-links 22 when present",
-      "mode diversity suggests smart-search-14 did not merely reproduce the old smart-search-13 dominant family"
-    ],
     "plan_file": "docs/smart-search-14-rich-cover-stitch-plan.md",
+    "smoke_test_role": "technical_gate_only_no_separate_result_taking_required_unless_failed_or_requested",
     "smoke_test_inputs_prepared": {
       "d2_bridge_run_id": 28378489636,
       "d_family_run_id": 28338041580,
@@ -137,13 +131,18 @@
       "seed": 20260705,
       "threads": 4
     },
-    "smoke_test_status": "user_reported_run_completed_not_yet_recorded",
     "summary_artifact": "rich-cover-stitch-run-summary",
     "workflow_file": ".github/workflows/smart-search-14-rich-cover-stitch.yml",
     "workflow_name": "smart-search-14-rich-cover-stitch"
   },
   "repository": "Grisha-Pochuev/minimum-link-covering-trail-4x4x4",
   "schema": "mlct-frontier-v1",
-  "status": "smart_search_13_recorded_smart_search_14_smoke_reported_next_record_results",
-  "updated_utc": "2026-07-01T14:45:00Z"
+  "standard_web_chat_cycle": [
+    "record completed full-run results",
+    "make a new hypothesis and do local checks if useful",
+    "prepare the next GitHub launch; smoke-test is only a technical gate",
+    "wrap up and update memory"
+  ],
+  "status": "smart_search_13_recorded_smart_search_14_prepared_four_prompt_cycle_smoke_gate_only",
+  "updated_utc": "2026-07-01T15:05:00Z"
 }
