@@ -1,0 +1,189 @@
+{
+  "anti_wall_archive": {
+    "best_covered_count": 59,
+    "cache_rejects": 246366075,
+    "candidate_ids": [
+      {
+        "candidate_id": "mlct22-1c8736b46b59a730",
+        "count": 3
+      }
+    ],
+    "missing_patterns": [
+      {
+        "count": 3,
+        "missing": [
+          [0, 1, 2],
+          [1, 2, 1],
+          [1, 3, 2],
+          [2, 1, 3],
+          [2, 2, 2]
+        ]
+      }
+    ],
+    "shard_best_count": 3,
+    "total_attempts": 837977268,
+    "wall_rejects": 158607903
+  },
+  "cover_set_beam_cache": {
+    "best_covered_count": 59,
+    "cache_rejects": 5462580910,
+    "candidate_ids": [
+      {
+        "candidate_id": "mlct22-0b238cd52537e1f4",
+        "count": 5
+      }
+    ],
+    "missing_patterns": [
+      {
+        "count": 5,
+        "missing": [
+          [1, 2, 2],
+          [2, 0, 2],
+          [2, 0, 3],
+          [3, 1, 0],
+          [3, 1, 2]
+        ]
+      }
+    ],
+    "shard_best_count": 5,
+    "total_attempts": 14046510114,
+    "wall_rejects": 5091100747
+  },
+  "integer_control22": {
+    "best_covered_count": 59,
+    "cache_rejects": 0,
+    "candidate_ids": [
+      {
+        "candidate_id": "mlct22-0b238cd52537e1f4",
+        "count": 1
+      }
+    ],
+    "missing_patterns": [
+      {
+        "count": 1,
+        "missing": [
+          [1, 2, 2],
+          [2, 0, 2],
+          [2, 0, 3],
+          [3, 1, 0],
+          [3, 1, 2]
+        ]
+      }
+    ],
+    "shard_best_count": 1,
+    "total_attempts": 267575870,
+    "wall_rejects": 0
+  },
+  "novelty_56_58": {
+    "best_covered_count": 59,
+    "cache_rejects": 161633252,
+    "candidate_ids": [
+      {
+        "candidate_id": "mlct22-1c8736b46b59a730",
+        "count": 1
+      },
+      {
+        "candidate_id": "mlct22-a18fdf09136e3d96",
+        "count": 1
+      }
+    ],
+    "missing_patterns": [
+      {
+        "count": 2,
+        "missing": [
+          [0, 1, 2],
+          [1, 2, 1],
+          [1, 3, 2],
+          [2, 1, 3],
+          [2, 2, 2]
+        ]
+      }
+    ],
+    "shard_best_count": 2,
+    "total_attempts": 580734888,
+    "wall_rejects": 89456239
+  },
+  "old_59_control": {
+    "best_covered_count": 59,
+    "cache_rejects": 64566920,
+    "candidate_ids": [
+      {
+        "candidate_id": "mlct22-1c8736b46b59a730",
+        "count": 1
+      }
+    ],
+    "missing_patterns": [
+      {
+        "count": 1,
+        "missing": [
+          [0, 1, 2],
+          [1, 2, 1],
+          [1, 3, 2],
+          [2, 1, 3],
+          [2, 2, 2]
+        ]
+      }
+    ],
+    "shard_best_count": 1,
+    "total_attempts": 230560577,
+    "wall_rejects": 0
+  },
+  "repair_window_cache": {
+    "best_covered_count": 59,
+    "cache_rejects": 253799242,
+    "candidate_ids": [
+      {
+        "candidate_id": "mlct22-1c8736b46b59a730",
+        "count": 3
+      },
+      {
+        "candidate_id": "mlct22-a1200a260088b779",
+        "count": 1
+      }
+    ],
+    "missing_patterns": [
+      {
+        "count": 4,
+        "missing": [
+          [0, 1, 2],
+          [1, 2, 1],
+          [1, 3, 2],
+          [2, 1, 3],
+          [2, 2, 2]
+        ]
+      }
+    ],
+    "shard_best_count": 4,
+    "total_attempts": 871452097,
+    "wall_rejects": 116101429
+  },
+  "stitch_with_transposition": {
+    "best_covered_count": 59,
+    "cache_rejects": 133820790,
+    "candidate_ids": [
+      {
+        "candidate_id": "mlct22-1c8736b46b59a730",
+        "count": 3
+      },
+      {
+        "candidate_id": "mlct22-d6c99f53e4731b8d",
+        "count": 1
+      }
+    ],
+    "missing_patterns": [
+      {
+        "count": 4,
+        "missing": [
+          [0, 1, 2],
+          [1, 2, 1],
+          [1, 3, 2],
+          [2, 1, 3],
+          [2, 2, 2]
+        ]
+      }
+    ],
+    "shard_best_count": 4,
+    "total_attempts": 661755392,
+    "wall_rejects": 85932117
+  }
+}
