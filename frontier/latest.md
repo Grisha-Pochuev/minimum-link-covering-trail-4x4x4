@@ -4,7 +4,7 @@ This file is the human-readable working memory of the project.
 
 Status: `smart-search-13-cover-stitch-cache` full run completed successfully. Numeric frontier remains `59/64`; run `28460740781` is recorded as the latest completed full run. It did not find `60/64`, but it did improve run-level exact diversity compared with run `28404861374`.
 
-The next prepared package is now `smart-search-14-rich-cover-stitch`. Do not treat the next step as an open-ended hypothesis discussion unless the prepared files are missing or inconsistent.
+The next prepared package is `smart-search-14-rich-cover-stitch`. The user reported in web chat on 2026-07-01 that the smoke-test has already been run. Therefore the next step is not to launch another smoke-test blindly; it is to record and analyze the completed smoke-test run.
 
 Latest recorded full run:
 
@@ -91,7 +91,11 @@ So the cache/anti-wall launch gave a real but modest structural improvement: it 
 
 Do not immediately launch another identical `smart-search-13-cover-stitch-cache` full run with the same seed and modes.
 
-The prepared next workflow is:
+Do not tell the user to run the `smart-search-14-rich-cover-stitch` smoke-test again. The user reported that it has already been run.
+
+The next step is to record and analyze the completed smart-search-14 smoke-test. Start from the run URL or run id supplied by the user, then inspect jobs, artifacts, summary, shard JSONs, candidate coverage, mode diversity, and whether old smart-search-13 families dominate.
+
+Prepared workflow details:
 
 ```text
 workflow: smart-search-14-rich-cover-stitch
@@ -102,8 +106,6 @@ summary artifact: rich-cover-stitch-run-summary
 shard artifacts: rich-cover-stitch-22-shard-*
 ```
 
-The next step is a short smoke-test, not a full run yet. The smoke-test should verify that the workflow is still `workflow_dispatch`-only, that the generator path and artifact names match the plan, and that shard JSONs pass `scripts/check_scaled_trail.py --max-links 22`.
-
 Hypothesis for the prepared workflow:
 
 ```text
@@ -112,7 +114,7 @@ rich-cover -> endpoint-feasible stitch-compress
 
 In simple words: first build richer 3-point and 4-point covering material, then stitch only through intervals whose chosen endpoints actually cover the intended grid points. This is intended to avoid another inherited 59-family repair loop.
 
-Smoke-test inputs:
+Prepared smoke-test inputs were:
 
 ```text
 seconds: 180
@@ -128,4 +130,4 @@ jobs/shards: 20
 max-parallel: 20
 ```
 
-After a green smoke-test, use the same inputs with `seconds: 21000` for the full run. A useful full-run result is either any `60/64+` candidate with `links <= 22`, or a clearly new `59/64` family with weaker convergence than the `14/20` dominant wall from smart-search-13.
+After the completed smoke-test is confirmed green and scientifically worthwhile, use the same inputs with `seconds: 21000` for the full run. A useful full-run result is either any `60/64+` candidate with `links <= 22`, or a clearly new `59/64` family with weaker convergence than the `14/20` dominant wall from smart-search-13.
