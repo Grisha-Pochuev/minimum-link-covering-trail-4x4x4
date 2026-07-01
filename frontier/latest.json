@@ -5,16 +5,34 @@
     "rule_type": "threshold_and_above",
     "save_condition": "covered_count >= 56 and links <= 22"
   },
+  "chat_wrapup_2026_07_01": {
+    "confusions_to_avoid": [
+      "Do not confuse a chat-level hypothesis, a local smoke/preflight check, and an actual GitHub workflow file.",
+      "Do not treat docs/smart-search-13-cover-stitch-cache-plan.md as the next launch plan; it is historical.",
+      "Do not read candidates/bank.jsonl alone as the full recent candidate memory; include bank-additions-run28460740781 and earlier additions.",
+      "Do not treat local/preflight checks as evidence that a 22-link solution exists. They are technical checks only."
+    ],
+    "what_went_well": [
+      "Run 28460740781 was recorded with artifacts, best candidate, mode breakdown, bank additions, and originals index.",
+      "Runs 9-13 were compared as a sequence of changing 59/64 defect walls rather than as isolated runs.",
+      "The next hypothesis was changed to rich-cover -> endpoint-feasible stitch-compress instead of another smart-search-13 rerun."
+    ],
+    "where_time_was_lost": [
+      "Project state had to be reconstructed from several files; the next chat should start from START_HERE and frontier/latest.*.",
+      "frontier/latest.md and frontier/latest.json lagged behind START_HERE after the smart-search-14 package was prepared; this update synchronizes them."
+    ]
+  },
   "conclusions_for_next_run": [
-    "Numeric frontier remains 59/64; no 60/64 or 64/64 candidate was found.",
-    "All 20 shard-best candidates reached 59/64.",
+    "Numeric frontier remains 59/64; no 60/64 or 64/64 candidate was found in run 28460740781.",
+    "All 20 shard-best candidates from run 28460740781 reached 59/64.",
     "The run produced 5 exact vertices2 representatives, 4 of them new relative to the prior recorded additions from run 28404861374.",
     "The dominant missing set was (0,1,2),(1,2,1),(1,3,2),(2,1,3),(2,2,2), appearing in 14/20 shard-best candidates.",
-    "Do not immediately rerun the same workflow with the same seed; move to stronger unordered cover-set / stitch-compress or new-skeleton generation."
+    "Do not immediately rerun smart-search-13-cover-stitch-cache with the same seed/modes.",
+    "The prepared next package is smart-search-14-rich-cover-stitch; run a short smoke-test before any full run."
   ],
   "current_next_step": {
-    "instruction": "Use run 28460740781 as evidence that cache and anti-wall filters are active but not sufficient. Build a stronger unordered cover-set / stitch-compress engine or a new-skeleton-first generator before spending another full 20-job run.",
-    "step_type": "hypothesis_and_generator_revision_before_next_run"
+    "instruction": "Verify the prepared smart-search-14 files, then run a short GitHub smoke-test for smart-search-14-rich-cover-stitch. Only after a green smoke-test should a full 20-job run be considered.",
+    "step_type": "smoke_test_prepared_workflow_before_full_run"
   },
   "latest_useful_run": {
     "artifacts": {
@@ -28,31 +46,11 @@
       "grid_points": 64,
       "links": 22,
       "missing": [
-        [
-          0,
-          1,
-          2
-        ],
-        [
-          1,
-          2,
-          1
-        ],
-        [
-          1,
-          3,
-          2
-        ],
-        [
-          2,
-          1,
-          3
-        ],
-        [
-          2,
-          2,
-          2
-        ]
+        [0, 1, 2],
+        [1, 2, 1],
+        [1, 3, 2],
+        [2, 1, 3],
+        [2, 2, 2]
       ],
       "missing_count": 5,
       "mode": "stitch_with_transposition",
@@ -98,8 +96,48 @@
     "status": "success",
     "workflow_name": "smart-search-13-cover-stitch-cache"
   },
+  "prepared_next_launch_package": {
+    "full_run_after_green_smoke": {
+      "d2_bridge_run_id": 28378489636,
+      "d_family_run_id": 28338041580,
+      "expected_wall_time": "about 5h50m per shard",
+      "jobs_shards": 20,
+      "latest_run_id": 28460740781,
+      "max_parallel": 20,
+      "min_covered_to_save": 56,
+      "new_defect_run_id": 28327372242,
+      "previous_diversity_run_id": 28404861374,
+      "seconds": 21000,
+      "seed": 20260705,
+      "threads": 4
+    },
+    "hypothesis": "rich-cover -> endpoint-feasible stitch-compress",
+    "must_verify_before_launch": [
+      "workflow_dispatch-only and no push trigger",
+      "workflow file path, name, inputs, generator path, checker path, and artifact names match the plan",
+      "candidate bank additions and seed run ids are aligned",
+      "local/preflight notes are not misread as proof or as evidence of a solution"
+    ],
+    "plan_file": "docs/smart-search-14-rich-cover-stitch-plan.md",
+    "smoke_test_inputs": {
+      "d2_bridge_run_id": 28378489636,
+      "d_family_run_id": 28338041580,
+      "jobs_shards": 20,
+      "latest_run_id": 28460740781,
+      "max_parallel": 20,
+      "min_covered_to_save": 56,
+      "new_defect_run_id": 28327372242,
+      "previous_diversity_run_id": 28404861374,
+      "seconds": 180,
+      "seed": 20260705,
+      "threads": 4
+    },
+    "summary_artifact": "rich-cover-stitch-run-summary",
+    "workflow_file": ".github/workflows/smart-search-14-rich-cover-stitch.yml",
+    "workflow_name": "smart-search-14-rich-cover-stitch"
+  },
   "repository": "Grisha-Pochuev/minimum-link-covering-trail-4x4x4",
   "schema": "mlct-frontier-v1",
-  "status": "smart_search_13_cover_stitch_cache_completed_numeric_frontier_unchanged_structural_diversity_modestly_improved",
-  "updated_utc": "2026-07-01T12:20:00Z"
+  "status": "smart_search_13_recorded_smart_search_14_prepared_smoke_test_next",
+  "updated_utc": "2026-07-01T14:35:00Z"
 }
