@@ -4,7 +4,7 @@ This file is the human-readable working memory of the project.
 
 Status: `smart-search-13-cover-stitch-cache` full run completed successfully. Numeric frontier remains `59/64`; run `28460740781` is recorded as the latest completed full run. It did not find `60/64`, but it did improve run-level exact diversity compared with run `28404861374`.
 
-The next prepared package is `smart-search-14-rich-cover-stitch`. The user reported in web chat on 2026-07-01 that the smoke-test has already been run. Therefore the next step is not to launch another smoke-test blindly; it is to record and analyze the completed smoke-test run.
+The next prepared package is `smart-search-14-rich-cover-stitch`. Smoke-test is only a technical launch gate before the long run. It is not a separate mandatory result-taking stage in the standard web-chat cycle.
 
 Latest recorded full run:
 
@@ -89,11 +89,18 @@ So the cache/anti-wall launch gave a real but modest structural improvement: it 
 
 ## Current next step
 
+Use the standard four-prompt web-chat cycle:
+
+```text
+1. record completed full-run results;
+2. make and locally sanity-check a new hypothesis;
+3. prepare the next GitHub launch, with smoke-test only as a technical gate;
+4. wrap up and update memory.
+```
+
 Do not immediately launch another identical `smart-search-13-cover-stitch-cache` full run with the same seed and modes.
 
-Do not tell the user to run the `smart-search-14-rich-cover-stitch` smoke-test again. The user reported that it has already been run.
-
-The next step is to record and analyze the completed smart-search-14 smoke-test. Start from the run URL or run id supplied by the user, then inspect jobs, artifacts, summary, shard JSONs, candidate coverage, mode diversity, and whether old smart-search-13 families dominate.
+Do not create an extra mandatory step to record a green smoke-test. If the user already saw a green smoke-test and launched the 5h+ full run, the next result-taking prompt should record that full run. Smoke-test should be inspected separately only if it failed, looked suspicious, or the user explicitly asks for it.
 
 Prepared workflow details:
 
@@ -130,4 +137,20 @@ jobs/shards: 20
 max-parallel: 20
 ```
 
-After the completed smoke-test is confirmed green and scientifically worthwhile, use the same inputs with `seconds: 21000` for the full run. A useful full-run result is either any `60/64+` candidate with `links <= 22`, or a clearly new `59/64` family with weaker convergence than the `14/20` dominant wall from smart-search-13.
+Full-run inputs after green smoke-test:
+
+```text
+seconds: 21000
+threads: 4
+seed: 20260705
+min_covered_to_save: 56
+latest_run_id: 28460740781
+previous_diversity_run_id: 28404861374
+d2_bridge_run_id: 28378489636
+d_family_run_id: 28338041580
+new_defect_run_id: 28327372242
+jobs/shards: 20
+max-parallel: 20
+```
+
+A useful full-run result is either any `60/64+` candidate with `links <= 22`, or a clearly new `59/64` family with weaker convergence than the `14/20` dominant wall from smart-search-13.
