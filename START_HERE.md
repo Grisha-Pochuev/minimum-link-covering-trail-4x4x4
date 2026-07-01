@@ -93,15 +93,62 @@ Note: `candidates/bank.jsonl` was not merged in this step. The five compact run-
 
 Do not immediately launch another same-seed `smart-search-13-cover-stitch-cache` full run. The run validates the cache/anti-wall machinery technically, but it still stayed at `59/64`.
 
-The next hypothesis step should move beyond inherited repair-search tuning. The most natural direction is a stronger unordered cover-set / stitch-compress engine, or a new-skeleton-first generator that delays or limits domination by old 59-families.
+The next hypothesis step should move beyond inherited repair-search tuning. The selected direction is a stronger rich-cover / endpoint-feasible stitch-compress search: first build richer 3-point and 4-point covering material, then stitch only through intervals whose chosen endpoints actually cover the intended grid points.
 
-Useful lesson from this run:
+Useful lesson from the latest full run:
 
 ```text
 cache/anti-wall pressure: technically active and somewhat useful
 numeric frontier: unchanged at 59/64
 structural diversity: 3 -> 5 exact representatives, dominant family 18/20 -> 14/20
-next search: stronger new skeleton / unordered cover-set / stitch-compress, not same rerun
+next search: stronger new skeleton / rich-cover / endpoint-feasible stitch-compress, not same rerun
+```
+
+## Prepared next launch package
+
+Prepared workflow package:
+
+```text
+workflow: smart-search-14-rich-cover-stitch
+workflow file: .github/workflows/smart-search-14-rich-cover-stitch.yml
+plan file: docs/smart-search-14-rich-cover-stitch-plan.md
+engine generator: scripts/prepare_rich_cover_stitch_engine.py
+generated C++: build/rich_cover_stitch_search.cpp
+```
+
+This package is manual-only and should be smoke-tested before any full run. It is not a proof and not a guaranteed improvement; it is the next non-repeating search hypothesis after smart-search-13.
+
+Smoke-test inputs:
+
+```text
+seconds: 180
+threads: 4
+seed: 20260705
+min_covered_to_save: 56
+latest_run_id: 28460740781
+previous_diversity_run_id: 28404861374
+d2_bridge_run_id: 28378489636
+d_family_run_id: 28338041580
+new_defect_run_id: 28327372242
+jobs/shards: 20
+max-parallel: 20
+```
+
+Full-run inputs after green smoke-test:
+
+```text
+seconds: 21000
+threads: 4
+seed: 20260705
+min_covered_to_save: 56
+latest_run_id: 28460740781
+previous_diversity_run_id: 28404861374
+d2_bridge_run_id: 28378489636
+d_family_run_id: 28338041580
+new_defect_run_id: 28327372242
+jobs/shards: 20
+max-parallel: 20
+expected wall time: about 5h50m per shard
 ```
 
 ## Candidate-saving rules
