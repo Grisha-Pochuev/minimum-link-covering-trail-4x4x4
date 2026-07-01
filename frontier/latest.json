@@ -1,81 +1,105 @@
 {
-  "schema": "mlct-frontier-v1",
-  "repository": "Grisha-Pochuev/minimum-link-covering-trail-4x4x4",
-  "updated_utc": "2026-06-30T15:25:00Z",
-  "status": "smart_search_12_skeleton_diversity_completed_numeric_frontier_unchanged",
   "candidate_preservation_rule_for_future_runs": {
-    "rule_type": "threshold_and_above",
-    "min_covered_to_save": 56,
     "max_links": 22,
+    "min_covered_to_save": 56,
+    "rule_type": "threshold_and_above",
     "save_condition": "covered_count >= 56 and links <= 22"
-  },
-  "latest_useful_run": {
-    "run_id": 28404861374,
-    "workflow_name": "smart-search-12-skeleton-diversity",
-    "status": "success",
-    "head_commit_sha": "7d7960619fbbb5389cb873715e1b698e2576972f",
-    "result_type": "heuristic_search_not_proof",
-    "parameters": {
-      "seconds": 21000,
-      "threads": 4,
-      "shards": 20,
-      "max_parallel": 20,
-      "seed": 20260703,
-      "latest_run_id": 28378489636,
-      "latest_d2_run_id": 28338041580,
-      "prior_d_run_id": 28327372242,
-      "orbit_bridge_run_id": 28304497479,
-      "previous_core5_run_id": 28292425390,
-      "old_59_run_id": 28275850889,
-      "secondary_run_id": 28275666411,
-      "base_repair_run_id": 28200925016,
-      "min_covered_to_save": 56
-    },
-    "artifacts": {
-      "run_summary": "skeleton-diversity-run-summary",
-      "shard_results": "skeleton-diversity-22-shard-*"
-    },
-    "best_result": {
-      "candidate_id": "mlct22-dddd317f06883acd",
-      "covered_count": 59,
-      "grid_points": 64,
-      "coverage_percent": 92.1875,
-      "links": 22,
-      "missing_count": 5,
-      "missing": [[1, 2, 2], [1, 3, 1], [1, 3, 2], [2, 0, 2], [2, 0, 3]],
-      "mode": "anti_wall22",
-      "source_artifact": "skeleton-diversity-22-shard-15",
-      "source_shard": 15,
-      "source_file": "runs/2026-06-30-smart-search-12-skeleton-diversity-full/best_candidate.json",
-      "status": "partial_candidate"
-    },
-    "run_statistics": {
-      "raw_shard_best_count": 20,
-      "raw_shard_best_at_or_above_56": 20,
-      "unique_exact_vertices2_representatives": 3,
-      "compact_bank_additions": 3,
-      "total_attempts": 21924797355,
-      "total_workers": 80,
-      "approx_cpu_hours": 466.6667
-    },
-    "comparison_with_previous_frontier": {
-      "previous_latest_useful_run_id": 28378489636,
-      "previous_best_covered_count": 59,
-      "new_best_covered_count": 59,
-      "numeric_frontier_changed": false,
-      "previous_compact_representatives": 16,
-      "new_exact_representatives": 3,
-      "important_observation": "The skeleton-diversity generator collapsed back to a dominant 59/64 family: one exact candidate appeared in 18/20 shard-best artifacts."
-    }
   },
   "conclusions_for_next_run": [
     "Numeric frontier remains 59/64; no 60/64 or 64/64 candidate was found.",
-    "All 20 shard-best candidates reached 59/64, but diversity was low: only 3 exact vertices2 representatives.",
-    "The dominant missing set was (1,2,2),(1,3,1),(1,3,2),(2,0,2),(2,0,3), appearing in 18/20 shard-best candidates.",
-    "Do not immediately rerun the same workflow with the same seed; revise the generator to force genuinely new skeletons or missing-set geometry."
+    "All 20 shard-best candidates reached 59/64.",
+    "The run produced 5 exact vertices2 representatives, 4 of them new relative to the prior recorded additions from run 28404861374.",
+    "The dominant missing set was (0,1,2),(1,2,1),(1,3,2),(2,1,3),(2,2,2), appearing in 14/20 shard-best candidates.",
+    "Do not immediately rerun the same workflow with the same seed; move to stronger unordered cover-set / stitch-compress or new-skeleton generation."
   ],
   "current_next_step": {
-    "step_type": "hypothesis_and_generator_revision_before_next_run",
-    "instruction": "Revise skeleton-diversity so it cannot simply reuse the dominant bank-seeded 59-family. Consider hard novelty pressure, structurally different 56-58 seeds, or a diagnostic that rewards new defect geometry over raw 59/64 reuse."
-  }
+    "instruction": "Use run 28460740781 as evidence that cache and anti-wall filters are active but not sufficient. Build a stronger unordered cover-set / stitch-compress engine or a new-skeleton-first generator before spending another full 20-job run.",
+    "step_type": "hypothesis_and_generator_revision_before_next_run"
+  },
+  "latest_useful_run": {
+    "artifacts": {
+      "run_summary": "cover-stitch-cache-run-summary",
+      "shard_results": "cover-stitch-cache-22-shard-*"
+    },
+    "best_result": {
+      "candidate_id": "mlct22-1c8736b46b59a730",
+      "coverage_percent": 92.1875,
+      "covered_count": 59,
+      "grid_points": 64,
+      "links": 22,
+      "missing": [
+        [
+          0,
+          1,
+          2
+        ],
+        [
+          1,
+          2,
+          1
+        ],
+        [
+          1,
+          3,
+          2
+        ],
+        [
+          2,
+          1,
+          3
+        ],
+        [
+          2,
+          2,
+          2
+        ]
+      ],
+      "missing_count": 5,
+      "mode": "stitch_with_transposition",
+      "source_artifact": "cover-stitch-cache-22-shard-6",
+      "source_file": "runs/2026-06-30-smart-search-13-cover-stitch-cache-full/best_candidate.json",
+      "source_shard": 6,
+      "status": "partial_candidate"
+    },
+    "comparison_with_previous_frontier": {
+      "important_observation": "Cache and anti-wall pressure were active and reduced collapse, but the run still stayed at the 59/64 wall.",
+      "new_best_covered_count": 59,
+      "new_dominant_missing_family_occurrences": 14,
+      "new_exact_representatives": 5,
+      "numeric_frontier_changed": false,
+      "previous_best_covered_count": 59,
+      "previous_dominant_exact_occurrences": 18,
+      "previous_exact_representatives": 3,
+      "previous_latest_useful_run_id": 28404861374
+    },
+    "head_commit_sha": "2912b39896255e069bce0a544cf5d32ff4fbb71f",
+    "parameters": {
+      "max_parallel": 20,
+      "min_covered_to_save": 56,
+      "seconds": 21000,
+      "seed": 20260704,
+      "shards": 20,
+      "threads": 4
+    },
+    "result_type": "heuristic_search_not_proof",
+    "run_id": 28460740781,
+    "run_statistics": {
+      "approx_cpu_hours": 466.6667,
+      "cache_rejects": 6322767189,
+      "compact_bank_additions": 5,
+      "new_exact_ids_vs_run28404861374_additions": 4,
+      "raw_shard_best_at_or_above_56": 20,
+      "raw_shard_best_count": 20,
+      "total_attempts": 17496566206,
+      "total_workers": 80,
+      "unique_exact_vertices2_representatives": 5,
+      "wall_rejects": 5541198435
+    },
+    "status": "success",
+    "workflow_name": "smart-search-13-cover-stitch-cache"
+  },
+  "repository": "Grisha-Pochuev/minimum-link-covering-trail-4x4x4",
+  "schema": "mlct-frontier-v1",
+  "status": "smart_search_13_cover_stitch_cache_completed_numeric_frontier_unchanged_structural_diversity_modestly_improved",
+  "updated_utc": "2026-07-01T12:20:00Z"
 }
