@@ -12,6 +12,8 @@ Do not treat "all runs" as a request to blindly scan everything. First use the s
 
 Important correction from 2026-06-30: do not say a workflow has been created merely because a launch plan exists in chat. After creating or editing a workflow, fetch the workflow file back from GitHub and verify its path, name, inputs, artifact names, and generator path.
 
+Important correction from 2026-07-01: after a hypothesis/preflight chat prepares a new workflow, keep `START_HERE.md`, `frontier/latest.md`, and `frontier/latest.json` synchronized. If `START_HERE.md` says a prepared workflow exists but `frontier/latest.*` still says "hypothesis step", update the frontier before giving launch instructions.
+
 ## Fast checklist before preparing a launch
 
 Use this checklist before giving GitHub inputs:
@@ -27,8 +29,9 @@ Use this checklist before giving GitHub inputs:
 8. Check artifact names: shard artifact pattern and summary artifact name.
 9. Check C++ generation path, compile command, checker command, and aggregator command.
 10. Check that the new hypothesis is not just a same-seed rerun of a saturated workflow.
-11. After creating/updating files, fetch them back from GitHub before reporting success.
-12. Only then give smoke-test inputs and full-run inputs.
+11. Check that local/preflight notes are not being misread as proof or as evidence of a solution.
+12. After creating/updating files, fetch them back from GitHub before reporting success.
+13. Only then give smoke-test inputs and full-run inputs.
 ```
 
 ## Optimized prompt: after a run finishes
@@ -61,9 +64,24 @@ Use this after local analysis or after a completed run has been recorded.
 - seed run ids and seed sources are aligned;
 - artifact names and aggregation match;
 - C++/Python generation, compile, checker, and summary builder paths match;
-- new hypothesis is not a simple repeat of the previous saturated workflow.
+- new hypothesis is not a simple repeat of the previous saturated workflow;
+- local/preflight checks are technical only and not being treated as proof.
 
 Если всё clean, дай exact GitHub inputs for smoke-test and full run. Do not launch anything automatically unless I explicitly ask.
+```
+
+## Optimized prompt: whole-chat wrap-up
+
+Use this at the end of a long web-chat working session.
+
+```text
+Посмотри на всю работу в этом чате целиком.
+
+Оцени, что получилось хорошо, где мы потеряли время, где была путаница, и какие файлы памяти могут сбить следующий чат.
+
+Если нужно — измени START_HERE.md, frontier/latest.*, runbook, plan docs или другие файлы, чтобы в следующем чате работать быстрее и точнее.
+
+В конце коротко скажи: что изменил, зачем изменил, и какой следующий шаг теперь записан в памяти проекта.
 ```
 
 ## Current prepared launch package
@@ -79,6 +97,19 @@ generated C++: build/rich_cover_stitch_search.cpp
 ```
 
 This package intentionally replaces the older prepared workflow notes. The next search should not repeat `smart-search-13-cover-stitch-cache`; it should smoke-test the rich-cover / endpoint-feasible stitch-compress hypothesis.
+
+Before reporting that the package is ready, fetch back and verify the workflow, plan, and generator. The expected workflow details are:
+
+```text
+workflow_dispatch-only: yes
+push trigger: no
+control check: python scripts/check_trail.py data/ripa_23_trail.json --expected-links 23 --require-full
+generator: python scripts/prepare_rich_cover_stitch_engine.py --out build/rich_cover_stitch_search.cpp
+compile: g++ -O3 -std=c++17 -pthread -DNDEBUG build/rich_cover_stitch_search.cpp -o rich_cover_stitch_search
+checker: python scripts/check_scaled_trail.py results/rich_cover_stitch/rich_cover_stitch_best_shard_<shard>.json --max-links 22
+shard artifacts: rich-cover-stitch-22-shard-*
+summary artifact: rich-cover-stitch-run-summary
+```
 
 Smoke-test inputs:
 
