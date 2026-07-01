@@ -1,0 +1,208 @@
+{
+  "candidate_id": "mlct22-1c8736b46b59a730",
+  "coordinate_scale": 2,
+  "covered_count": 59,
+  "links": 22,
+  "links_target": 22,
+  "missing": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      1,
+      2,
+      1
+    ],
+    [
+      1,
+      3,
+      2
+    ],
+    [
+      2,
+      1,
+      3
+    ],
+    [
+      2,
+      2,
+      2
+    ]
+  ],
+  "mode": "stitch_with_transposition",
+  "parameters": {
+    "directed_edge_count": 145432,
+    "mode": "stitch_with_transposition",
+    "prior_seed_count": 45,
+    "seconds": 21000,
+    "seed": 20260704,
+    "shard": 6,
+    "shards": 20,
+    "threads": 4,
+    "vertex_count": 1379
+  },
+  "schema": "cover-stitch-cache-shard-v1",
+  "source_artifact": "cover-stitch-cache-22-shard-6",
+  "source_run": "28460740781",
+  "status": "partial_candidate",
+  "target_defect_hits": 14,
+  "total_attempts": 167411607,
+  "verified_by": "scripts/check_scaled_trail.py --expect-covered 59 --max-links 22",
+  "vertices2": [
+    [
+      2,
+      12,
+      6
+    ],
+    [
+      2,
+      -6,
+      6
+    ],
+    [
+      2,
+      12,
+      0
+    ],
+    [
+      2,
+      -2,
+      0
+    ],
+    [
+      6,
+      2,
+      8
+    ],
+    [
+      6,
+      2,
+      2
+    ],
+    [
+      -2,
+      2,
+      2
+    ],
+    [
+      6,
+      6,
+      6
+    ],
+    [
+      6,
+      6,
+      0
+    ],
+    [
+      0,
+      0,
+      6
+    ],
+    [
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      8,
+      0
+    ],
+    [
+      0,
+      2,
+      6
+    ],
+    [
+      0,
+      8,
+      6
+    ],
+    [
+      0,
+      0,
+      -2
+    ],
+    [
+      6,
+      0,
+      10
+    ],
+    [
+      6,
+      0,
+      0
+    ],
+    [
+      6,
+      4,
+      0
+    ],
+    [
+      6,
+      4,
+      7
+    ],
+    [
+      4,
+      4,
+      6
+    ],
+    [
+      4,
+      -2,
+      0
+    ],
+    [
+      4,
+      6,
+      0
+    ],
+    [
+      4,
+      6,
+      14
+    ]
+  ],
+  "worker_summaries": [
+    {
+      "attempts": 41854724,
+      "cache_rejects": 8483966,
+      "covered_count": 59,
+      "elapsed_seconds": 21000.001,
+      "links": 22,
+      "wall_rejects": 5430740,
+      "worker_id": 0
+    },
+    {
+      "attempts": 41857255,
+      "cache_rejects": 8481274,
+      "covered_count": 59,
+      "elapsed_seconds": 21000.0,
+      "links": 22,
+      "wall_rejects": 5429002,
+      "worker_id": 1
+    },
+    {
+      "attempts": 41851665,
+      "cache_rejects": 8483012,
+      "covered_count": 59,
+      "elapsed_seconds": 21000.0,
+      "links": 22,
+      "wall_rejects": 5431383,
+      "worker_id": 2
+    },
+    {
+      "attempts": 41847963,
+      "cache_rejects": 8476398,
+      "covered_count": 59,
+      "elapsed_seconds": 21000.0,
+      "links": 22,
+      "wall_rejects": 5431847,
+      "worker_id": 3
+    }
+  ]
+}
