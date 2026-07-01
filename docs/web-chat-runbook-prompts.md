@@ -14,9 +14,11 @@ Important correction from 2026-06-30: do not say a workflow has been created mer
 
 Important correction from 2026-07-01: after a hypothesis/preflight chat prepares a new workflow, keep `START_HERE.md`, `frontier/latest.md`, and `frontier/latest.json` synchronized. If `START_HERE.md` says a prepared workflow exists but `frontier/latest.*` still says "hypothesis step", update the frontier before giving launch instructions.
 
-## Fast checklist before preparing a launch
+Important correction after user interruption on 2026-07-01: the user reported that the `smart-search-14-rich-cover-stitch` smoke-test has already been run. Do not tell the user to run that smoke-test again. The next action is to record/analyze the completed smoke-test from its run URL or run id.
 
-Use this checklist before giving GitHub inputs:
+## Fast checklist before preparing or analyzing a launch
+
+Use this checklist before giving GitHub inputs or deciding on a full run:
 
 ```text
 1. Read START_HERE.md.
@@ -24,14 +26,15 @@ Use this checklist before giving GitHub inputs:
 3. Read this runbook.
 4. Read the prepared workflow file from .github/workflows/.
 5. Read the docs plan for that workflow.
-6. Check that the workflow is workflow_dispatch-only and has no push trigger.
-7. Check seed run ids and candidate-bank additions.
-8. Check artifact names: shard artifact pattern and summary artifact name.
-9. Check C++ generation path, compile command, checker command, and aggregator command.
-10. Check that the new hypothesis is not just a same-seed rerun of a saturated workflow.
-11. Check that local/preflight notes are not being misread as proof or as evidence of a solution.
-12. After creating/updating files, fetch them back from GitHub before reporting success.
-13. Only then give smoke-test inputs and full-run inputs.
+6. Check whether the smoke-test has already been run and recorded.
+7. If the smoke-test has been run, analyze its jobs/artifacts instead of giving launch instructions.
+8. Check that the workflow is workflow_dispatch-only and has no push trigger.
+9. Check seed run ids and candidate-bank additions.
+10. Check artifact names: shard artifact pattern and summary artifact name.
+11. Check C++ generation path, compile command, checker command, and aggregator command.
+12. Check that the new hypothesis is not just a same-seed rerun of a saturated workflow.
+13. Check that local/preflight notes are not being misread as proof or as evidence of a solution.
+14. After creating/updating files, fetch them back from GitHub before reporting success.
 ```
 
 ## Optimized prompt: after a run finishes
@@ -70,6 +73,22 @@ Use this after local analysis or after a completed run has been recorded.
 Если всё clean, дай exact GitHub inputs for smoke-test and full run. Do not launch anything automatically unless I explicitly ask.
 ```
 
+## Optimized prompt: analyze already-run smart-search-14 smoke-test
+
+Use this now if the user provides the smart-search-14 smoke-test run URL or run id.
+
+```text
+Сними результаты уже проведённого smoke-test run для smart-search-14-rich-cover-stitch: <RUN_URL>.
+
+Сначала открой START_HERE.md, frontier/latest.*, docs/web-chat-runbook-prompts.md, .github/workflows/smart-search-14-rich-cover-stitch.yml, docs/smart-search-14-rich-cover-stitch-plan.md, and scripts/prepare_rich_cover_stitch_engine.py.
+
+Проверь jobs, artifacts, rich-cover-stitch-run-summary, shard artifacts rich-cover-stitch-22-shard-*, checker results, best covered_count, links, modes, missing points, and whether the smoke-test merely reproduced old smart-search-13 families.
+
+Сохрани результат smoke-test в runs/<date>-smart-search-14-rich-cover-stitch-smoke/, обнови frontier/latest.*, START_HERE.md, and candidate additions/originals only if useful candidates exist.
+
+В конце коротко скажи: green ли smoke-test технически, был ли он научно полезен, и стоит ли готовить полный 21000-second GitHub run.
+```
+
 ## Optimized prompt: whole-chat wrap-up
 
 Use this at the end of a long web-chat working session.
@@ -96,9 +115,11 @@ engine generator: scripts/prepare_rich_cover_stitch_engine.py
 generated C++: build/rich_cover_stitch_search.cpp
 ```
 
-This package intentionally replaces the older prepared workflow notes. The next search should not repeat `smart-search-13-cover-stitch-cache`; it should smoke-test the rich-cover / endpoint-feasible stitch-compress hypothesis.
+This package intentionally replaces the older prepared workflow notes. The next search should not repeat `smart-search-13-cover-stitch-cache`; it should use the rich-cover / endpoint-feasible stitch-compress hypothesis.
 
-Before reporting that the package is ready, fetch back and verify the workflow, plan, and generator. The expected workflow details are:
+The user reported that the smoke-test has already been run. Therefore, do not tell the user to run smoke again unless the previous smoke was invalid or missing. First record and analyze the completed smoke-test.
+
+Before reporting that the package is ready for a full run, fetch back and verify the workflow, plan, generator, and completed smoke-test result. The expected workflow details are:
 
 ```text
 workflow_dispatch-only: yes
@@ -111,7 +132,7 @@ shard artifacts: rich-cover-stitch-22-shard-*
 summary artifact: rich-cover-stitch-run-summary
 ```
 
-Smoke-test inputs:
+Prepared smoke-test inputs were:
 
 ```text
 seconds: 180
@@ -127,7 +148,7 @@ jobs/shards: 20
 max-parallel: 20
 ```
 
-Full-run inputs after green smoke-test:
+Full-run inputs after recorded green smoke-test:
 
 ```text
 seconds: 21000
