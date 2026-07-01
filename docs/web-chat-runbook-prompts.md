@@ -68,32 +68,29 @@ Use this after local analysis or after a completed run has been recorded.
 
 ## Current prepared launch package
 
-As of 2026-06-30, the prepared next workflow is:
+As of 2026-07-01, the prepared next workflow is:
 
 ```text
-workflow: smart-search-12-skeleton-diversity
-workflow file: .github/workflows/smart-search-12-skeleton-diversity.yml
-plan file: docs/smart-search-12-skeleton-diversity-plan.md
-engine generator: scripts/prepare_skeleton_diversity_engine.py
-base C++ engine: cpp/repair56_search.cpp
+workflow: smart-search-14-rich-cover-stitch
+workflow file: .github/workflows/smart-search-14-rich-cover-stitch.yml
+plan file: docs/smart-search-14-rich-cover-stitch-plan.md
+engine generator: scripts/prepare_rich_cover_stitch_engine.py
+generated C++: build/rich_cover_stitch_search.cpp
 ```
 
-This package intentionally replaces the previous planned follow-up `smart-search-11-d2-bridge-repair`. Do not launch another full D2 bridge repair unless a later analysis explicitly asks for it.
+This package intentionally replaces the older prepared workflow notes. The next search should not repeat `smart-search-13-cover-stitch-cache`; it should smoke-test the rich-cover / endpoint-feasible stitch-compress hypothesis.
 
 Smoke-test inputs:
 
 ```text
 seconds: 180
 threads: 4
-seed: 20260703
-latest_run_id: 28378489636
-latest_d2_run_id: 28338041580
-prior_d_run_id: 28327372242
-orbit_bridge_run_id: 28304497479
-previous_core5_run_id: 28292425390
-old_59_run_id: 28275850889
-secondary_run_id: 28275666411
-base_repair_run_id: 28200925016
+seed: 20260705
+latest_run_id: 28460740781
+previous_diversity_run_id: 28404861374
+d2_bridge_run_id: 28378489636
+d_family_run_id: 28338041580
+new_defect_run_id: 28327372242
 min_covered_to_save: 56
 jobs/shards: 20
 max-parallel: 20
@@ -104,43 +101,14 @@ Full-run inputs after green smoke-test:
 ```text
 seconds: 21000
 threads: 4
-seed: 20260703
-latest_run_id: 28378489636
-latest_d2_run_id: 28338041580
-prior_d_run_id: 28327372242
-orbit_bridge_run_id: 28304497479
-previous_core5_run_id: 28292425390
-old_59_run_id: 28275850889
-secondary_run_id: 28275666411
-base_repair_run_id: 28200925016
+seed: 20260705
+latest_run_id: 28460740781
+previous_diversity_run_id: 28404861374
+d2_bridge_run_id: 28378489636
+d_family_run_id: 28338041580
+new_defect_run_id: 28327372242
 min_covered_to_save: 56
 jobs/shards: 20
 max-parallel: 20
 expected wall time: about 5h50m per shard
 ```
-
-## Current hypothesis for smart-search-12
-
-Repeated `59/64` results suggest the search may be hitting a skeleton-level wall. Local repair of the old D2 family can move missing points around, but it has not broken through to `60/64`. The next useful search should explore different 22-link skeletons and different transitions between rich 3/4-point segments.
-
-Shard roles:
-
-```text
-0-5   fresh_rich_skeleton
-6-9   transition_graph22
-10-13 diversity_repair22
-14-16 anti_wall22
-17    cross_family22
-18    integer_control22
-19    d2_control22
-```
-
-A run is useful if it reaches `60/64`, or if it produces a genuinely new `59/64` compact family, or even a very different `57/64`-`58/64` skeleton that gives a new repair direction.
-
-## Important web-chat rule
-
-Do not promise to check a run later. In web chat, either do the check now from available GitHub data, or say exactly what remains for the user to do manually.
-
-Do not ask for clarification if the next step is already written in `START_HERE.md` and `frontier/latest.*`. Use those files as the source of truth.
-
-If the available GitHub connector can create or edit files but cannot dispatch a workflow, do not claim that a run was launched. Tell the user exactly how to launch it from GitHub UI: Actions -> selected workflow -> Run workflow.
