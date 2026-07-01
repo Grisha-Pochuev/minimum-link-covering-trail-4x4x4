@@ -14,7 +14,23 @@ Important correction from 2026-06-30: do not say a workflow has been created mer
 
 Important correction from 2026-07-01: after a hypothesis/preflight chat prepares a new workflow, keep `START_HERE.md`, `frontier/latest.md`, and `frontier/latest.json` synchronized. If `START_HERE.md` says a prepared workflow exists but `frontier/latest.*` still says "hypothesis step", update the frontier before giving launch instructions.
 
-Important correction after user interruption on 2026-07-01: the user reported that the `smart-search-14-rich-cover-stitch` smoke-test has already been run. Do not tell the user to run that smoke-test again. The next action is to record/analyze the completed smoke-test from its run URL or run id.
+Important correction after user clarification on 2026-07-01: do not add a fifth mandatory smoke-test result-taking step. The user's workflow has four prompts. Smoke-test is only a technical launch gate inside the launch-preparation step. If the user sees a green check and then launches the long run, the next result-taking prompt should normally record the long/full run, not the smoke-test.
+
+## Standard four-prompt cycle
+
+```text
+1. Result-taking prompt:
+   Record completed main/full GitHub run results.
+
+2. Hypothesis prompt:
+   Compare history, form a new non-repeating hypothesis, and run small local checks if useful.
+
+3. Launch-preparation prompt:
+   Prepare files and exact GitHub inputs. Smoke-test can be used as a quick green-light, but it is not a separate scientific stage.
+
+4. Wrap-up prompt:
+   Review confusion/time loss and update memory files.
+```
 
 ## Fast checklist before preparing or analyzing a launch
 
@@ -26,20 +42,19 @@ Use this checklist before giving GitHub inputs or deciding on a full run:
 3. Read this runbook.
 4. Read the prepared workflow file from .github/workflows/.
 5. Read the docs plan for that workflow.
-6. Check whether the smoke-test has already been run and recorded.
-7. If the smoke-test has been run, analyze its jobs/artifacts instead of giving launch instructions.
-8. Check that the workflow is workflow_dispatch-only and has no push trigger.
-9. Check seed run ids and candidate-bank additions.
-10. Check artifact names: shard artifact pattern and summary artifact name.
-11. Check C++ generation path, compile command, checker command, and aggregator command.
-12. Check that the new hypothesis is not just a same-seed rerun of a saturated workflow.
-13. Check that local/preflight notes are not being misread as proof or as evidence of a solution.
-14. After creating/updating files, fetch them back from GitHub before reporting success.
+6. Check that the workflow is workflow_dispatch-only and has no push trigger.
+7. Check seed run ids and candidate-bank additions.
+8. Check artifact names: shard artifact pattern and summary artifact name.
+9. Check C++ generation path, compile command, checker command, and aggregator command.
+10. Check that the new hypothesis is not just a same-seed rerun of a saturated workflow.
+11. Check that local/preflight notes are not being misread as proof or as evidence of a solution.
+12. Remember: green smoke-test normally means proceed to full run; do not make a separate smoke-result chat unless smoke failed, looked suspicious, or the user asks.
+13. After creating/updating files, fetch them back from GitHub before reporting success.
 ```
 
-## Optimized prompt: after a run finishes
+## Optimized prompt 1: after a full run finishes
 
-Use this when a GitHub run has completed and needs to be recorded.
+Use this when a main/full GitHub run has completed and needs to be recorded.
 
 ```text
 Сними результаты завершённого GitHub run: <RUN_URL>.
@@ -53,7 +68,21 @@ Use this when a GitHub run has completed and needs to be recorded.
 В ответе коротко объясни: было/стало, что дали режимы, сколько shard-best curves, сколько compact representatives, и какой следующий не-повторяющийся шаг.
 ```
 
-## Optimized prompt: prepare the next GitHub launch
+## Optimized prompt 2: make the next hypothesis
+
+Use this after a completed full run has been recorded.
+
+```text
+Теперь посмотри на всю историю прогонов, которую мы уже открыли и записали в памяти проекта.
+
+Сделай новую гипотезу для следующего поиска. Главное — не повторять слепо прошлый насыщенный прогон.
+
+Проверь гипотезу прямо здесь в чате: запусти небольшие локальные проверки на своих серверах OpenAI, сравни несколько вариантов, посмотри, есть ли смысл в идее.
+
+В конце коротко скажи: какая гипотеза; почему она не повтор прошлого; что локальная проверка показала; стоит ли готовить под неё большой GitHub-прогон.
+```
+
+## Optimized prompt 3: prepare the next GitHub launch
 
 Use this after local analysis or after a completed run has been recorded.
 
@@ -71,25 +100,11 @@ Use this after local analysis or after a completed run has been recorded.
 - local/preflight checks are technical only and not being treated as proof.
 
 Если всё clean, дай exact GitHub inputs for smoke-test and full run. Do not launch anything automatically unless I explicitly ask.
+
+Важно: smoke-test — это только техническая зелёная лампочка. Если пользователь уже увидел green check и запустил основной 5h+ прогон, не надо отдельно снимать smoke-test; следующий обычный prompt 1 снимает результаты основного прогона.
 ```
 
-## Optimized prompt: analyze already-run smart-search-14 smoke-test
-
-Use this now if the user provides the smart-search-14 smoke-test run URL or run id.
-
-```text
-Сними результаты уже проведённого smoke-test run для smart-search-14-rich-cover-stitch: <RUN_URL>.
-
-Сначала открой START_HERE.md, frontier/latest.*, docs/web-chat-runbook-prompts.md, .github/workflows/smart-search-14-rich-cover-stitch.yml, docs/smart-search-14-rich-cover-stitch-plan.md, and scripts/prepare_rich_cover_stitch_engine.py.
-
-Проверь jobs, artifacts, rich-cover-stitch-run-summary, shard artifacts rich-cover-stitch-22-shard-*, checker results, best covered_count, links, modes, missing points, and whether the smoke-test merely reproduced old smart-search-13 families.
-
-Сохрани результат smoke-test в runs/<date>-smart-search-14-rich-cover-stitch-smoke/, обнови frontier/latest.*, START_HERE.md, and candidate additions/originals only if useful candidates exist.
-
-В конце коротко скажи: green ли smoke-test технически, был ли он научно полезен, и стоит ли готовить полный 21000-second GitHub run.
-```
-
-## Optimized prompt: whole-chat wrap-up
+## Optimized prompt 4: whole-chat wrap-up
 
 Use this at the end of a long web-chat working session.
 
@@ -117,9 +132,7 @@ generated C++: build/rich_cover_stitch_search.cpp
 
 This package intentionally replaces the older prepared workflow notes. The next search should not repeat `smart-search-13-cover-stitch-cache`; it should use the rich-cover / endpoint-feasible stitch-compress hypothesis.
 
-The user reported that the smoke-test has already been run. Therefore, do not tell the user to run smoke again unless the previous smoke was invalid or missing. First record and analyze the completed smoke-test.
-
-Before reporting that the package is ready for a full run, fetch back and verify the workflow, plan, generator, and completed smoke-test result. The expected workflow details are:
+The expected workflow details are:
 
 ```text
 workflow_dispatch-only: yes
@@ -132,7 +145,7 @@ shard artifacts: rich-cover-stitch-22-shard-*
 summary artifact: rich-cover-stitch-run-summary
 ```
 
-Prepared smoke-test inputs were:
+Prepared smoke-test inputs:
 
 ```text
 seconds: 180
@@ -148,7 +161,7 @@ jobs/shards: 20
 max-parallel: 20
 ```
 
-Full-run inputs after recorded green smoke-test:
+Full-run inputs after green smoke-test:
 
 ```text
 seconds: 21000
