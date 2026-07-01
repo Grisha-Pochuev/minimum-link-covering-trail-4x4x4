@@ -1,6 +1,6 @@
 # START HERE — project memory
 
-Last updated: 2026-06-30
+Last updated: 2026-07-01
 
 This is the first file to read when starting work in a new ChatGPT web chat. Treat this repository as durable memory: read this file first, then continue from the current frontier and the exact workflow/run being analyzed.
 
@@ -42,8 +42,8 @@ START_HERE -> frontier -> web-chat runbook -> relevant workflow -> plan -> bank/
 Latest recorded completed full run:
 
 ```text
-run id: 28404861374
-workflow: smart-search-12-skeleton-diversity
+run id: 28460740781
+workflow: smart-search-13-cover-stitch-cache
 status: success
 seconds per shard: 21000
 threads per shard: 4
@@ -56,74 +56,52 @@ missing count: 5
 Best recorded candidate from the latest run:
 
 ```text
-candidate id: mlct22-dddd317f06883acd
-source artifact: skeleton-diversity-22-shard-15
-mode: anti_wall22 in the run summary; exact same curve also appeared under other modes
-saved at: runs/2026-06-30-smart-search-12-skeleton-diversity-full/best_candidate.json
+candidate id: mlct22-1c8736b46b59a730
+source artifact: cover-stitch-cache-22-shard-6
+mode: stitch_with_transposition
+saved at: runs/2026-06-30-smart-search-13-cover-stitch-cache-full/best_candidate.json
 ```
 
 Missing points:
 
 ```text
-(1, 2, 2)
-(1, 3, 1)
+(0, 1, 2)
+(1, 2, 1)
 (1, 3, 2)
-(2, 0, 2)
-(2, 0, 3)
+(2, 1, 3)
+(2, 2, 2)
 ```
 
-Observation: all 20 shard-best artifacts reached `59/64`, but none reached `60/64` or `64/64`. This run did not improve the numeric frontier. It also did not improve diversity: previous run `28378489636` had `16` compact representatives, while run `28404861374` has only `3` exact `vertices2` representatives. The dominant exact curve appeared in `18 / 20` shard-best artifacts.
+Observation: all 20 shard-best artifacts reached `59/64`, but none reached `60/64` or `64/64`. This run improved structural diversity only modestly: run `28404861374` had 3 exact representatives and a dominant exact curve in `18 / 20` shard-best artifacts; run `28460740781` had 5 exact representatives and the dominant missing-set family in `14 / 20` artifacts. Cache and anti-wall fields were active, with nonzero `cache_rejects` and `wall_rejects`, but they did not break the `59/64` wall.
 
 Saved run memory:
 
 ```text
 frontier/latest.md
 frontier/latest.json
-runs/2026-06-30-smart-search-12-skeleton-diversity-full/summary.md
-runs/2026-06-30-smart-search-12-skeleton-diversity-full/best_candidate.json
-runs/2026-06-30-smart-search-12-skeleton-diversity-full/mode_breakdown.json
-runs/2026-06-30-smart-search-12-skeleton-diversity-full/compact_representatives.md
-candidates/bank-additions-run28404861374.jsonl
-candidates/originals/run28404861374-shard-bests-index.jsonl
+runs/2026-06-30-smart-search-13-cover-stitch-cache-full/summary.md
+runs/2026-06-30-smart-search-13-cover-stitch-cache-full/best_candidate.json
+runs/2026-06-30-smart-search-13-cover-stitch-cache-full/mode_breakdown.json
+runs/2026-06-30-smart-search-13-cover-stitch-cache-full/compact_representatives.md
+candidates/bank-additions-run28460740781.jsonl
+candidates/originals/run28460740781-shard-bests-index.jsonl
 ```
 
-Note: `candidates/bank.jsonl` was not merged in this step. The three compact additions are saved in `candidates/bank-additions-run28404861374.jsonl`. The next hypothesis step should decide whether to merge them or whether they are too collapsed around the dominant family to be useful as general search fuel.
+Note: `candidates/bank.jsonl` was not merged in this step. The five compact run-level additions are saved in `candidates/bank-additions-run28460740781.jsonl`. Four exact IDs are new relative to the recorded run `28404861374` additions; one exact ID, `mlct22-1c8736b46b59a730`, was already present there and reappeared strongly.
 
 ## Current next step
 
-Do not immediately launch another same-seed `smart-search-12-skeleton-diversity` full run. The run shows that the current skeleton-diversity generator still gets pulled back to a known `59/64` family.
+Do not immediately launch another same-seed `smart-search-13-cover-stitch-cache` full run. The run validates the cache/anti-wall machinery technically, but it still stayed at `59/64`.
 
-A new smoke-test package has been prepared:
+The next hypothesis step should move beyond inherited repair-search tuning. The most natural direction is a stronger unordered cover-set / stitch-compress engine, or a new-skeleton-first generator that delays or limits domination by old 59-families.
 
-```text
-workflow: smart-search-13-cover-stitch-cache
-workflow file: .github/workflows/smart-search-13-cover-stitch-cache.yml
-engine generator: scripts/prepare_cover_stitch_cache_engine.py
-plan: docs/smart-search-13-cover-stitch-cache-plan.md
-manual instructions: docs/smart-search-13-manual-smoke-instructions.md
-```
-
-This is intentionally a smoke-test first, not the full expensive 20-shard run. The hypothesis is that repeated-state cache pressure plus an anti-wall archive should stop the search from spending most CPU on the same 59/64 families. The smoke-test should verify prepare/compile/run/check and the new `cache_rejects` / `wall_rejects` worker-summary fields before preparing the full 20-shard launch.
-
-Recommended smoke-test inputs:
+Useful lesson from this run:
 
 ```text
-seconds: 180
-threads: 4
-seed: 20260704
-min_covered_to_save: 56
-```
-
-If the smoke-test is green, prepare the full 20-shard version with the same engine and these intended shard roles:
-
-```text
-0-4   cover_set_beam_cache
-5-8   stitch_with_transposition
-9-12  repair_window_cache
-13-15 anti_wall_archive
-16-17 novelty_56_58
-18    old_59_control
-19    integer_control22
+cache/anti-wall pressure: technically active and somewhat useful
+numeric frontier: unchanged at 59/64
+structural diversity: 3 -> 5 exact representatives, dominant family 18/20 -> 14/20
+next search: stronger new skeleton / unordered cover-set / stitch-compress, not same rerun
 ```
 
 ## Candidate-saving rules
