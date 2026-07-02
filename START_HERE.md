@@ -2,7 +2,7 @@
 
 Last updated: 2026-07-02
 
-This file is the first thing to read in a new ChatGPT web chat. It is the boot memory, not the full diary. Keep it short. Detailed history belongs in `frontier/latest.*`, `runs/*/summary.md`, plans, runbooks, and candidate banks.
+This file is the first thing to read in a new ChatGPT web chat. It is the boot memory, not the full diary. Read it once at the beginning of the working chat, normally in prompt 1. Do not reopen it in prompts 2-4 unless the user says this is a new chat, memory was lost, or critical context is missing. Detailed history belongs in `frontier/latest.*`, `runs/*/summary.md`, plans, runbooks, and candidate banks.
 
 ## 1. Project
 
@@ -22,7 +22,7 @@ Important: heuristic search results are evidence, not proof.
 
 ## 2. First reading order
 
-Start from:
+At the beginning of a new working chat, start from:
 
 1. `START_HERE.md`
 2. `frontier/latest.md`
@@ -33,6 +33,8 @@ Start from:
 7. candidate bank/additions/originals
 8. latest relevant `runs/` folder
 9. GitHub Actions artifacts when analyzing a completed run
+
+After this boot read, avoid reopening `START_HERE.md` during prompts 2-4 in the same chat. Use the already-loaded context and the smaller targeted files.
 
 Use `frontier/latest.*` and run summaries as the index instead of blindly scanning every old run.
 
@@ -71,10 +73,10 @@ Do not rerun `smart-search-14-rich-cover-stitch` with the same seed and modes as
 
 Use the user's four-step rhythm:
 
-1. result-taking prompt: read `START_HERE.md`, record completed main/full GitHub run results, artifacts, candidates, frontier, and memory;
-2. hypothesis prompt: compare recorded history, add any new outside/source file the user provides, make a non-repeating hypothesis, and run small local checks until the idea is launchable or rejected;
-3. launch-preparation prompt: prepare files and exact GitHub inputs; smoke-test is a quick technical gate, not a separate scientific stage;
-4. wrap-up prompt: review the whole chat, identify confusion/time loss, and update memory files.
+1. result-taking prompt: read `START_HERE.md` once at the start of a new chat, record completed main/full GitHub run results, artifacts, candidates, frontier, and memory;
+2. hypothesis prompt: use the already-loaded context, add any new outside/source file the user provides, think broadly, make a non-repeating hypothesis, and run small local checks until the idea is launchable or rejected;
+3. launch-preparation prompt: use the already-loaded context to prepare files and exact GitHub inputs; smoke-test is a quick technical gate, not a separate scientific stage;
+4. wrap-up prompt: review the whole chat, identify confusion/time loss, and update memory files if needed.
 
 Smoke-test is only a technical green-light before the long run. If the user sees a green check and launches the 5h+ full run, the next result-taking chat records the full run, not the smoke-test. Inspect smoke separately only if it failed, looked suspicious, or the user explicitly asks.
 
@@ -176,5 +178,6 @@ Latest saved additions:
 - Do not record `check-and-short-search` push runs as full scientific runs.
 - Do not record the local `60/64` seed as a GitHub frontier until a full GitHub run is completed and saved.
 - If a workflow in `.github/workflows/` begins with `# ... plan`, it is wrong: copy raw YAML from `docs/proposed-*.yml`.
+- In prompts 2-4 of the same chat, do not reopen `START_HERE.md` just to reread it; update it only if memory needs to change.
 
 When unsure, prefer a small local check or a short documented smoke gate before a 20-job full run.
