@@ -48,7 +48,7 @@ Latest recorded completed full run:
 - shards/jobs: `20`
 - best: `59/64` with `22` links
 
-Best recorded candidate:
+Best recorded GitHub candidate:
 
 - candidate id: `mlct22-278a7d8dc1d65f25`
 - source: `rich-cover-stitch-22-shard-0`
@@ -84,7 +84,7 @@ Smoke-test is only a technical green-light before the long run. If the user sees
 
 Recorded full run `28522369532` finished `smart-search-14-rich-cover-stitch`. It reduced collapse but still stayed at `59/64`. The next serious hypothesis should not be another same-seed smart-search-14 rerun.
 
-Prepared next idea to investigate in the hypothesis prompt:
+Prepared next idea:
 
 `cover-first diagnostics -> stitch-cost / transition graph diagnostics`
 
@@ -101,7 +101,57 @@ What the next workflow should preserve, if prepared:
 
 Useful next full-run result means either `60/64+` with `links <= 22`, or clear data showing whether the blocker is poor rich-cover material or the cost of stitching good material into one trail.
 
-## 6. Candidate memory rules
+## 6. Prepared smart-search-15 launch
+
+Prepared files:
+
+- plan: `docs/smart-search-15-rich-line-transition-60-plan.md`
+- generator: `scripts/prepare_rich_line_transition_engine.py`
+- local seed: `data/search15/local_60_candidate_cover_first_stitch_cost.json`
+- local addition: `candidates/bank-additions-local-60-chat-20260702.jsonl`
+
+The intended workflow is `.github/workflows/smart-search-15-rich-line-transition-60.yml`, but the chat GitHub connector blocked writing executable workflow files under `.github/workflows/`. Use the plan doc to add the workflow manually before smoke-test.
+
+Important: the local `60/64` seed is not a recorded GitHub full-run result and not a proof. The recorded GitHub frontier stays `59/64` until a full GitHub run finishes and is recorded.
+
+Local seed:
+
+- candidate id: `mlct22-3cf45a2e21fe611c`
+- links: `22`
+- covered: `60/64`
+- missing: `(0,0,1)`, `(0,2,3)`, `(0,3,1)`, `(2,1,1)`
+- hypothesis: rich-line transition / stitch-cost search around a `60/64` skeleton.
+
+Workflow rules:
+
+- manual only: `workflow_dispatch`;
+- no `push` trigger;
+- smoke is a technical gate, not a new frontier;
+- full run should use the same seed after green smoke.
+
+Smoke-test inputs:
+
+- workflow: `smart-search-15-rich-line-transition-60`
+- seconds: `180`
+- threads: `4`
+- seed: `20260706`
+- min_covered_to_save: `56`
+- latest_run_id: `28522369532`
+- previous_cover_stitch_run_id: `28460740781`
+- previous_diversity_run_id: `28404861374`
+
+Full-run inputs after green smoke:
+
+- workflow: `smart-search-15-rich-line-transition-60`
+- seconds: `21000`
+- threads: `4`
+- seed: `20260706`
+- min_covered_to_save: `56`
+- latest_run_id: `28522369532`
+- previous_cover_stitch_run_id: `28460740781`
+- previous_diversity_run_id: `28404861374`
+
+## 7. Candidate memory rules
 
 - `candidates/bank.jsonl`: compact reusable search memory; symmetry-deduplicated fuel.
 - `candidates/bank-additions-*.jsonl`: run-level additions before/alongside merging.
@@ -114,8 +164,9 @@ Latest saved additions:
 
 - `candidates/bank-additions-run28522369532.jsonl`
 - `candidates/originals/run28522369532-shard-bests-index.jsonl`
+- `candidates/bank-additions-local-60-chat-20260702.jsonl`
 
-## 7. Common traps
+## 8. Common traps
 
 - Do not call partial candidates proofs.
 - Do not confuse local preflight with evidence of a solution.
@@ -123,5 +174,7 @@ Latest saved additions:
 - Do not treat old smart-search-14 as automatically worth rerunning.
 - Do not read `candidates/bank.jsonl` alone; include recent bank-additions files.
 - Do not spend a new chat analyzing green smoke unless asked.
+- Do not record `check-and-short-search` push runs as full scientific runs.
+- Do not record the local `60/64` seed as a GitHub frontier until a full GitHub run is completed and saved.
 
 When unsure, prefer a small local check or a short documented smoke gate before a 20-job full run.
