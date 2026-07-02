@@ -1,0 +1,34 @@
+{
+  "candidate_id": "mlct22-278a7d8dc1d65f25",
+  "coordinate_scale": 2,
+  "covered_count": 59,
+  "links": 22,
+  "links_target": 22,
+  "missing": [[1,2,2],[2,0,2],[2,0,3],[3,1,2],[3,1,3]],
+  "mode": "new_skeleton_rich4",
+  "parameters": {
+    "directed_edge_count": 145432,
+    "mode": "new_skeleton_rich4",
+    "prior_seed_count": 48,
+    "seconds": 21000,
+    "seed": 20260705,
+    "shard": 0,
+    "shards": 20,
+    "threads": 4,
+    "vertex_count": 1379
+  },
+  "source_artifact": "rich-cover-stitch-22-shard-0",
+  "source_file": "runs/2026-07-01-smart-search-14-rich-cover-stitch-full/best_candidate.json",
+  "source_run": "28522369532",
+  "source_shard": 0,
+  "status": "partial_candidate",
+  "target_defect_hits": 12,
+  "total_attempts": 2819409136,
+  "vertices2": [[2,12,6],[2,-6,0],[2,12,0],[2,-6,6],[2,6,6],[6,2,2],[-6,2,2],[6,6,6],[6,6,0],[0,0,6],[0,0,0],[0,6,0],[0,0,6],[0,6,6],[0,6,-2],[6,0,10],[6,0,0],[6,4,0],[6,4,7],[4,4,6],[4,-2,0],[4,6,0],[4,6,14]],
+  "worker_summaries": [
+    {"attempts":704505967,"cache_rejects":273201693,"covered_count":59,"elapsed_seconds":21000.0,"links":22,"wall_rejects":271034662,"worker_id":0},
+    {"attempts":704853153,"cache_rejects":273348744,"covered_count":59,"elapsed_seconds":21000.0,"links":22,"wall_rejects":271132940,"worker_id":1},
+    {"attempts":705683116,"cache_rejects":273711984,"covered_count":59,"elapsed_seconds":21000.0,"links":22,"wall_rejects":271423424,"worker_id":2},
+    {"attempts":704366900,"cache_rejects":273137797,"covered_count":59,"elapsed_seconds":21000.0,"links":22,"wall_rejects":270995436,"worker_id":3}
+  ]
+}
