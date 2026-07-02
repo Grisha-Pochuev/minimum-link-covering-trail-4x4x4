@@ -68,7 +68,9 @@ Use this when a main/full GitHub run has completed and needs to be recorded. Thi
 
 Сравни с previous frontier. Если есть новый useful result, обнови runs/<date>-<workflow>/, frontier/latest.*, START_HERE.md, candidate bank additions, and originals index. Если нет численного улучшения, всё равно запиши структурный вывод: что именно изменилось в defect family.
 
-Сделай коммит. В ответе коротко объясни: было/стало, что дали режимы, сколько shard-best curves, сколько compact representatives, и какой следующий не-повторяющийся шаг.
+Обязательно запиши кривые в соответствующие три банка кривых: compact reusable bank/additions для дальнейшего поиска, run-level additions для этого прогона, and originals archive/index без потери реального разнообразия shard-best кривых. Не смешивай эти три роли.
+
+Сделай коммит. В ответе коротко объясни: было/стало, что дали режимы, сколько shard-best curves, сколько compact representatives, что записано в каждый из трёх банков кривых, и какой следующий не-повторяющийся шаг.
 ```
 
 ## Optimized prompt 2: make the next hypothesis
