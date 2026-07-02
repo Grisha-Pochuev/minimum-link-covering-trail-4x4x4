@@ -2,7 +2,7 @@
 
 Last updated: 2026-07-02
 
-This file is the first thing to read in a new ChatGPT web chat. It is the boot memory, not the full diary. Keep it short. Detailed history belongs in `frontier/latest.*`, `runs/*/summary.md`, plans, and candidate banks.
+This file is the first thing to read in a new ChatGPT web chat. It is the boot memory, not the full diary. Keep it short. Detailed history belongs in `frontier/latest.*`, `runs/*/summary.md`, plans, runbooks, and candidate banks.
 
 ## 1. Project
 
@@ -63,8 +63,6 @@ Key lesson from run `28522369532`:
 - raw shard-best curves: `20`, all `59/64`;
 - exact representatives: `7`;
 - new exact IDs vs recent recorded additions: `3`;
-- dominant missing family: `12/20`;
-- second missing family: `7/20`;
 - rich-cover / stitch idea was active but still insufficient.
 
 Do not rerun `smart-search-14-rich-cover-stitch` with the same seed and modes as the next serious step.
@@ -73,10 +71,10 @@ Do not rerun `smart-search-14-rich-cover-stitch` with the same seed and modes as
 
 Use the user's four-step rhythm:
 
-1. result-taking prompt: record completed main/full GitHub run results, artifacts, candidates, frontier, and memory;
-2. hypothesis prompt: compare recorded history, make a non-repeating hypothesis, and run small local checks if useful;
-3. launch-preparation prompt: prepare files and exact GitHub inputs; smoke-test may be used as a quick technical gate;
-4. wrap-up prompt: review confusion/time loss and update memory files.
+1. result-taking prompt: read `START_HERE.md`, record completed main/full GitHub run results, artifacts, candidates, frontier, and memory;
+2. hypothesis prompt: compare recorded history, add any new outside/source file the user provides, make a non-repeating hypothesis, and run small local checks until the idea is launchable or rejected;
+3. launch-preparation prompt: prepare files and exact GitHub inputs; smoke-test is a quick technical gate, not a separate scientific stage;
+4. wrap-up prompt: review the whole chat, identify confusion/time loss, and update memory files.
 
 Smoke-test is only a technical green-light before the long run. If the user sees a green check and launches the 5h+ full run, the next result-taking chat records the full run, not the smoke-test. Inspect smoke separately only if it failed, looked suspicious, or the user explicitly asks.
 
@@ -86,31 +84,31 @@ Recorded full run `28522369532` finished `smart-search-14-rich-cover-stitch`. It
 
 Prepared next idea:
 
-`cover-first diagnostics -> stitch-cost / transition graph diagnostics`
+`rich-line transition / stitch-cost search around a local 60/64 skeleton`
 
-Meaning in simple words: first save and analyze rich cover skeletons before they are forced into one trail, then measure how expensive it is to stitch them into a connected 22-link trail.
+Simple meaning: start from the local 22-link candidate that covers `60/64`, then search around its rich-line transition skeleton and pressure the four remaining holes.
 
-What the next workflow should preserve, if prepared:
-
-- best unordered cover-sets;
-- `60+` pre-stitch skeletons if they appear;
-- transition-cost tables between rich segments;
-- failed-but-promising cover sets;
-- final stitched candidates;
-- skeleton-level novelty, not only missing-set novelty.
-
-Useful next full-run result means either `60/64+` with `links <= 22`, or clear data showing whether the blocker is poor rich-cover material or the cost of stitching good material into one trail.
+Useful next full-run result means either `60/64+` with `links <= 22`, or clear data showing whether the blocker is rich-line ordering, weak bridge stitching, or the four-hole pressure around the local 60.
 
 ## 6. Prepared smart-search-15 launch
 
 Prepared files:
 
+- workflow: `.github/workflows/smart-search-15-rich-line-transition-60.yml`
+- proposed workflow backup: `docs/proposed-smart-search-15-rich-line-transition-60.yml`
 - plan: `docs/smart-search-15-rich-line-transition-60-plan.md`
 - generator: `scripts/prepare_rich_line_transition_engine.py`
 - local seed: `data/search15/local_60_candidate_cover_first_stitch_cost.json`
 - local addition: `candidates/bank-additions-local-60-chat-20260702.jsonl`
 
-The intended workflow is `.github/workflows/smart-search-15-rich-line-transition-60.yml`, but the chat GitHub connector blocked writing executable workflow files under `.github/workflows/`. Use the plan doc to add the workflow manually before smoke-test.
+2026-07-02 launch note: the ChatGPT GitHub connector blocked writing executable workflow files under `.github/workflows/`, so the user manually copied the prepared YAML. The first manual copy accidentally copied the markdown plan instead of YAML, causing run `28617578178` with no jobs. The corrected workflow must start with `name: smart-search-15-rich-line-transition-60`.
+
+Current smoke-test:
+
+- run id: `28618332477`
+- run URL: https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/28618332477
+- expected jobs: `check-known-23`, `check-local-60-seed`, `rich-line-transition-search (0..19)`, and aggregation
+- observed early status: both controls passed, engine generation and compile started correctly in shard jobs
 
 Important: the local `60/64` seed is not a recorded GitHub full-run result and not a proof. The recorded GitHub frontier stays `59/64` until a full GitHub run finishes and is recorded.
 
@@ -127,7 +125,8 @@ Workflow rules:
 - manual only: `workflow_dispatch`;
 - no `push` trigger;
 - smoke is a technical gate, not a new frontier;
-- full run should use the same seed after green smoke.
+- full run should use the same seed after green smoke;
+- for full run after green smoke, change only `seconds` from `180` to `21000` unless the smoke reveals a problem.
 
 Smoke-test inputs:
 
@@ -170,11 +169,12 @@ Latest saved additions:
 
 - Do not call partial candidates proofs.
 - Do not confuse local preflight with evidence of a solution.
-- Do not confuse a chat hypothesis with an actual GitHub workflow file.
+- Do not confuse a chat hypothesis or plan markdown file with an actual GitHub workflow YAML file.
 - Do not treat old smart-search-14 as automatically worth rerunning.
 - Do not read `candidates/bank.jsonl` alone; include recent bank-additions files.
 - Do not spend a new chat analyzing green smoke unless asked.
 - Do not record `check-and-short-search` push runs as full scientific runs.
 - Do not record the local `60/64` seed as a GitHub frontier until a full GitHub run is completed and saved.
+- If a workflow in `.github/workflows/` begins with `# ... plan`, it is wrong: copy raw YAML from `docs/proposed-*.yml`.
 
 When unsure, prefer a small local check or a short documented smoke gate before a 20-job full run.
