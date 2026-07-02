@@ -1,0 +1,42 @@
+{
+  "candidate_id": "mlct22-3cf45a2e21fe611c",
+  "coordinate_scale": 2,
+  "covered_count": 60,
+  "hypothesis": "cover-first line-support path with exact stitch-cost segment coverage",
+  "links": 22,
+  "links_target": 22,
+  "missing": [
+    [0, 0, 1],
+    [0, 2, 3],
+    [0, 3, 1],
+    [2, 1, 1]
+  ],
+  "mode": "local_rich_line_transition",
+  "source": "chat_local_hypothesis_20260702",
+  "status": "local_hypothesis_candidate_not_yet_github_run",
+  "vertices2": [
+    [0, 8, 8],
+    [0, 0, 0],
+    [0, 6, 0],
+    [0, 0, 6],
+    [6, 6, 0],
+    [6, 0, 0],
+    [6, 0, 6],
+    [6, 8, 6],
+    [-2, 0, 6],
+    [4, 0, 0],
+    [4, 0, 8],
+    [4, 8, 0],
+    [4, 2, 0],
+    [0, 6, 4],
+    [8, 6, 4],
+    [2, 0, 4],
+    [2, 0, 8],
+    [2, 8, 0],
+    [2, 0, 0],
+    [2, 6, 6],
+    [6, 2, 6],
+    [6, 2, 2],
+    [6, 8, 2]
+  ]
+}
