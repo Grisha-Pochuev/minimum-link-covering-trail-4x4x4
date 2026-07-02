@@ -5,134 +5,100 @@
     "rule_type": "threshold_and_above",
     "save_condition": "covered_count >= 56 and links <= 22"
   },
-  "chat_wrapup_2026_07_01": {
-    "confusions_to_avoid": [
-      "Do not confuse a chat-level hypothesis, a local smoke/preflight check, and an actual GitHub workflow file.",
-      "Do not treat docs/smart-search-13-cover-stitch-cache-plan.md as the next launch plan; it is historical.",
-      "Do not read candidates/bank.jsonl alone as the full recent candidate memory; include bank-additions-run28460740781 and earlier additions.",
-      "Do not treat local/preflight checks as evidence that a 22-link solution exists. They are technical checks only.",
-      "Do not add a fifth mandatory smoke-test result-taking step. Smoke-test is only a technical gate before the full run unless it failed or the user explicitly asks to analyze it."
-    ],
-    "what_went_well": [
-      "Run 28460740781 was recorded with artifacts, best candidate, mode breakdown, bank additions, and originals index.",
-      "Runs 9-13 were compared as a sequence of changing 59/64 defect walls rather than as isolated runs.",
-      "The next hypothesis was changed to rich-cover -> endpoint-feasible stitch-compress instead of another smart-search-13 rerun.",
-      "The user clarified the standard four-prompt workflow and the limited role of smoke-tests."
-    ],
-    "where_time_was_lost": [
-      "Project state had to be reconstructed from several files; the next chat should start from START_HERE and frontier/latest.*.",
-      "frontier/latest.md and frontier/latest.json lagged behind START_HERE after the smart-search-14 package was prepared; this update synchronizes them.",
-      "Smoke-test was incorrectly treated as a separate result-taking stage; this has been corrected."
-    ]
-  },
   "conclusions_for_next_run": [
-    "Numeric frontier remains 59/64; no 60/64 or 64/64 candidate was found in run 28460740781.",
-    "All 20 shard-best candidates from run 28460740781 reached 59/64.",
-    "The run produced 5 exact vertices2 representatives, 4 of them new relative to the prior recorded additions from run 28404861374.",
-    "The dominant missing set was (0,1,2),(1,2,1),(1,3,2),(2,1,3),(2,2,2), appearing in 14/20 shard-best candidates.",
-    "Do not immediately rerun smart-search-13-cover-stitch-cache with the same seed/modes.",
-    "The prepared next package is smart-search-14-rich-cover-stitch.",
-    "Follow the user's four-prompt cycle. Smoke-test is a technical gate in the launch-preparation step, not a separate mandatory result-taking stage."
+    "Numeric frontier remains 59/64; no 60/64 or 64/64 candidate was found in run 28522369532.",
+    "All 20 shard-best candidates from run 28522369532 reached 59/64.",
+    "The run produced 7 exact vertices2 representatives; 3 exact IDs were not present in the recent recorded additions from runs 28460740781 and 28404861374.",
+    "The old dominant missing family appeared in 12/20 shard-best candidates, down from 14/20 in the previous full run.",
+    "A second missing family appeared in 7/20 shard-best candidates, led by the new_skeleton_rich4 and integer_rich_control modes.",
+    "Do not immediately rerun smart-search-14-rich-cover-stitch with the same seed/modes.",
+    "Prepare a next hypothesis that separates unordered rich-cover quality from stitch-cost / transition graph quality."
   ],
   "current_next_step": {
-    "instruction": "Follow the user's four-prompt cycle. If a new full GitHub run has completed, record that full run's results. If preparing a launch, use smart-search-14-rich-cover-stitch with smoke-test only as a technical gate before the full run. Inspect smoke-test separately only if it failed, looked suspicious, or the user explicitly asks.",
-    "step_type": "follow_four_prompt_cycle_full_run_results_or_launch_preparation"
+    "instruction": "Analyze run 28522369532 as evidence that rich-cover final-trail search still hits 59/64. Build the next hypothesis around cover-first diagnostics, stitch-cost tables, transition graph diagnostics, and skeleton-level novelty rather than another identical smart-search-14 rerun.",
+    "step_type": "hypothesis_after_recorded_full_run"
   },
   "latest_useful_run": {
     "artifacts": {
-      "run_summary": "cover-stitch-cache-run-summary",
-      "shard_results": "cover-stitch-cache-22-shard-*"
+      "run_summary": "rich-cover-stitch-run-summary",
+      "shard_results": "rich-cover-stitch-22-shard-*"
     },
     "best_result": {
-      "candidate_id": "mlct22-1c8736b46b59a730",
+      "candidate_id": "mlct22-278a7d8dc1d65f25",
       "coverage_percent": 92.1875,
       "covered_count": 59,
       "grid_points": 64,
       "links": 22,
-      "missing": [
-        [0, 1, 2],
-        [1, 2, 1],
-        [1, 3, 2],
-        [2, 1, 3],
-        [2, 2, 2]
-      ],
+      "missing": [[1,2,2],[2,0,2],[2,0,3],[3,1,2],[3,1,3]],
       "missing_count": 5,
-      "mode": "stitch_with_transposition",
-      "source_artifact": "cover-stitch-cache-22-shard-6",
-      "source_file": "runs/2026-06-30-smart-search-13-cover-stitch-cache-full/best_candidate.json",
-      "source_shard": 6,
+      "mode": "new_skeleton_rich4",
+      "source_artifact": "rich-cover-stitch-22-shard-0",
+      "source_file": "runs/2026-07-01-smart-search-14-rich-cover-stitch-full/best_candidate.json",
+      "source_shard": 0,
       "status": "partial_candidate"
     },
     "comparison_with_previous_frontier": {
-      "important_observation": "Cache and anti-wall pressure were active and reduced collapse, but the run still stayed at the 59/64 wall.",
+      "important_observation": "Rich-cover / endpoint-feasible stitch-compress reduced collapse but still stayed at 59/64.",
       "new_best_covered_count": 59,
-      "new_dominant_missing_family_occurrences": 14,
-      "new_exact_representatives": 5,
+      "new_dominant_missing_family_occurrences": 12,
+      "new_exact_representatives": 7,
       "numeric_frontier_changed": false,
       "previous_best_covered_count": 59,
-      "previous_dominant_exact_occurrences": 18,
-      "previous_exact_representatives": 3,
-      "previous_latest_useful_run_id": 28404861374
+      "previous_dominant_missing_family_occurrences": 14,
+      "previous_exact_representatives": 5,
+      "previous_latest_useful_run_id": 28460740781
     },
-    "head_commit_sha": "2912b39896255e069bce0a544cf5d32ff4fbb71f",
+    "head_commit_sha": "14318efc17aa14b648f87c5f608d40a3d006d921",
+    "missing_patterns": [
+      {"count": 12, "missing": [[0,1,2],[1,2,1],[1,3,2],[2,1,3],[2,2,2]]},
+      {"count": 7, "missing": [[1,2,2],[2,0,2],[2,0,3],[3,1,2],[3,1,3]]},
+      {"count": 1, "missing": [[1,2,1],[2,1,2],[2,2,3],[3,1,2],[3,1,3]]}
+    ],
+    "mode_counts": {
+      "bridge_budget_compress": 4,
+      "defect_spread_novelty": 3,
+      "endpoint_feasible_stitch": 5,
+      "integer_rich_control": 1,
+      "new_skeleton_rich4": 6,
+      "seed_window_control": 1
+    },
     "parameters": {
       "max_parallel": 20,
       "min_covered_to_save": 56,
       "seconds": 21000,
-      "seed": 20260704,
+      "seed": 20260705,
       "shards": 20,
       "threads": 4
     },
     "result_type": "heuristic_search_not_proof",
-    "run_id": 28460740781,
+    "run_id": 28522369532,
     "run_statistics": {
       "approx_cpu_hours": 466.6667,
-      "cache_rejects": 6322767189,
-      "compact_bank_additions": 5,
-      "new_exact_ids_vs_run28404861374_additions": 4,
+      "cache_rejects": 7299923229,
+      "compact_bank_additions": 7,
+      "new_exact_ids_vs_known_recent_additions": 3,
       "raw_shard_best_at_or_above_56": 20,
       "raw_shard_best_count": 20,
-      "total_attempts": 17496566206,
+      "total_attempts": 20120842186,
       "total_workers": 80,
-      "unique_exact_vertices2_representatives": 5,
-      "wall_rejects": 5541198435
+      "unique_exact_vertices2_representatives": 7,
+      "wall_rejects": 7019721031
     },
     "status": "success",
-    "workflow_name": "smart-search-13-cover-stitch-cache"
-  },
-  "prepared_next_launch_package": {
-    "full_run_after_green_smoke": {
-      "d2_bridge_run_id": 28378489636,
-      "d_family_run_id": 28338041580,
-      "expected_wall_time": "about 5h50m per shard",
-      "jobs_shards": 20,
-      "latest_run_id": 28460740781,
-      "max_parallel": 20,
-      "min_covered_to_save": 56,
-      "new_defect_run_id": 28327372242,
-      "previous_diversity_run_id": 28404861374,
-      "seconds": 21000,
-      "seed": 20260705,
-      "threads": 4
-    },
-    "hypothesis": "rich-cover -> endpoint-feasible stitch-compress",
-    "plan_file": "docs/smart-search-14-rich-cover-stitch-plan.md",
-    "smoke_test_role": "technical_gate_only_no_separate_result_taking_required_unless_failed_or_requested",
-    "smoke_test_inputs_prepared": {
-      "d2_bridge_run_id": 28378489636,
-      "d_family_run_id": 28338041580,
-      "jobs_shards": 20,
-      "latest_run_id": 28460740781,
-      "max_parallel": 20,
-      "min_covered_to_save": 56,
-      "new_defect_run_id": 28327372242,
-      "previous_diversity_run_id": 28404861374,
-      "seconds": 180,
-      "seed": 20260705,
-      "threads": 4
-    },
-    "summary_artifact": "rich-cover-stitch-run-summary",
-    "workflow_file": ".github/workflows/smart-search-14-rich-cover-stitch.yml",
+    "top_missing_points": [
+      {"count": 13, "point": [1,2,1]},
+      {"count": 12, "point": [0,1,2]},
+      {"count": 12, "point": [1,3,2]},
+      {"count": 12, "point": [2,1,3]},
+      {"count": 12, "point": [2,2,2]},
+      {"count": 8, "point": [3,1,2]},
+      {"count": 8, "point": [3,1,3]},
+      {"count": 7, "point": [1,2,2]},
+      {"count": 7, "point": [2,0,2]},
+      {"count": 7, "point": [2,0,3]},
+      {"count": 1, "point": [2,1,2]},
+      {"count": 1, "point": [2,2,3]}
+    ],
     "workflow_name": "smart-search-14-rich-cover-stitch"
   },
   "repository": "Grisha-Pochuev/minimum-link-covering-trail-4x4x4",
@@ -143,6 +109,6 @@
     "prepare the next GitHub launch; smoke-test is only a technical gate",
     "wrap up and update memory"
   ],
-  "status": "smart_search_13_recorded_smart_search_14_prepared_four_prompt_cycle_smoke_gate_only",
-  "updated_utc": "2026-07-01T15:05:00Z"
+  "status": "smart_search_14_recorded_frontier_still_59_next_step_cover_first_stitch_cost_diagnostics",
+  "updated_utc": "2026-07-02T18:30:00Z"
 }
