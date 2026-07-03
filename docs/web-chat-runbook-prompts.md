@@ -18,6 +18,8 @@ Important correction after user clarification on 2026-07-01: do not add a fifth 
 
 Important correction from 2026-07-02: the ChatGPT GitHub connector may be blocked from writing executable workflow files under `.github/workflows/`. In that case, prepare `docs/proposed-<workflow>.yml`, tell the user to copy its raw YAML into `.github/workflows/<workflow>.yml`, then fetch the real workflow file back and verify that the first line is `name: ...`. Do not confuse a plan markdown file with a workflow YAML file.
 
+Important correction from 2026-07-03: for `smart-search-16-defect-relay-60`, the connector did create the real workflow at `.github/workflows/smart-search-16-defect-relay-60.yml`, and a proposed backup also exists. The real workflow was fetched back and begins with `name: smart-search-16-defect-relay-60`; it is not a markdown plan copied into YAML.
+
 ## Standard four-prompt cycle
 
 ```text
@@ -135,20 +137,23 @@ Use this at the end of a long web-chat working session. Do not reopen `START_HER
 
 ## Current prepared launch package
 
-As of 2026-07-02, the prepared launch package is:
+As of 2026-07-03, the prepared launch package is:
 
 ```text
-workflow: smart-search-15-rich-line-transition-60
-workflow file: .github/workflows/smart-search-15-rich-line-transition-60.yml
-proposed workflow backup: docs/proposed-smart-search-15-rich-line-transition-60.yml
-plan file: docs/smart-search-15-rich-line-transition-60-plan.md
-engine generator: scripts/prepare_rich_line_transition_engine.py
-generated C++: build/rich_line_transition_search.cpp
-local seed: data/search15/local_60_candidate_cover_first_stitch_cost.json
-local bank addition: candidates/bank-additions-local-60-chat-20260702.jsonl
+workflow: smart-search-16-defect-relay-60
+workflow file: .github/workflows/smart-search-16-defect-relay-60.yml
+proposed workflow backup: docs/proposed-smart-search-16-defect-relay-60.yml
+plan file: docs/smart-search-16-defect-relay-60-plan.md
+engine generator: scripts/prepare_defect_relay_engine.py
+generated C++: build/defect_relay_search.cpp
+summary builder: scripts/build_defect_relay_summary.py
+official 60 seed: data/search16/official_60_seed_run28618565146.json
+local relay 60 seed: data/search16/local_relay60_window2_seed.json
+old 59 seed bank: data/search16/old59_seed_bank_run28522369532.jsonl
+local relay bank addition: candidates/bank-additions-local-relay60-chat-20260703.jsonl
 ```
 
-This package intentionally replaces the older prepared `smart-search-14-rich-cover-stitch` launch notes. The next serious search should use the rich-line transition / stitch-cost hypothesis around the local `60/64` seed.
+This package intentionally replaces the saturated `smart-search-15-rich-line-transition-60` launch. The next serious search should use the defect-relay / multi-60-skeleton hypothesis: first create several genuinely different `60/64` skeletons with different missing sets, then try to push them to `61/64+`.
 
 The expected workflow details are:
 
@@ -156,12 +161,14 @@ The expected workflow details are:
 workflow_dispatch-only: yes
 push trigger: no
 control check 1: python scripts/check_trail.py data/ripa_23_trail.json --expected-links 23 --require-full
-control check 2: python scripts/check_scaled_trail.py data/search15/local_60_candidate_cover_first_stitch_cost.json --expect-covered 60 --max-links 22
-generator: python scripts/prepare_rich_line_transition_engine.py --out build/rich_line_transition_search.cpp
-compile: g++ -O3 -std=c++17 -pthread -DNDEBUG build/rich_line_transition_search.cpp -o rich_line_transition_search
-checker: python scripts/check_scaled_trail.py results/rich_line_transition/rich_line_transition_best_shard_<shard>.json --max-links 22
-shard artifacts: rich-line-transition-22-shard-*
-summary artifact: rich-line-transition-run-summary
+control check 2: python scripts/check_scaled_trail.py data/search16/official_60_seed_run28618565146.json --expect-covered 60 --max-links 22
+control check 3: python scripts/check_scaled_trail.py data/search16/local_relay60_window2_seed.json --expect-covered 60 --max-links 22
+generator: python scripts/prepare_defect_relay_engine.py --out build/defect_relay_search.cpp
+compile: g++ -O3 -std=c++17 -pthread -DNDEBUG build/defect_relay_search.cpp -o defect_relay_search
+checker: python scripts/check_scaled_trail.py results/defect_relay/defect_relay_best_shard_<shard>.json --max-links 22
+summary builder: python scripts/build_defect_relay_summary.py
+shard artifacts: defect-relay-22-shard-*
+summary artifact: defect-relay-run-summary
 shards/jobs: 20
 max-parallel: 20
 ```
@@ -171,11 +178,14 @@ Smoke-test inputs:
 ```text
 seconds: 180
 threads: 4
-seed: 20260706
+seed: 20260716
 min_covered_to_save: 56
-latest_run_id: 28522369532
+min_relay_covered_to_save: 60
+latest_run_id: 28618565146
+previous_frontier_run_id: 28522369532
 previous_cover_stitch_run_id: 28460740781
 previous_diversity_run_id: 28404861374
+max_links: 22
 ```
 
 Full-run inputs after green smoke-test:
@@ -183,12 +193,15 @@ Full-run inputs after green smoke-test:
 ```text
 seconds: 21000
 threads: 4
-seed: 20260706
+seed: 20260716
 min_covered_to_save: 56
-latest_run_id: 28522369532
+min_relay_covered_to_save: 60
+latest_run_id: 28618565146
+previous_frontier_run_id: 28522369532
 previous_cover_stitch_run_id: 28460740781
 previous_diversity_run_id: 28404861374
+max_links: 22
 expected wall time: about 5h50m per shard
 ```
 
-Known 2026-07-02 launch pitfall: the first manual copy accidentally put the markdown plan into `.github/workflows/smart-search-15-rich-line-transition-60.yml`. The broken run had no jobs. The fix is to copy raw YAML from `docs/proposed-smart-search-15-rich-line-transition-60.yml`; the workflow file must begin with `name: smart-search-15-rich-line-transition-60`.
+Known launch pitfall: never paste a markdown plan into `.github/workflows/*.yml`. For `smart-search-16-defect-relay-60`, the real workflow already exists and was fetched back from GitHub; it must begin with `name: smart-search-16-defect-relay-60`. If the workflow is ever missing or corrupted, copy raw YAML from `docs/proposed-smart-search-16-defect-relay-60.yml`, not from the markdown plan.
