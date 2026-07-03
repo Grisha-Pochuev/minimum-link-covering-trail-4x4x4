@@ -1,0 +1,16 @@
+{
+  "schema": "search16-seed-v1",
+  "seed_type": "official_60_from_github_run",
+  "candidate_id": "mlct22-3cf45a2e21fe611c",
+  "source_run": "28618565146",
+  "source_workflow": "smart-search-15-rich-line-transition-60",
+  "source_file": "runs/2026-07-03-smart-search-15-rich-line-transition-60-full/best_candidate.json",
+  "covered_count": 60,
+  "links": 22,
+  "links_target": 22,
+  "coordinate_scale": 2,
+  "status": "partial_candidate",
+  "missing": [[0,0,1],[0,2,3],[0,3,1],[2,1,1]],
+  "vertices2": [[0,8,8],[0,0,0],[0,6,0],[0,0,6],[6,6,0],[6,0,0],[6,0,6],[6,8,6],[-2,0,6],[4,0,0],[4,0,8],[4,8,0],[4,2,0],[0,6,4],[8,6,4],[2,0,4],[2,0,8],[2,8,0],[2,0,0],[2,6,6],[6,2,6],[6,2,2],[6,8,2]],
+  "note": "Official GitHub-confirmed 60/64 seed. It is not a proof and not a complete covering trail."
+}
