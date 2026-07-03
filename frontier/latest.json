@@ -6,100 +6,165 @@
     "save_condition": "covered_count >= 56 and links <= 22"
   },
   "conclusions_for_next_run": [
-    "Numeric frontier remains 59/64; no 60/64 or 64/64 candidate was found in run 28522369532.",
-    "All 20 shard-best candidates from run 28522369532 reached 59/64.",
-    "The run produced 7 exact vertices2 representatives; 3 exact IDs were not present in the recent recorded additions from runs 28460740781 and 28404861374.",
-    "The old dominant missing family appeared in 12/20 shard-best candidates, down from 14/20 in the previous full run.",
-    "A second missing family appeared in 7/20 shard-best candidates, led by the new_skeleton_rich4 and integer_rich_control modes.",
-    "Do not immediately rerun smart-search-14-rich-cover-stitch with the same seed/modes.",
-    "Prepare a next hypothesis that separates unordered rich-cover quality from stitch-cost / transition graph quality."
+    "Numeric GitHub frontier improved from 59/64 to 60/64, but no 61/64 or 64/64 candidate was found.",
+    "All 20 shard-best candidates reached 60/64 and had the same four missing points: (0,0,1), (0,2,3), (0,3,1), (2,1,1).",
+    "The run produced only 1 compact representative; it confirmed the local 60 seed rather than producing diverse independent 60-families.",
+    "All six modes collapsed to the same four-hole wall; rerunning the same smart-search-15 setup is likely repetitive.",
+    "Next step should be exact local four-hole surgery around this 60-skeleton or multi-60-skeleton generation aimed at different four-hole families."
   ],
   "current_next_step": {
-    "instruction": "Analyze run 28522369532 as evidence that rich-cover final-trail search still hits 59/64. Build the next hypothesis around cover-first diagnostics, stitch-cost tables, transition graph diagnostics, and skeleton-level novelty rather than another identical smart-search-14 rerun.",
+    "instruction": "Use run 28618565146 as the first recorded GitHub 60/64 frontier. Do not rerun the same seed/modes. Build the next hypothesis around exact four-hole local surgery or independent 60-skeleton diversity.",
     "step_type": "hypothesis_after_recorded_full_run"
   },
   "latest_useful_run": {
     "artifacts": {
-      "run_summary": "rich-cover-stitch-run-summary",
-      "shard_results": "rich-cover-stitch-22-shard-*"
+      "run_summary": "rich-line-transition-run-summary",
+      "shard_results": "rich-line-transition-22-shard-*"
     },
     "best_result": {
-      "candidate_id": "mlct22-278a7d8dc1d65f25",
-      "coverage_percent": 92.1875,
-      "covered_count": 59,
+      "candidate_id": "mlct22-3cf45a2e21fe611c",
+      "coverage_percent": 93.75,
+      "covered_count": 60,
       "grid_points": 64,
       "links": 22,
-      "missing": [[1,2,2],[2,0,2],[2,0,3],[3,1,2],[3,1,3]],
-      "missing_count": 5,
-      "mode": "new_skeleton_rich4",
-      "source_artifact": "rich-cover-stitch-22-shard-0",
-      "source_file": "runs/2026-07-01-smart-search-14-rich-cover-stitch-full/best_candidate.json",
-      "source_shard": 0,
+      "missing": [
+        [
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          2,
+          3
+        ],
+        [
+          0,
+          3,
+          1
+        ],
+        [
+          2,
+          1,
+          1
+        ]
+      ],
+      "missing_count": 4,
+      "mode": "integer_line_control",
+      "same_vertices_as_local_seed": "data/search15/local_60_candidate_cover_first_stitch_cost.json",
+      "source_artifact": "rich-line-transition-22-shard-18",
+      "source_file": "runs/2026-07-03-smart-search-15-rich-line-transition-60-full/best_candidate.json",
+      "source_shard": 18,
       "status": "partial_candidate"
     },
     "comparison_with_previous_frontier": {
-      "important_observation": "Rich-cover / endpoint-feasible stitch-compress reduced collapse but still stayed at 59/64.",
-      "new_best_covered_count": 59,
-      "new_dominant_missing_family_occurrences": 12,
-      "new_exact_representatives": 7,
-      "numeric_frontier_changed": false,
+      "important_observation": "The run confirms the local 60/64 skeleton as a full GitHub result, but all shard-best outputs collapse to the same four-hole wall.",
+      "new_best_covered_count": 60,
+      "new_dominant_missing_family_occurrences": 20,
+      "new_exact_representatives": 1,
+      "numeric_frontier_changed": true,
       "previous_best_covered_count": 59,
-      "previous_dominant_missing_family_occurrences": 14,
-      "previous_exact_representatives": 5,
-      "previous_latest_useful_run_id": 28460740781
+      "previous_dominant_missing_family_occurrences": 12,
+      "previous_exact_representatives": 7,
+      "previous_latest_useful_run_id": 28522369532
     },
-    "head_commit_sha": "14318efc17aa14b648f87c5f608d40a3d006d921",
+    "head_commit_sha": "e82bff68d5fde1ae86a19176c3310e81f4c9b8b3",
     "missing_patterns": [
-      {"count": 12, "missing": [[0,1,2],[1,2,1],[1,3,2],[2,1,3],[2,2,2]]},
-      {"count": 7, "missing": [[1,2,2],[2,0,2],[2,0,3],[3,1,2],[3,1,3]]},
-      {"count": 1, "missing": [[1,2,1],[2,1,2],[2,2,3],[3,1,2],[3,1,3]]}
+      {
+        "count": 20,
+        "missing": [
+          [
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            2,
+            3
+          ],
+          [
+            0,
+            3,
+            1
+          ],
+          [
+            2,
+            1,
+            1
+          ]
+        ]
+      }
     ],
     "mode_counts": {
-      "bridge_budget_compress": 4,
-      "defect_spread_novelty": 3,
-      "endpoint_feasible_stitch": 5,
-      "integer_rich_control": 1,
-      "new_skeleton_rich4": 6,
-      "seed_window_control": 1
+      "integer_line_control": 1,
+      "local60_lns": 5,
+      "missing4_pressure": 6,
+      "old59_vs_60_control": 1,
+      "rich_line_transition": 4,
+      "weak_bridge_surgery": 3
     },
     "parameters": {
+      "latest_run_id": 28522369532,
       "max_parallel": 20,
       "min_covered_to_save": 56,
+      "previous_cover_stitch_run_id": 28460740781,
+      "previous_diversity_run_id": 28404861374,
       "seconds": 21000,
-      "seed": 20260705,
+      "seed": 20260706,
       "shards": 20,
       "threads": 4
     },
     "result_type": "heuristic_search_not_proof",
-    "run_id": 28522369532,
+    "run_id": 28618565146,
     "run_statistics": {
       "approx_cpu_hours": 466.6667,
-      "cache_rejects": 7299923229,
-      "compact_bank_additions": 7,
-      "new_exact_ids_vs_known_recent_additions": 3,
+      "cache_rejects": 6291493510,
+      "compact_bank_additions": 1,
+      "original_shard_best_records": 20,
       "raw_shard_best_at_or_above_56": 20,
       "raw_shard_best_count": 20,
-      "total_attempts": 20120842186,
+      "total_attempts": 17237425689,
       "total_workers": 80,
-      "unique_exact_vertices2_representatives": 7,
-      "wall_rejects": 7019721031
+      "unique_exact_vertices2_representatives": 1,
+      "wall_rejects": 6200487078
     },
     "status": "success",
     "top_missing_points": [
-      {"count": 13, "point": [1,2,1]},
-      {"count": 12, "point": [0,1,2]},
-      {"count": 12, "point": [1,3,2]},
-      {"count": 12, "point": [2,1,3]},
-      {"count": 12, "point": [2,2,2]},
-      {"count": 8, "point": [3,1,2]},
-      {"count": 8, "point": [3,1,3]},
-      {"count": 7, "point": [1,2,2]},
-      {"count": 7, "point": [2,0,2]},
-      {"count": 7, "point": [2,0,3]},
-      {"count": 1, "point": [2,1,2]},
-      {"count": 1, "point": [2,2,3]}
+      {
+        "count": 20,
+        "point": [
+          0,
+          0,
+          1
+        ]
+      },
+      {
+        "count": 20,
+        "point": [
+          0,
+          2,
+          3
+        ]
+      },
+      {
+        "count": 20,
+        "point": [
+          0,
+          3,
+          1
+        ]
+      },
+      {
+        "count": 20,
+        "point": [
+          2,
+          1,
+          1
+        ]
+      }
     ],
-    "workflow_name": "smart-search-14-rich-cover-stitch"
+    "workflow_name": "smart-search-15-rich-line-transition-60"
   },
   "repository": "Grisha-Pochuev/minimum-link-covering-trail-4x4x4",
   "schema": "mlct-frontier-v1",
@@ -109,6 +174,6 @@
     "prepare the next GitHub launch; smoke-test is only a technical gate",
     "wrap up and update memory"
   ],
-  "status": "smart_search_14_recorded_frontier_still_59_next_step_cover_first_stitch_cost_diagnostics",
-  "updated_utc": "2026-07-02T18:30:00Z"
+  "status": "smart_search_15_recorded_frontier_60_four_hole_wall",
+  "updated_utc": "2026-07-03T02:30:00Z"
 }
