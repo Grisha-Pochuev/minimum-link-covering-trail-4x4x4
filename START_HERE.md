@@ -1,6 +1,6 @@
 # START HERE — compact agent memory
 
-Last updated: 2026-07-02
+Last updated: 2026-07-03
 
 This file is the first thing to read in a new ChatGPT web chat. It is the boot memory, not the full diary. Read it once at the beginning of the working chat, normally in prompt 1. Do not reopen it in prompts 2-4 unless the user says this is a new chat, memory was lost, or critical context is missing. Detailed history belongs in `frontier/latest.*`, `runs/*/summary.md`, plans, runbooks, and candidate banks.
 
@@ -42,32 +42,32 @@ Use `frontier/latest.*` and run summaries as the index instead of blindly scanni
 
 Latest recorded completed full run:
 
-- run id: `28522369532`
-- workflow: `smart-search-14-rich-cover-stitch`
+- run id: `28618565146`
+- workflow: `smart-search-15-rich-line-transition-60`
 - status: `success`
 - seconds: `21000` per shard
 - threads: `4`
 - shards/jobs: `20`
-- best: `59/64` with `22` links
+- best: `60/64` with `22` links
 
 Best recorded GitHub candidate:
 
-- candidate id: `mlct22-278a7d8dc1d65f25`
-- source: `rich-cover-stitch-22-shard-0`
-- mode: `new_skeleton_rich4`
-- file: `runs/2026-07-01-smart-search-14-rich-cover-stitch-full/best_candidate.json`
-- missing: `(1,2,2)`, `(2,0,2)`, `(2,0,3)`, `(3,1,2)`, `(3,1,3)`
+- candidate id: `mlct22-3cf45a2e21fe611c`
+- source: `rich-line-transition-22-shard-18`
+- mode: `integer_line_control`
+- file: `runs/2026-07-03-smart-search-15-rich-line-transition-60-full/best_candidate.json`
+- missing: `(0,0,1)`, `(0,2,3)`, `(0,3,1)`, `(2,1,1)`
 
-Key lesson from run `28522369532`:
+Key lesson from run `28618565146`:
 
-- numeric frontier stayed at `59/64`;
-- no `60/64` or `64/64` candidate;
-- raw shard-best curves: `20`, all `59/64`;
-- exact representatives: `7`;
-- new exact IDs vs recent recorded additions: `3`;
-- rich-cover / stitch idea was active but still insufficient.
+- numeric GitHub frontier improved from `59/64` to `60/64`;
+- no `61/64` or `64/64` candidate;
+- raw shard-best curves: `20`, all `60/64`;
+- compact representatives: `1`;
+- all six modes collapsed to the same four-hole wall;
+- the run confirms the local `60/64` seed as a full GitHub Actions result but does not create independent 60-family diversity.
 
-Do not rerun `smart-search-14-rich-cover-stitch` with the same seed and modes as the next serious step.
+Do not rerun `smart-search-15-rich-line-transition-60` with the same seed and modes as the next serious step.
 
 ## 4. Standard four-prompt workflow
 
@@ -82,87 +82,60 @@ Smoke-test is only a technical green-light before the long run. If the user sees
 
 ## 5. Current next direction
 
-Recorded full run `28522369532` finished `smart-search-14-rich-cover-stitch`. It reduced collapse but still stayed at `59/64`. The next serious hypothesis should not be another same-seed smart-search-14 rerun.
+Recorded full run `28618565146` finished `smart-search-15-rich-line-transition-60`. It raised the official GitHub frontier to `60/64`, but every mode and every shard-best preserved the same four missing points.
 
-Prepared next idea:
+Prepared next idea should be non-repeating:
 
-`rich-line transition / stitch-cost search around a local 60/64 skeleton`
+`exact four-hole local surgery around the 60-skeleton`  
+or  
+`multi-60-skeleton generation for different four-hole families`
 
-Simple meaning: start from the local 22-link candidate that covers `60/64`, then search around its rich-line transition skeleton and pressure the four remaining holes.
+Simple meaning: we now have an official 60/64 object. The next step is either to attack its four remaining holes by exact/surgical local windows, or to create several genuinely different 60/64 skeletons before pushing to `61/64+`.
 
-Useful next full-run result means either `60/64+` with `links <= 22`, or clear data showing whether the blocker is rich-line ordering, weak bridge stitching, or the four-hole pressure around the local 60.
+Useful next full-run result means either `61/64+` with `links <= 22`, or clear data showing whether the blocker is the exact four-hole geometry, the rich-line order, or lack of independent 60-skeleton diversity.
 
-## 6. Prepared smart-search-15 launch
+## 6. Latest smart-search-15 result
 
-Prepared files:
+Completed run:
 
-- workflow: `.github/workflows/smart-search-15-rich-line-transition-60.yml`
-- proposed workflow backup: `docs/proposed-smart-search-15-rich-line-transition-60.yml`
-- plan: `docs/smart-search-15-rich-line-transition-60-plan.md`
-- generator: `scripts/prepare_rich_line_transition_engine.py`
-- local seed: `data/search15/local_60_candidate_cover_first_stitch_cost.json`
-- local addition: `candidates/bank-additions-local-60-chat-20260702.jsonl`
-
-2026-07-02 launch note: the ChatGPT GitHub connector blocked writing executable workflow files under `.github/workflows/`, so the user manually copied the prepared YAML. The first manual copy accidentally copied the markdown plan instead of YAML, causing run `28617578178` with no jobs. The corrected workflow must start with `name: smart-search-15-rich-line-transition-60`.
-
-Current smoke-test:
-
-- run id: `28618332477`
-- run URL: https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/28618332477
-- expected jobs: `check-known-23`, `check-local-60-seed`, `rich-line-transition-search (0..19)`, and aggregation
-- observed early status: both controls passed, engine generation and compile started correctly in shard jobs
-
-Important: the local `60/64` seed is not a recorded GitHub full-run result and not a proof. The recorded GitHub frontier stays `59/64` until a full GitHub run finishes and is recorded.
-
-Local seed:
-
-- candidate id: `mlct22-3cf45a2e21fe611c`
-- links: `22`
-- covered: `60/64`
-- missing: `(0,0,1)`, `(0,2,3)`, `(0,3,1)`, `(2,1,1)`
-- hypothesis: rich-line transition / stitch-cost search around a `60/64` skeleton.
-
-Workflow rules:
-
-- manual only: `workflow_dispatch`;
-- no `push` trigger;
-- smoke is a technical gate, not a new frontier;
-- full run should use the same seed after green smoke;
-- for full run after green smoke, change only `seconds` from `180` to `21000` unless the smoke reveals a problem.
-
-Smoke-test inputs:
-
+- run id: `28618565146`
+- run URL: https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/28618565146
 - workflow: `smart-search-15-rich-line-transition-60`
-- seconds: `180`
-- threads: `4`
-- seed: `20260706`
-- min_covered_to_save: `56`
-- latest_run_id: `28522369532`
-- previous_cover_stitch_run_id: `28460740781`
-- previous_diversity_run_id: `28404861374`
+- head SHA: `e82bff68d5fde1ae86a19176c3310e81f4c9b8b3`
+- controls: `check-known-23` passed, `check-local-60-seed` passed
+- aggregation: `rich-line-transition-run-summary` produced successfully
 
-Full-run inputs after green smoke:
+Run artifacts:
 
-- workflow: `smart-search-15-rich-line-transition-60`
-- seconds: `21000`
-- threads: `4`
-- seed: `20260706`
-- min_covered_to_save: `56`
-- latest_run_id: `28522369532`
-- previous_cover_stitch_run_id: `28460740781`
-- previous_diversity_run_id: `28404861374`
+- `rich-line-transition-run-summary`
+- `rich-line-transition-22-shard-0` through `rich-line-transition-22-shard-19`
+
+Mode layout observed:
+
+- `local60_lns`: 5 shard-bests, all `60/64`
+- `rich_line_transition`: 4 shard-bests, all `60/64`
+- `missing4_pressure`: 6 shard-bests, all `60/64`
+- `weak_bridge_surgery`: 3 shard-bests, all `60/64`
+- `integer_line_control`: 1 shard-best, `60/64`
+- `old59_vs_60_control`: 1 shard-best, `60/64`
+
+All 20 shard-best records have the same missing set: `(0,0,1)`, `(0,2,3)`, `(0,3,1)`, `(2,1,1)`.
 
 ## 7. Candidate memory rules
 
 - `candidates/bank.jsonl`: compact reusable search memory; symmetry-deduplicated fuel.
-- `candidates/bank-additions-*.jsonl`: run-level additions before/alongside merging.
+- `candidates/bank-additions-*.jsonl`: compact reusable additions before/alongside merging.
+- `runs/<date>-<workflow>/shard_bests.jsonl`: run-level additions and full run context.
 - `candidates/originals/`: non-deduplicated scientific archive of real shard-best diversity.
 - Normal save threshold: `covered_count >= 56 and links <= 22`.
 
-After every completed full run: save champion, compact additions, original shard-best index if available, update `frontier/latest.*`, and update this file if the frontier or next step changed.
+After every completed full run: save champion, compact additions, original shard-best index/full originals if available, update `frontier/latest.*`, and update this file if the frontier or next step changed.
 
 Latest saved additions:
 
+- `candidates/bank-additions-run28618565146.jsonl`
+- `candidates/originals/run28618565146-shard-bests-index.jsonl`
+- `candidates/originals/run28618565146-shard-bests.jsonl`
 - `candidates/bank-additions-run28522369532.jsonl`
 - `candidates/originals/run28522369532-shard-bests-index.jsonl`
 - `candidates/bank-additions-local-60-chat-20260702.jsonl`
@@ -173,10 +146,11 @@ Latest saved additions:
 - Do not confuse local preflight with evidence of a solution.
 - Do not confuse a chat hypothesis or plan markdown file with an actual GitHub workflow YAML file.
 - Do not treat old smart-search-14 as automatically worth rerunning.
+- Do not rerun smart-search-15 with the same seed/modes just to reconfirm the 60 seed.
 - Do not read `candidates/bank.jsonl` alone; include recent bank-additions files.
 - Do not spend a new chat analyzing green smoke unless asked.
 - Do not record `check-and-short-search` push runs as full scientific runs.
-- Do not record the local `60/64` seed as a GitHub frontier until a full GitHub run is completed and saved.
+- Do not record a local seed as a GitHub frontier until a full GitHub run is completed and saved.
 - If a workflow in `.github/workflows/` begins with `# ... plan`, it is wrong: copy raw YAML from `docs/proposed-*.yml`.
 - In prompts 2-4 of the same chat, do not reopen `START_HERE.md` just to reread it; update it only if memory needs to change.
 
