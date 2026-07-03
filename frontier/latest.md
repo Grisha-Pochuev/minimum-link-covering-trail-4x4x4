@@ -38,9 +38,9 @@ Saved run memory:
 ```text
 runs/2026-07-03-smart-search-15-rich-line-transition-60-full/summary.md
 runs/2026-07-03-smart-search-15-rich-line-transition-60-full/best_candidate.json
-runs/2026-07-03-smart-search-15-rich-line-transition-60-full/artifact_summary.json
 runs/2026-07-03-smart-search-15-rich-line-transition-60-full/mode_breakdown.json
 runs/2026-07-03-smart-search-15-rich-line-transition-60-full/compact_representatives.md
+runs/2026-07-03-smart-search-15-rich-line-transition-60-full/shard-best-summary.jsonl
 runs/2026-07-03-smart-search-15-rich-line-transition-60-full/shard_bests.jsonl
 candidates/bank-additions-run28618565146.jsonl
 candidates/originals/run28618565146-shard-bests-index.jsonl
@@ -54,20 +54,13 @@ candidates/originals/run28618565146-shard-bests.jsonl
 - compact representatives among the 20: `1`
 - compact bank additions saved: `1`
 - original shard-best index records saved: `20`
-- original full shard-best records saved: `20`
+- full original geometry record saved: `1` representative, with all 20 original shard entries indexed separately
 
-`candidates/bank.jsonl` was not merged in this step. The compact reusable addition was saved separately in `candidates/bank-additions-run28618565146.jsonl`, while the full run-level and originals records preserve all 20 shard-best outputs.
+`candidates/bank.jsonl` was not merged in this step. The compact reusable addition was saved separately in `candidates/bank-additions-run28618565146.jsonl`; the run-level summary and originals index preserve all 20 shard-best outputs. Because all 20 have the same `vertices2`, the full geometry is stored once as the representative.
 
-## Dominant missing patterns from run 28618565146
+## Dominant missing pattern
 
 - 20 / 20: `(0,0,1)`, `(0,2,3)`, `(0,3,1)`, `(2,1,1)`
-
-## Top recurring missing points
-
-- `(0, 0, 1)`: 20 / 20
-- `(0, 2, 3)`: 20 / 20
-- `(0, 3, 1)`: 20 / 20
-- `(2, 1, 1)`: 20 / 20
 
 ## Mode breakdown
 
@@ -90,12 +83,4 @@ Run `28618565146` improves the recorded GitHub numeric frontier to `60/64`, but 
 
 Do not immediately launch another identical `smart-search-15-rich-line-transition-60` full run with the same seed and modes.
 
-The next useful hypothesis should be one of these non-repeating attacks:
-
-```text
-exact four-point local repair around the 60-skeleton
-or
-multi-60-skeleton generation to create independent 60/64 families before pushing to 61/64+
-```
-
-In simple words: we now have an official 60/64 object. The next step is not to reconfirm it again; the next step is to understand why these four exact points survive every mode, or to find a different 60-skeleton with a different four-point family.
+Next useful hypothesis: exact four-point local repair around the 60-skeleton, or multi-60-skeleton generation to create independent 60/64 families before pushing to `61/64+`.
