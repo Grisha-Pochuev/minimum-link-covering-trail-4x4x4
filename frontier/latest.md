@@ -1,103 +1,101 @@
 # Current search frontier
 
-This file is the human-readable working memory of the project.
-
-Status: `smart-search-14-rich-cover-stitch` full run completed successfully. Numeric frontier remains `59/64`; run `28522369532` is recorded as the latest completed full run. It did not find `60/64`, but it produced more exact shard-best diversity than run `28460740781` and showed that rich-cover / endpoint-feasible stitching still collapses to a small set of `59/64` walls.
+Status: `smart-search-15-rich-line-transition-60` full run completed successfully. Numeric GitHub frontier improved from `59/64` to `60/64`; run `28618565146` is now the latest recorded completed full run. It did not find `61/64+` or a complete `64/64` candidate. It confirmed the local 60-seed as a real GitHub Actions result, but all 20 shard-best curves collapsed to one compact representative and the same four missing points.
 
 Latest recorded full run:
 
 - Repository: `Grisha-Pochuev/minimum-link-covering-trail-4x4x4`
-- Final run id: `28522369532`
-- Run URL: https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/28522369532
-- Workflow: `smart-search-14-rich-cover-stitch`
-- Commit SHA of the run: `14318efc17aa14b648f87c5f608d40a3d006d921`
+- Final run id: `28618565146`
+- Workflow: `smart-search-15-rich-line-transition-60`
+- Commit SHA of the run: `e82bff68d5fde1ae86a19176c3310e81f4c9b8b3`
 - Status: `success`
 - Duration: full run, `21000` seconds per shard
 - Threads per shard: `4`
 - Shards/jobs: `20`
-- Seed: `20260705`
+- Seed: `20260706`
 - Result type: heuristic search, not a proof
-- Artifacts: `rich-cover-stitch-run-summary`, `rich-cover-stitch-22-shard-*`
+- Artifacts: `rich-line-transition-run-summary`, `rich-line-transition-22-shard-*`
 
 ## Best GitHub Actions result
 
-- candidate id: `mlct22-278a7d8dc1d65f25`
-- covered_count: `59 / 64`
-- coverage percent: `92.1875%`
+- candidate id: `mlct22-3cf45a2e21fe611c`
+- covered_count: `60 / 64`
+- coverage percent: `93.75%`
 - links: `22`
-- selected mode: `new_skeleton_rich4`
-- source artifact: `rich-cover-stitch-22-shard-0`
-- source shard: `0`
+- selected mode: `integer_line_control`
+- source artifact: `rich-line-transition-22-shard-18`
+- source shard: `18`
 - status: `partial_candidate`
-- missing count: `5`
-- missing:
-  - `(1, 2, 2)`
-  - `(2, 0, 2)`
-  - `(2, 0, 3)`
-  - `(3, 1, 2)`
-  - `(3, 1, 3)`
+- missing count: `4`
+- missing: `(0,0,1)`, `(0,2,3)`, `(0,3,1)`, `(2,1,1)`
 
-The best candidate is still partial. It has exactly 22 links and covers 59 of the 64 grid points. This is not a complete covering trail and not a proof.
+The best candidate is still partial. It has exactly 22 links and covers 60 of the 64 grid points. This is not a complete covering trail and not a proof.
+
+It has the same `vertices2` as the local seed `data/search15/local_60_candidate_cover_first_stitch_cost.json`, previously recorded as `mlct22-3cf45a2e21fe611c`. The difference is status: it is now confirmed by a completed full GitHub Actions run.
 
 Saved run memory:
 
 ```text
-runs/2026-07-01-smart-search-14-rich-cover-stitch-full/summary.md
-runs/2026-07-01-smart-search-14-rich-cover-stitch-full/best_candidate.json
-runs/2026-07-01-smart-search-14-rich-cover-stitch-full/mode_breakdown.json
-runs/2026-07-01-smart-search-14-rich-cover-stitch-full/compact_representatives.md
-candidates/bank-additions-run28522369532.jsonl
-candidates/originals/run28522369532-shard-bests-index.jsonl
+runs/2026-07-03-smart-search-15-rich-line-transition-60-full/summary.md
+runs/2026-07-03-smart-search-15-rich-line-transition-60-full/best_candidate.json
+runs/2026-07-03-smart-search-15-rich-line-transition-60-full/artifact_summary.json
+runs/2026-07-03-smart-search-15-rich-line-transition-60-full/mode_breakdown.json
+runs/2026-07-03-smart-search-15-rich-line-transition-60-full/compact_representatives.md
+runs/2026-07-03-smart-search-15-rich-line-transition-60-full/shard_bests.jsonl
+candidates/bank-additions-run28618565146.jsonl
+candidates/originals/run28618565146-shard-bests-index.jsonl
+candidates/originals/run28618565146-shard-bests.jsonl
 ```
 
-## Candidate memory from run 28522369532
+## Candidate memory from run 28618565146
 
 - raw shard-best curves at the normal preservation threshold `covered_count >= 56`: `20`
-- all raw shard-best curves were `59/64`
-- exact unique `vertices2` curves among the 20: `7`
-- compact bank additions saved: `7`
-- exact IDs new relative to the recent recorded additions from runs `28460740781` and `28404861374`: `3`
+- all raw shard-best curves were `60/64`
+- compact representatives among the 20: `1`
+- compact bank additions saved: `1`
 - original shard-best index records saved: `20`
+- original full shard-best records saved: `20`
 
-`candidates/bank.jsonl` was not merged in this step. The run-level additions were saved separately in `candidates/bank-additions-run28522369532.jsonl`.
+`candidates/bank.jsonl` was not merged in this step. The compact reusable addition was saved separately in `candidates/bank-additions-run28618565146.jsonl`, while the full run-level and originals records preserve all 20 shard-best outputs.
 
-## Dominant missing patterns from run 28522369532
+## Dominant missing patterns from run 28618565146
 
-- 12 / 20: `(0,1,2)`, `(1,2,1)`, `(1,3,2)`, `(2,1,3)`, `(2,2,2)`
-- 7 / 20: `(1,2,2)`, `(2,0,2)`, `(2,0,3)`, `(3,1,2)`, `(3,1,3)`
-- 1 / 20: `(1,2,1)`, `(2,1,2)`, `(2,2,3)`, `(3,1,2)`, `(3,1,3)`
+- 20 / 20: `(0,0,1)`, `(0,2,3)`, `(0,3,1)`, `(2,1,1)`
 
 ## Top recurring missing points
 
-- `(1, 2, 1)`: 13 / 20
-- `(0, 1, 2)`: 12 / 20
-- `(1, 3, 2)`: 12 / 20
-- `(2, 1, 3)`: 12 / 20
-- `(2, 2, 2)`: 12 / 20
-- `(3, 1, 2)`: 8 / 20
-- `(3, 1, 3)`: 8 / 20
-- `(1, 2, 2)`: 7 / 20
-- `(2, 0, 2)`: 7 / 20
-- `(2, 0, 3)`: 7 / 20
-- `(2, 1, 2)`: 1 / 20
-- `(2, 2, 3)`: 1 / 20
+- `(0, 0, 1)`: 20 / 20
+- `(0, 2, 3)`: 20 / 20
+- `(0, 3, 1)`: 20 / 20
+- `(2, 1, 1)`: 20 / 20
+
+## Mode breakdown
+
+- `local60_lns`: 5 shard-best curves, all `60/64`.
+- `rich_line_transition`: 4 shard-best curves, all `60/64`.
+- `missing4_pressure`: 6 shard-best curves, all `60/64`.
+- `weak_bridge_surgery`: 3 shard-best curves, all `60/64`.
+- `integer_line_control`: 1 shard-best curve, `60/64`; selected by aggregation as best source.
+- `old59_vs_60_control`: 1 shard-best curve, `60/64`.
+
+All modes led to the same four-point wall; no mode found `61/64+`.
 
 ## Comparison with previous frontier
 
-Previous latest useful run was `28460740781`, also `59/64`, with `5` exact representatives and a dominant missing family in `14 / 20` shard-best artifacts. This run again reached only `59/64`, but had `7` exact representatives, `3` exact IDs not present in the recent recorded additions from runs `28460740781` and `28404861374`, and its dominant missing-set family appeared in `12 / 20` shard-best artifacts.
+Previous latest useful run was `28522369532`, with best `59/64`, `7` exact representatives, and a dominant missing family in `12 / 20` shard-best artifacts.
 
-So the rich-cover / endpoint-feasible stitch-compress launch gave a real but still modest structural improvement: it reduced collapse, produced a new dominant `new_skeleton_rich4` representative, and exposed two competing `59/64` walls. But it still did not break the `59/64` wall.
+Run `28618565146` improves the recorded GitHub numeric frontier to `60/64`, but it has only `1` compact representative and one missing family in `20 / 20` shard-best artifacts. So the new run is useful because it confirms the local 60 skeleton on GitHub, but it also shows strong saturation around the same four points.
 
 ## Current next step
 
-Do not immediately launch another identical `smart-search-14-rich-cover-stitch` full run with the same seed and modes.
+Do not immediately launch another identical `smart-search-15-rich-line-transition-60` full run with the same seed and modes.
 
-The useful next hypothesis should separate the two subproblems more sharply:
+The next useful hypothesis should be one of these non-repeating attacks:
 
 ```text
-cover-first diagnostics -> stitch-cost / transition graph diagnostics
+exact four-point local repair around the 60-skeleton
+or
+multi-60-skeleton generation to create independent 60/64 families before pushing to 61/64+
 ```
 
-In simple words: save and analyze the rich covering skeleton before it is forced into one trail, then measure the cost of stitching that skeleton into a continuous 22-link trail. The next search should preserve pre-stitch cover sets, transition-cost tables, and skeleton-level novelty, not only final shard-best curves.
-
-A useful next full-run result is either any `60/64+` candidate with `links <= 22`, or concrete evidence showing whether the current blocker is poor rich-cover material or the price of stitching good material into one trail.
+In simple words: we now have an official 60/64 object. The next step is not to reconfirm it again; the next step is to understand why these four exact points survive every mode, or to find a different 60-skeleton with a different four-point family.
