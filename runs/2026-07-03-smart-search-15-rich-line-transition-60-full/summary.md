@@ -117,3 +117,7 @@ So the numeric frontier improved by one covered point. But structurally, the sea
 The rich-line transition / stitch-cost run successfully converted the local chat seed into an official GitHub Actions frontier result. The useful lesson is not “we are almost done by repeating this exact run”. The useful lesson is that the current local 60 skeleton is a real strong object, but the four remaining holes are extremely stable under all six tested modes.
 
 The next non-repeating step should not be another same-seed `smart-search-15` rerun. It should attack the four-hole wall directly with a different representation: either exact local window surgery around the four holes, or a multi-60-skeleton search designed to create independent `60/64` families before trying to reach `61/64+`.
+
+## Repository checkpoint
+
+This run-result recording step is committed on `main`. The frontier files, START_HERE memory, run folder, compact bank addition, and originals index are saved for future chats.
