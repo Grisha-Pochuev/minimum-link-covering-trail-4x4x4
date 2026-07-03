@@ -79,8 +79,30 @@ Previous latest useful run was `28522369532`, with best `59/64`, `7` exact repre
 
 Run `28618565146` improves the recorded GitHub numeric frontier to `60/64`, but it has only `1` compact representative and one missing family in `20 / 20` shard-best artifacts. So the new run is useful because it confirms the local 60 skeleton on GitHub, but it also shows strong saturation around the same four points.
 
+## Current prepared launch package
+
+Prepared next workflow:
+
+```text
+workflow: smart-search-16-defect-relay-60
+workflow file: .github/workflows/smart-search-16-defect-relay-60.yml
+proposed workflow backup: docs/proposed-smart-search-16-defect-relay-60.yml
+plan file: docs/smart-search-16-defect-relay-60-plan.md
+generator: scripts/prepare_defect_relay_engine.py
+summary builder: scripts/build_defect_relay_summary.py
+seed files:
+  data/search16/official_60_seed_run28618565146.json
+  data/search16/local_relay60_window2_seed.json
+  data/search16/old59_seed_bank_run28522369532.jsonl
+candidate addition: candidates/bank-additions-local-relay60-chat-20260703.jsonl
+```
+
+Hypothesis: defect relay / multi-60-skeleton. The next run should first create several independent `60/64` skeletons with different missing sets, then try to push them to `61/64+`. This is not a same-seed rerun of `smart-search-15`.
+
+Local preflight idea already found one relay-style `60/64` variant: replacing the window `[2,6,6] -> [6,2,6] -> [6,2,2] -> [6,8,2]` by `[2,6,6] -> [0,6,2] -> [6,0,2] -> [6,8,2]` preserved `60/64` but changed the missing set to `(0,0,1)`, `(0,2,3)`, `(2,2,3)`, `(3,1,2)`.
+
 ## Current next step
 
-Do not immediately launch another identical `smart-search-15-rich-line-transition-60` full run with the same seed and modes.
+Run a short smoke-test of `smart-search-16-defect-relay-60`. If the three controls pass, the generator compiles, shard artifacts are created, and aggregation produces `defect-relay-run-summary`, then run the full 20-shard search.
 
-Next useful hypothesis: exact four-point local repair around the 60-skeleton, or multi-60-skeleton generation to create independent 60/64 families before pushing to `61/64+`.
+Do not immediately launch another identical `smart-search-15-rich-line-transition-60` full run with the same seed and modes.
