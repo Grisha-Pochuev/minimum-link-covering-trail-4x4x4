@@ -1,179 +1,141 @@
 {
-  "candidate_preservation_rule_for_future_runs": {
-    "max_links": 22,
-    "min_covered_to_save": 56,
-    "rule_type": "threshold_and_above",
-    "save_condition": "covered_count >= 56 and links <= 22"
-  },
-  "conclusions_for_next_run": [
-    "Numeric GitHub frontier improved from 59/64 to 60/64, but no 61/64 or 64/64 candidate was found.",
-    "All 20 shard-best candidates reached 60/64 and had the same four missing points: (0,0,1), (0,2,3), (0,3,1), (2,1,1).",
-    "The run produced only 1 compact representative; it confirmed the local 60 seed rather than producing diverse independent 60-families.",
-    "All six modes collapsed to the same four-hole wall; rerunning the same smart-search-15 setup is likely repetitive.",
-    "Next step should be exact local four-hole surgery around this 60-skeleton or multi-60-skeleton generation aimed at different four-hole families."
-  ],
-  "current_next_step": {
-    "instruction": "Use run 28618565146 as the first recorded GitHub 60/64 frontier. Do not rerun the same seed/modes. Build the next hypothesis around exact four-hole local surgery or independent 60-skeleton diversity.",
-    "step_type": "hypothesis_after_recorded_full_run"
-  },
+  "schema": "mlct-frontier-v1",
+  "repository": "Grisha-Pochuev/minimum-link-covering-trail-4x4x4",
+  "updated_utc": "2026-07-03T03:30:00Z",
+  "status": "smart_search_16_defect_relay_launch_package_prepared",
   "latest_useful_run": {
-    "artifacts": {
-      "run_summary": "rich-line-transition-run-summary",
-      "shard_results": "rich-line-transition-22-shard-*"
-    },
+    "run_id": 28618565146,
+    "workflow_name": "smart-search-15-rich-line-transition-60",
+    "status": "success",
+    "head_commit_sha": "e82bff68d5fde1ae86a19176c3310e81f4c9b8b3",
+    "result_type": "heuristic_search_not_proof",
     "best_result": {
       "candidate_id": "mlct22-3cf45a2e21fe611c",
-      "coverage_percent": 93.75,
       "covered_count": 60,
       "grid_points": 64,
+      "coverage_percent": 93.75,
       "links": 22,
-      "missing": [
-        [
-          0,
-          0,
-          1
-        ],
-        [
-          0,
-          2,
-          3
-        ],
-        [
-          0,
-          3,
-          1
-        ],
-        [
-          2,
-          1,
-          1
-        ]
-      ],
-      "missing_count": 4,
+      "status": "partial_candidate",
       "mode": "integer_line_control",
-      "same_vertices_as_local_seed": "data/search15/local_60_candidate_cover_first_stitch_cost.json",
       "source_artifact": "rich-line-transition-22-shard-18",
       "source_file": "runs/2026-07-03-smart-search-15-rich-line-transition-60-full/best_candidate.json",
       "source_shard": 18,
-      "status": "partial_candidate"
+      "missing": [[0,0,1],[0,2,3],[0,3,1],[2,1,1]],
+      "missing_count": 4
     },
-    "comparison_with_previous_frontier": {
-      "important_observation": "The run confirms the local 60/64 skeleton as a full GitHub result, but all shard-best outputs collapse to the same four-hole wall.",
-      "new_best_covered_count": 60,
-      "new_dominant_missing_family_occurrences": 20,
-      "new_exact_representatives": 1,
-      "numeric_frontier_changed": true,
-      "previous_best_covered_count": 59,
-      "previous_dominant_missing_family_occurrences": 12,
-      "previous_exact_representatives": 7,
-      "previous_latest_useful_run_id": 28522369532
+    "run_statistics": {
+      "raw_shard_best_count": 20,
+      "raw_shard_best_at_or_above_56": 20,
+      "original_shard_best_records": 20,
+      "compact_bank_additions": 1,
+      "unique_exact_vertices2_representatives": 1,
+      "total_workers": 80,
+      "total_attempts": 17237425689,
+      "cache_rejects": 6291493510,
+      "wall_rejects": 6200487078,
+      "approx_cpu_hours": 466.6667
     },
-    "head_commit_sha": "e82bff68d5fde1ae86a19176c3310e81f4c9b8b3",
-    "missing_patterns": [
-      {
-        "count": 20,
-        "missing": [
-          [
-            0,
-            0,
-            1
-          ],
-          [
-            0,
-            2,
-            3
-          ],
-          [
-            0,
-            3,
-            1
-          ],
-          [
-            2,
-            1,
-            1
-          ]
-        ]
-      }
-    ],
     "mode_counts": {
-      "integer_line_control": 1,
       "local60_lns": 5,
-      "missing4_pressure": 6,
-      "old59_vs_60_control": 1,
       "rich_line_transition": 4,
-      "weak_bridge_surgery": 3
+      "missing4_pressure": 6,
+      "weak_bridge_surgery": 3,
+      "integer_line_control": 1,
+      "old59_vs_60_control": 1
     },
-    "parameters": {
-      "latest_run_id": 28522369532,
-      "max_parallel": 20,
+    "missing_patterns": [
+      {"count": 20, "missing": [[0,0,1],[0,2,3],[0,3,1],[2,1,1]]}
+    ],
+    "comparison_with_previous_frontier": {
+      "previous_latest_useful_run_id": 28522369532,
+      "previous_best_covered_count": 59,
+      "previous_exact_representatives": 7,
+      "previous_dominant_missing_family_occurrences": 12,
+      "new_best_covered_count": 60,
+      "new_exact_representatives": 1,
+      "new_dominant_missing_family_occurrences": 20,
+      "numeric_frontier_changed": true,
+      "important_observation": "The run confirms the local 60/64 skeleton as a full GitHub result, but all shard-best outputs collapse to the same four-hole wall."
+    }
+  },
+  "prepared_launch_package": {
+    "workflow": "smart-search-16-defect-relay-60",
+    "workflow_file": ".github/workflows/smart-search-16-defect-relay-60.yml",
+    "proposed_workflow_backup": "docs/proposed-smart-search-16-defect-relay-60.yml",
+    "plan_file": "docs/smart-search-16-defect-relay-60-plan.md",
+    "generator": "scripts/prepare_defect_relay_engine.py",
+    "summary_builder": "scripts/build_defect_relay_summary.py",
+    "seed_files": [
+      "data/search16/official_60_seed_run28618565146.json",
+      "data/search16/local_relay60_window2_seed.json",
+      "data/search16/old59_seed_bank_run28522369532.jsonl"
+    ],
+    "candidate_additions": [
+      "candidates/bank-additions-local-relay60-chat-20260703.jsonl"
+    ],
+    "hypothesis": "defect relay / multi-60-skeleton generation",
+    "not_a_repeat_of": "smart-search-15-rich-line-transition-60 same-seed rerun",
+    "local_preflight_observation": {
+      "old_window_vertices2": [[2,6,6],[6,2,6],[6,2,2],[6,8,2]],
+      "new_window_vertices2": [[2,6,6],[0,6,2],[6,0,2],[6,8,2]],
+      "old_missing": [[0,0,1],[0,2,3],[0,3,1],[2,1,1]],
+      "new_missing": [[0,0,1],[0,2,3],[2,2,3],[3,1,2]],
+      "observed_covered_count": 60,
+      "interpretation": "A two-vertex local relay can preserve 60/64 while changing the four-point missing set."
+    },
+    "artifact_names": {
+      "shard_pattern": "defect-relay-22-shard-*",
+      "summary": "defect-relay-run-summary"
+    },
+    "success_criteria": {
+      "strong": "61/64 or better with links <= 22",
+      "medium": "at least 5 unique compact 60/64 representatives and at least 3 different missing sets",
+      "weak_but_useful": "no 61/64, but a visible relay graph of different 60/64 missing families",
+      "failure": "collapse again to mlct22-3cf45a2e21fe611c and the old four-hole wall"
+    }
+  },
+  "current_next_step": {
+    "step_type": "run_smoke_test_for_prepared_launch_package",
+    "instruction": "Run a short smart-search-16-defect-relay-60 smoke-test. If the seed controls, generator, compile, shard artifacts, and defect-relay aggregation are green, proceed to the full 20-shard run. Do not rerun smart-search-15 with the same seed and modes."
+  },
+  "recommended_inputs": {
+    "smoke_test": {
+      "workflow": "smart-search-16-defect-relay-60",
+      "seconds": 180,
+      "threads": 4,
+      "seed": 20260716,
       "min_covered_to_save": 56,
+      "min_relay_covered_to_save": 60,
+      "latest_run_id": 28618565146,
+      "previous_frontier_run_id": 28522369532,
       "previous_cover_stitch_run_id": 28460740781,
       "previous_diversity_run_id": 28404861374,
+      "max_links": 22
+    },
+    "full_run_after_green_smoke": {
+      "workflow": "smart-search-16-defect-relay-60",
       "seconds": 21000,
-      "seed": 20260706,
-      "shards": 20,
-      "threads": 4
-    },
-    "result_type": "heuristic_search_not_proof",
-    "run_id": 28618565146,
-    "run_statistics": {
-      "approx_cpu_hours": 466.6667,
-      "cache_rejects": 6291493510,
-      "compact_bank_additions": 1,
-      "original_shard_best_records": 20,
-      "raw_shard_best_at_or_above_56": 20,
-      "raw_shard_best_count": 20,
-      "total_attempts": 17237425689,
-      "total_workers": 80,
-      "unique_exact_vertices2_representatives": 1,
-      "wall_rejects": 6200487078
-    },
-    "status": "success",
-    "top_missing_points": [
-      {
-        "count": 20,
-        "point": [
-          0,
-          0,
-          1
-        ]
-      },
-      {
-        "count": 20,
-        "point": [
-          0,
-          2,
-          3
-        ]
-      },
-      {
-        "count": 20,
-        "point": [
-          0,
-          3,
-          1
-        ]
-      },
-      {
-        "count": 20,
-        "point": [
-          2,
-          1,
-          1
-        ]
-      }
-    ],
-    "workflow_name": "smart-search-15-rich-line-transition-60"
+      "threads": 4,
+      "seed": 20260716,
+      "min_covered_to_save": 56,
+      "min_relay_covered_to_save": 60,
+      "latest_run_id": 28618565146,
+      "previous_frontier_run_id": 28522369532,
+      "previous_cover_stitch_run_id": 28460740781,
+      "previous_diversity_run_id": 28404861374,
+      "max_links": 22
+    }
   },
-  "repository": "Grisha-Pochuev/minimum-link-covering-trail-4x4x4",
-  "schema": "mlct-frontier-v1",
+  "candidate_preservation_rule_for_future_runs": {
+    "rule_type": "threshold_and_above",
+    "max_links": 22,
+    "min_covered_to_save": 56,
+    "save_condition": "covered_count >= 56 and links <= 22"
+  },
   "standard_web_chat_cycle": [
     "record completed full-run results",
     "make a new hypothesis and do local checks if useful",
     "prepare the next GitHub launch; smoke-test is only a technical gate",
     "wrap up and update memory"
-  ],
-  "status": "smart_search_15_recorded_frontier_60_four_hole_wall",
-  "updated_utc": "2026-07-03T02:30:00Z"
+  ]
 }
