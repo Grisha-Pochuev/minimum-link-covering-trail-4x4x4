@@ -80,21 +80,71 @@ Use the user's four-step rhythm:
 
 Smoke-test is only a technical green-light before the long run. If the user sees a green check and launches the 5h+ full run, the next result-taking chat records the full run, not the smoke-test. Inspect smoke separately only if it failed, looked suspicious, or the user explicitly asks.
 
-## 5. Current next direction
+## 5. Current prepared launch package
 
-Recorded full run `28618565146` finished `smart-search-15-rich-line-transition-60`. It raised the official GitHub frontier to `60/64`, but every mode and every shard-best preserved the same four missing points.
+Prepared next workflow:
 
-Prepared next idea should be non-repeating:
+```text
+workflow: smart-search-16-defect-relay-60
+workflow file: .github/workflows/smart-search-16-defect-relay-60.yml
+proposed workflow backup: docs/proposed-smart-search-16-defect-relay-60.yml
+plan file: docs/smart-search-16-defect-relay-60-plan.md
+generator: scripts/prepare_defect_relay_engine.py
+summary builder: scripts/build_defect_relay_summary.py
+```
 
-`exact four-hole local surgery around the 60-skeleton`  
-or  
-`multi-60-skeleton generation for different four-hole families`
+Seed and bank files:
 
-Simple meaning: we now have an official 60/64 object. The next step is either to attack its four remaining holes by exact/surgical local windows, or to create several genuinely different 60/64 skeletons before pushing to `61/64+`.
+```text
+data/search16/official_60_seed_run28618565146.json
+data/search16/local_relay60_window2_seed.json
+data/search16/old59_seed_bank_run28522369532.jsonl
+candidates/bank-additions-local-relay60-chat-20260703.jsonl
+```
 
-Useful next full-run result means either `61/64+` with `links <= 22`, or clear data showing whether the blocker is the exact four-hole geometry, the rich-line order, or lack of independent 60-skeleton diversity.
+Hypothesis: `defect relay / multi-60-skeleton`.
 
-## 6. Latest smart-search-15 result
+Simple meaning: the last run gave one official `60/64` object but no diversity. The next run should first create several genuinely different `60/64` skeletons with different missing sets, then try to push them to `61/64+`.
+
+Local check behind the package: a two-vertex window replacement changed the end window from `[2,6,6] -> [6,2,6] -> [6,2,2] -> [6,8,2]` to `[2,6,6] -> [0,6,2] -> [6,0,2] -> [6,8,2]`. This preserved `60/64` but changed the missing set from `(0,0,1), (0,2,3), (0,3,1), (2,1,1)` to `(0,0,1), (0,2,3), (2,2,3), (3,1,2)`. It is search fuel, not proof.
+
+## 6. Launch inputs for smart-search-16
+
+Smoke-test inputs:
+
+```text
+workflow: smart-search-16-defect-relay-60
+seconds: 180
+threads: 4
+seed: 20260716
+min_covered_to_save: 56
+min_relay_covered_to_save: 60
+latest_run_id: 28618565146
+previous_frontier_run_id: 28522369532
+previous_cover_stitch_run_id: 28460740781
+previous_diversity_run_id: 28404861374
+max_links: 22
+```
+
+Full-run inputs after green smoke:
+
+```text
+workflow: smart-search-16-defect-relay-60
+seconds: 21000
+threads: 4
+seed: 20260716
+min_covered_to_save: 56
+min_relay_covered_to_save: 60
+latest_run_id: 28618565146
+previous_frontier_run_id: 28522369532
+previous_cover_stitch_run_id: 28460740781
+previous_diversity_run_id: 28404861374
+max_links: 22
+```
+
+Expected useful result means either `61/64+` with `links <= 22`, or clear structural progress: at least several unique compact `60/64` representatives and several different missing sets.
+
+## 7. Latest smart-search-15 result
 
 Completed run:
 
@@ -121,7 +171,7 @@ Mode layout observed:
 
 All 20 shard-best records have the same missing set: `(0,0,1)`, `(0,2,3)`, `(0,3,1)`, `(2,1,1)`.
 
-## 7. Candidate memory rules
+## 8. Candidate memory rules
 
 - `candidates/bank.jsonl`: compact reusable search memory; symmetry-deduplicated fuel.
 - `candidates/bank-additions-*.jsonl`: compact reusable additions before/alongside merging.
@@ -133,6 +183,7 @@ After every completed full run: save champion, compact additions, original shard
 
 Latest saved additions:
 
+- `candidates/bank-additions-local-relay60-chat-20260703.jsonl`
 - `candidates/bank-additions-run28618565146.jsonl`
 - `candidates/originals/run28618565146-shard-bests-index.jsonl`
 - `candidates/originals/run28618565146-shard-bests.jsonl`
@@ -140,7 +191,7 @@ Latest saved additions:
 - `candidates/originals/run28522369532-shard-bests-index.jsonl`
 - `candidates/bank-additions-local-60-chat-20260702.jsonl`
 
-## 8. Common traps
+## 9. Common traps
 
 - Do not call partial candidates proofs.
 - Do not confuse local preflight with evidence of a solution.
@@ -152,6 +203,7 @@ Latest saved additions:
 - Do not record `check-and-short-search` push runs as full scientific runs.
 - Do not record a local seed as a GitHub frontier until a full GitHub run is completed and saved.
 - If a workflow in `.github/workflows/` begins with `# ... plan`, it is wrong: copy raw YAML from `docs/proposed-*.yml`.
+- For the prepared smart-search-16 package, verify that the workflow starts with `name: smart-search-16-defect-relay-60` and uses only `workflow_dispatch`.
 - In prompts 2-4 of the same chat, do not reopen `START_HERE.md` just to reread it; update it only if memory needs to change.
 
 When unsure, prefer a small local check or a short documented smoke gate before a 20-job full run.
