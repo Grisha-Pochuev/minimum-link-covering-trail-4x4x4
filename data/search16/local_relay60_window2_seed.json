@@ -1,0 +1,19 @@
+{
+  "schema": "search16-seed-v1",
+  "seed_type": "local_window2_relay_60",
+  "candidate_id": "mlct22-local-relay60-window2-20260703",
+  "source_candidate_id": "mlct22-3cf45a2e21fe611c",
+  "source_run": "28618565146",
+  "derived_in_chat": "2026-07-03",
+  "covered_count": 60,
+  "links": 22,
+  "links_target": 22,
+  "coordinate_scale": 2,
+  "status": "partial_candidate",
+  "old_window_vertices2": [[2,6,6],[6,2,6],[6,2,2],[6,8,2]],
+  "new_window_vertices2": [[2,6,6],[0,6,2],[6,0,2],[6,8,2]],
+  "old_missing": [[0,0,1],[0,2,3],[0,3,1],[2,1,1]],
+  "missing": [[0,0,1],[0,2,3],[2,2,3],[3,1,2]],
+  "vertices2": [[0,8,8],[0,0,0],[0,6,0],[0,0,6],[6,6,0],[6,0,0],[6,0,6],[6,8,6],[-2,0,6],[4,0,0],[4,0,8],[4,8,0],[4,2,0],[0,6,4],[8,6,4],[2,0,4],[2,0,8],[2,8,0],[2,0,0],[2,6,6],[0,6,2],[6,0,2],[6,8,2]],
+  "note": "Local defect-relay seed: a two-internal-vertex window replacement preserves 60/64 but changes the four-point missing set. It is heuristic search fuel, not evidence of a solution."
+}
