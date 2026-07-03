@@ -1,0 +1,9 @@
+{
+  "local60_lns": {"count": 5, "shards": [0,1,2,3,4], "best_covered_count": 60, "total_attempts": 14057988827},
+  "rich_line_transition": {"count": 4, "shards": [5,6,7,8], "best_covered_count": 60, "total_attempts": 664320138},
+  "missing4_pressure": {"count": 6, "shards": [9,10,11,12,16,17], "best_covered_count": 60, "total_attempts": 1567278135},
+  "weak_bridge_mode": {"count": 3, "shards": [13,14,15], "best_covered_count": 60, "total_attempts": 479057671, "original_mode_name": "weak_bridge_surgery"},
+  "integer_line_control": {"count": 1, "shards": [18], "best_covered_count": 60, "total_attempts": 247662043},
+  "old59_vs_60_control": {"count": 1, "shards": [19], "best_covered_count": 60, "total_attempts": 221118875},
+  "common_missing_pattern": [[0,0,1],[0,2,3],[0,3,1],[2,1,1]]
+}
