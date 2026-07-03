@@ -16,7 +16,6 @@ MODE_REPLACEMENTS = {
     "rich-line-transition-shard-v1": "defect-relay-shard-v1",
     "rich_line_transition_search parameters:": "defect_relay_search parameters:",
     "rich-line transition": "defect relay",
-    "rich_line_transition": "defect_relay",
 }
 
 MODE_FOR_CPP = r'''string mode_for(int shard) {
