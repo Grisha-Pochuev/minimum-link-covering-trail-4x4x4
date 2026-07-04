@@ -1,0 +1,63 @@
+{
+  "schema": "mlct-mode-breakdown-v1",
+  "run_id": 28674416173,
+  "workflow": "smart-search-16-defect-relay-60",
+  "note": "build_defect_relay_summary.py counted three result rows per shard: best JSON, relay60 jsonl, and missing_patterns JSON. actual_shard_best_count below divides those rows by 3.",
+  "actual_total_shard_best_count_inferred": 20,
+  "summary_result_rows": 60,
+  "best_covered_count": 60,
+  "top_missing_family": {
+    "count": 60,
+    "missing": [[0,0,1],[0,2,3],[0,3,1],[2,1,1]]
+  },
+  "modes": {
+    "integer_control": {
+      "actual_shard_best_count_inferred": 1,
+      "best": 60,
+      "relay60_or_better_rows": 3,
+      "summary_row_count": 3,
+      "unique_compact_reported": 2,
+      "unique_missing_families_reported": 1
+    },
+    "old59_to_relay60": {
+      "actual_shard_best_count_inferred": 3,
+      "best": 60,
+      "relay60_or_better_rows": 9,
+      "summary_row_count": 9,
+      "unique_compact_reported": 2,
+      "unique_missing_families_reported": 1
+    },
+    "old60_and_local_relay_control": {
+      "actual_shard_best_count_inferred": 1,
+      "best": 60,
+      "relay60_or_better_rows": 3,
+      "summary_row_count": 3,
+      "unique_compact_reported": 2,
+      "unique_missing_families_reported": 1
+    },
+    "relay_then_push61": {
+      "actual_shard_best_count_inferred": 4,
+      "best": 60,
+      "relay60_or_better_rows": 12,
+      "summary_row_count": 12,
+      "unique_compact_reported": 2,
+      "unique_missing_families_reported": 1
+    },
+    "window2_relay_from_official60": {
+      "actual_shard_best_count_inferred": 7,
+      "best": 60,
+      "relay60_or_better_rows": 21,
+      "summary_row_count": 21,
+      "unique_compact_reported": 2,
+      "unique_missing_families_reported": 1
+    },
+    "window3_relay_from_official60": {
+      "actual_shard_best_count_inferred": 4,
+      "best": 60,
+      "relay60_or_better_rows": 12,
+      "summary_row_count": 12,
+      "unique_compact_reported": 2,
+      "unique_missing_families_reported": 1
+    }
+  }
+}
