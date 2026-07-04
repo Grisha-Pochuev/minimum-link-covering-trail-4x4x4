@@ -1,20 +1,20 @@
 # Current search frontier
 
-Status: `smart-search-15-rich-line-transition-60` full run completed successfully. Numeric GitHub frontier improved from `59/64` to `60/64`; run `28618565146` is now the latest recorded completed full run. It did not find `61/64+` or a complete `64/64` candidate. It confirmed the local 60-seed as a real GitHub Actions result, but all 20 shard-best curves collapsed to one compact representative and the same four missing points.
+Status: `smart-search-16-defect-relay-60` full run completed successfully. Numeric frontier remains `60/64`; run `28674416173` is now the latest recorded completed full run. It did not find `61/64+` or a complete `64/64` candidate. It also did not produce the intended multi-60 diversity: all practical shard-best results collapsed back to the same old four-hole wall from run `28618565146`.
 
 Latest recorded full run:
 
 - Repository: `Grisha-Pochuev/minimum-link-covering-trail-4x4x4`
-- Final run id: `28618565146`
-- Workflow: `smart-search-15-rich-line-transition-60`
-- Commit SHA of the run: `e82bff68d5fde1ae86a19176c3310e81f4c9b8b3`
+- Final run id: `28674416173`
+- Workflow: `smart-search-16-defect-relay-60`
+- Commit SHA of the run: `dd8414cdfe2d8c2a97e02a8223d87d69ead9a3c7`
 - Status: `success`
 - Duration: full run, `21000` seconds per shard
 - Threads per shard: `4`
 - Shards/jobs: `20`
-- Seed: `20260706`
+- Seed: `20260716`
 - Result type: heuristic search, not a proof
-- Artifacts: `rich-line-transition-run-summary`, `rich-line-transition-22-shard-*`
+- Artifacts: `defect-relay-run-summary`, `defect-relay-22-shard-*`
 
 ## Best GitHub Actions result
 
@@ -22,87 +22,68 @@ Latest recorded full run:
 - covered_count: `60 / 64`
 - coverage percent: `93.75%`
 - links: `22`
-- selected mode: `integer_line_control`
-- source artifact: `rich-line-transition-22-shard-18`
-- source shard: `18`
+- selected mode: `window3_relay_from_official60`
+- source artifact: `defect-relay-22-shard-7`
+- source shard: `7`
 - status: `partial_candidate`
 - missing count: `4`
 - missing: `(0,0,1)`, `(0,2,3)`, `(0,3,1)`, `(2,1,1)`
 
 The best candidate is still partial. It has exactly 22 links and covers 60 of the 64 grid points. This is not a complete covering trail and not a proof.
 
-It has the same `vertices2` as the local seed `data/search15/local_60_candidate_cover_first_stitch_cost.json`, previously recorded as `mlct22-3cf45a2e21fe611c`. The difference is status: it is now confirmed by a completed full GitHub Actions run.
+It has the same `vertices2` as the previous official 60/64 candidate from run `28618565146`. So this run is recorded as a structural negative result, not as a new compact reusable candidate.
 
 Saved run memory:
 
 ```text
-runs/2026-07-03-smart-search-15-rich-line-transition-60-full/summary.md
-runs/2026-07-03-smart-search-15-rich-line-transition-60-full/best_candidate.json
-runs/2026-07-03-smart-search-15-rich-line-transition-60-full/mode_breakdown.json
-runs/2026-07-03-smart-search-15-rich-line-transition-60-full/compact_representatives.md
-runs/2026-07-03-smart-search-15-rich-line-transition-60-full/shard-best-summary.jsonl
-runs/2026-07-03-smart-search-15-rich-line-transition-60-full/shard_bests.jsonl
-candidates/bank-additions-run28618565146.jsonl
-candidates/originals/run28618565146-shard-bests-index.jsonl
-candidates/originals/run28618565146-shard-bests.jsonl
+runs/2026-07-03-smart-search-16-defect-relay-60-full/summary.md
+runs/2026-07-03-smart-search-16-defect-relay-60-full/best_candidate.json
+runs/2026-07-03-smart-search-16-defect-relay-60-full/mode_breakdown.json
+runs/2026-07-03-smart-search-16-defect-relay-60-full/raw_defect_relay_run_summary.json
+runs/2026-07-03-smart-search-16-defect-relay-60-full/relay60-diversity.jsonl
+runs/2026-07-03-smart-search-16-defect-relay-60-full/compact_representatives.md
+runs/2026-07-03-smart-search-16-defect-relay-60-full/shard-best-summary.jsonl
+candidates/originals/run28674416173-shard-bests-index.jsonl
 ```
 
-## Candidate memory from run 28618565146
+## Candidate memory from run 28674416173
 
-- raw shard-best curves at the normal preservation threshold `covered_count >= 56`: `20`
-- all raw shard-best curves were `60/64`
-- compact representatives among the 20: `1`
-- compact bank additions saved: `1`
+- practical shard-best curves: `20`
+- all inferred shard-best curves were `60/64`
+- compact reusable bank additions saved: `0`
+- new exact full-geometry representatives: `0`
 - original shard-best index records saved: `20`
-- full original geometry record saved: `1` representative, with all 20 original shard entries indexed separately
+- aggregation rows with `covered_count`: `60`
 
-`candidates/bank.jsonl` was not merged in this step. The compact reusable addition was saved separately in `candidates/bank-additions-run28618565146.jsonl`; the run-level summary and originals index preserve all 20 shard-best outputs. Because all 20 have the same `vertices2`, the full geometry is stored once as the representative.
+Counting caution: the current defect-relay aggregator counted best JSON, relay60 JSONL, and missing-pattern JSON. This is why the artifact summary reports `60` relay rows and `unique compact = 2`. The second compact row is metadata without `vertices2`, not a new curve.
 
 ## Dominant missing pattern
 
-- 20 / 20: `(0,0,1)`, `(0,2,3)`, `(0,3,1)`, `(2,1,1)`
+- practical shard-bests: `20 / 20`: `(0,0,1)`, `(0,2,3)`, `(0,3,1)`, `(2,1,1)`
+- raw aggregation rows: `60 / 60`: same missing family
 
 ## Mode breakdown
 
-- `local60_lns`: 5 shard-best curves, all `60/64`.
-- `rich_line_transition`: 4 shard-best curves, all `60/64`.
-- `missing4_pressure`: 6 shard-best curves, all `60/64`.
-- `weak_bridge_surgery`: 3 shard-best curves, all `60/64`.
-- `integer_line_control`: 1 shard-best curve, `60/64`; selected by aggregation as best source.
-- `old59_vs_60_control`: 1 shard-best curve, `60/64`.
+Corrected by actual shard mapping:
+
+- `window2_relay_from_official60`: `7` shard-bests, all `60/64`.
+- `window3_relay_from_official60`: `4` shard-bests, all `60/64`.
+- `old59_to_relay60`: `3` shard-bests, all `60/64`.
+- `relay_then_push61`: `4` shard-bests, all `60/64`.
+- `integer_control`: `1` shard-best, `60/64`.
+- `old60_and_local_relay_control`: `1` shard-best, `60/64`.
 
 All modes led to the same four-point wall; no mode found `61/64+`.
 
 ## Comparison with previous frontier
 
-Previous latest useful run was `28522369532`, with best `59/64`, `7` exact representatives, and a dominant missing family in `12 / 20` shard-best artifacts.
+Previous latest useful run was `28618565146`, with best `60/64`, `1` compact representative, and the same dominant four-point wall in all 20 shard-best artifacts.
 
-Run `28618565146` improves the recorded GitHub numeric frontier to `60/64`, but it has only `1` compact representative and one missing family in `20 / 20` shard-best artifacts. So the new run is useful because it confirms the local 60 skeleton on GitHub, but it also shows strong saturation around the same four points.
-
-## Current prepared launch package
-
-Prepared next workflow:
-
-```text
-workflow: smart-search-16-defect-relay-60
-workflow file: .github/workflows/smart-search-16-defect-relay-60.yml
-proposed workflow backup: docs/proposed-smart-search-16-defect-relay-60.yml
-plan file: docs/smart-search-16-defect-relay-60-plan.md
-generator: scripts/prepare_defect_relay_engine.py
-summary builder: scripts/build_defect_relay_summary.py
-seed files:
-  data/search16/official_60_seed_run28618565146.json
-  data/search16/local_relay60_window2_seed.json
-  data/search16/old59_seed_bank_run28522369532.jsonl
-candidate addition: candidates/bank-additions-local-relay60-chat-20260703.jsonl
-```
-
-Hypothesis: defect relay / multi-60-skeleton. The next run should first create several independent `60/64` skeletons with different missing sets, then try to push them to `61/64+`. This is not a same-seed rerun of `smart-search-15`.
-
-Local preflight idea already found one relay-style `60/64` variant: replacing the window `[2,6,6] -> [6,2,6] -> [6,2,2] -> [6,8,2]` by `[2,6,6] -> [0,6,2] -> [6,0,2] -> [6,8,2]` preserved `60/64` but changed the missing set to `(0,0,1)`, `(0,2,3)`, `(2,2,3)`, `(3,1,2)`.
+Run `28674416173` did not improve the numeric frontier and did not create independent 60-family diversity. It is useful because it tested the defect-relay / multi-60-skeleton hypothesis and showed that this exact setup still collapses to the old wall.
 
 ## Current next step
 
-Run a short smoke-test of `smart-search-16-defect-relay-60`. If the three controls pass, the generator compiles, shard artifacts are created, and aggregation produces `defect-relay-run-summary`, then run the full 20-shard search.
+Do not rerun `smart-search-16-defect-relay-60` with the same seed and modes. The next step should be non-repeating:
 
-Do not immediately launch another identical `smart-search-15-rich-line-transition-60` full run with the same seed and modes.
+1. fix the defect-relay aggregator so metadata rows are not counted as compact candidates;
+2. either run exact/local analysis of the old four-hole wall, or prepare a new skeleton-generation approach that first creates genuinely different 58-60 structures and only then applies four-hole pressure.
