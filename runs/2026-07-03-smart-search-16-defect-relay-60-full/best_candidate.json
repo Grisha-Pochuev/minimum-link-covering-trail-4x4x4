@@ -1,0 +1,43 @@
+{
+  "_file": "collected/defect_relay_best_shard_7.json",
+  "candidate_id": "mlct22-3cf45a2e21fe611c",
+  "canonical_key_sha256": "30303482e21b0784093824d8f7278ccf593b30b0570e4db756987b1c94826fd5",
+  "coordinate_scale": 2,
+  "covered_count": 60,
+  "duplicate_of_candidate_id": "mlct22-3cf45a2e21fe611c",
+  "duplicate_of_source_run": "28618565146",
+  "interpretation": "This run rediscovered the same 60/64 geometry as the previous official frontier; useful as a negative structural result, not a new reusable compact candidate.",
+  "links": 22,
+  "links_target": 22,
+  "missing": [[0,0,1],[0,2,3],[0,3,1],[2,1,1]],
+  "mode": "window3_relay_from_official60",
+  "parameters": {
+    "directed_edge_count": 151390,
+    "mode": "window3_relay_from_official60",
+    "prior_seed_count": 41,
+    "seconds": 21000,
+    "seed": 20260716,
+    "shard": 7,
+    "shards": 20,
+    "threads": 4,
+    "vertex_count": 1376
+  },
+  "same_vertices_as_previous_frontier_file": "runs/2026-07-03-smart-search-15-rich-line-transition-60-full/best_candidate.json",
+  "schema": "defect-relay-shard-v1",
+  "source_artifact": "defect-relay-22-shard-7",
+  "source_commit_sha": "dd8414cdfe2d8c2a97e02a8223d87d69ead9a3c7",
+  "source_run": "28674416173",
+  "source_run_url": "https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/28674416173",
+  "source_shard": 7,
+  "source_workflow": "smart-search-16-defect-relay-60",
+  "status": "partial_candidate",
+  "target_defect_hits": 12,
+  "total_attempts": 149840264,
+  "vertices2": [[0,8,8],[0,0,0],[0,6,0],[0,0,6],[6,6,0],[6,0,0],[6,0,6],[6,8,6],[-2,0,6],[4,0,0],[4,0,8],[4,8,0],[4,2,0],[0,6,4],[8,6,4],[2,0,4],[2,0,8],[2,8,0],[2,0,0],[2,6,6],[6,2,6],[6,2,2],[6,8,2]],
+  "worker_summaries": [
+    {"attempts": 37465586, "cache_rejects": 7730502, "covered_count": 60, "elapsed_seconds": 21000.0, "links": 22, "wall_rejects": 6952180, "worker_id": 0},
+    {"attempts": 37459291, "cache_rejects": 7727723, "covered_count": 60, "elapsed_seconds": 21000.0, "links": 22, "wall_rejects": 6946937, "worker_id": 1},
+    {"attempts": 37458790, "cache_rejects": 7724151, "covered_count": 60, "elapsed_seconds": 21000.0, "links": 22, "wall_rejects": 6948717, "worker_id": 2},
+    {"attempts": 37456597, "cache_rejects": 7718678, "covered_count": 60, "elapsed_seconds": 21000.001, "links": 22, "wall_rejects": 6953936, "worker_id": 3}
+  ]
+}
