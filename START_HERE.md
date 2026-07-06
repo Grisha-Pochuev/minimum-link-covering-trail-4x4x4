@@ -1,6 +1,6 @@
 # START HERE — compact agent memory
 
-Last updated: 2026-07-06
+Last updated: 2026-07-07
 
 This file is the first thing to read in a new ChatGPT web chat. It is the boot memory, not the full diary. Read it once at the beginning of the working chat, normally in prompt 1. Do not reopen it in prompts 2-4 unless the user says this is a new chat, memory was lost, or critical context is missing. Detailed history belongs in `frontier/latest.*`, `runs/*/summary.md`, plans, runbooks, and candidate banks.
 
@@ -45,11 +45,11 @@ Latest recorded completed full run:
 - workflow: `smart-search-16-defect-relay-60`
 - status: `success`
 - seconds: `21000` per shard
-- threads: `4`
+- threads/workers: `4`
 - shards/jobs: `20`
-- best: `60/64` with `22` links
+- best ordered-trail candidate: `60/64` with `22` links
 
-Best recorded GitHub candidate remains:
+Best recorded GitHub ordered-trail candidate remains:
 
 - candidate id: `mlct22-3cf45a2e21fe611c`
 - source: `defect-relay-22-shard-7` in latest run, but same geometry as run `28618565146`
@@ -59,7 +59,7 @@ Best recorded GitHub candidate remains:
 
 Key lesson from run `28674416173`:
 
-- numeric frontier stayed `60/64`;
+- numeric ordered-trail frontier stayed `60/64`;
 - no `61/64` or `64/64` ordered-trail candidate;
 - practical shard-best curves: `20`, all inferred `60/64`;
 - reusable compact additions: `0`;
@@ -90,10 +90,11 @@ workflow: smart-search-17-cover64-stitch-graph
 workflow file: .github/workflows/smart-search-17-cover64-stitch-graph.yml
 proposed workflow backup: docs/proposed-smart-search-17-cover64-stitch-graph.yml
 plan file: docs/smart-search-17-cover64-stitch-graph-plan.md
-engine: cpp/cover64_stitch_graph_search.cpp
-checker: scripts/check_cover64_stitch_result.py
+engine: scripts/search_cover64_stitch_graph.py
+checker: scripts/check_cover64_line_set.py
 summary builder: scripts/build_cover64_stitch_summary.py
-seed: data/search17/cover64_stitch_seed.json
+seed: data/search17/local_cover64_stitch_graph_seed.json
+local line-set addition: candidates/line-set-additions-local-cover64-stitch-chat-20260704.jsonl
 ```
 
 Hypothesis: `cover64 skeleton -> stitch graph -> ordered trail`.
@@ -102,14 +103,11 @@ Simple meaning: the web-chat preflight found that a nearby unordered set of 22 l
 
 Local preflight seed:
 
-- source candidate: `mlct22-3cf45a2e21fe611c`;
-- remove old line indices: `3`, `12`, `18`;
-- add replacement lines in scaled coordinates:
-  - `[0,6,2] -> [6,0,2]`
-  - `[0,0,2] -> [6,6,2]`
-  - `[0,4,6] -> [4,0,2]`
+- `22` unordered lines;
 - observed unordered coverage: `64/64`;
-- not a verified polygonal trail.
+- no zero-length lines;
+- stitch path lower bound around `18/22`;
+- not a verified polygonal trail and not a proof.
 
 Artifact names:
 
@@ -129,9 +127,16 @@ Smoke-test inputs:
 ```text
 workflow: smart-search-17-cover64-stitch-graph
 seconds: 180
-threads: 4
+workers: 4
 seed: 20260717
-min_covered_to_save: 63
+min_covered_to_save: 64
+min_stitch_path_to_save: 18
+box_min: -1
+box_max: 4
+max_universe: 9000
+max_lines: 22
+latest_run_id: 28674416173
+previous_frontier_run_id: 28618565146
 ```
 
 Full-run inputs after green smoke:
@@ -139,9 +144,16 @@ Full-run inputs after green smoke:
 ```text
 workflow: smart-search-17-cover64-stitch-graph
 seconds: 21000
-threads: 4
+workers: 4
 seed: 20260717
-min_covered_to_save: 63
+min_covered_to_save: 64
+min_stitch_path_to_save: 18
+box_min: -1
+box_max: 4
+max_universe: 9000
+max_lines: 22
+latest_run_id: 28674416173
+previous_frontier_run_id: 28618565146
 ```
 
-Expected useful result means either a `64/64` skeleton with endpoint/overlap graph path close to `22/22`, or many different `64/64` skeletons that show a new stitching landscape. It is still not a proof and not automatically a complete 22-link trail.
+Expected useful result means either a `64/64` line-set scaffold with stitch path near `22/22`, or many different `64/64` scaffolds that show a new stitching landscape. It is still not a proof and not automatically a complete 22-link trail.
