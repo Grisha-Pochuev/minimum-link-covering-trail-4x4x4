@@ -1,0 +1,109 @@
+name: smart-search-17-cover64-stitch-graph
+run-name: smart-search-17-cover64-stitch-graph
+
+permissions:
+  contents: read
+  actions: read
+
+on:
+  workflow_dispatch:
+    inputs:
+      seconds:
+        description: "Seconds per shard. Use 180 for smoke, 21000 for full."
+        required: false
+        default: "180"
+      threads:
+        description: "Threads per shard. Recorded for compatibility; use 4."
+        required: false
+        default: "4"
+      seed:
+        description: "Seed. Baseline for smoke/full is 20260717."
+        required: false
+        default: "20260717"
+      min_covered_to_save:
+        description: "Minimum cover count accepted by shard checker. Use 63."
+        required: false
+        default: "63"
+
+jobs:
+  check-known-23:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python scripts/check_trail.py data/ripa_23_trail.json --expected-links 23 --require-full
+
+  check-cover64-stitch-seed:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python scripts/check_cover64_stitch_result.py data/search17/cover64_stitch_seed.json --expect-cover64 --max-lines 22
+
+  cover64-stitch-search:
+    runs-on: ubuntu-latest
+    needs: [check-known-23, check-cover64-stitch-seed]
+    timeout-minutes: 359
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Compile C++ engine
+        run: g++ -O3 -std=c++17 -pthread -DNDEBUG cpp/cover64_stitch_graph_search.cpp -o cover64_stitch_graph_search
+      - name: Run shard
+        run: |
+          mkdir -p results/cover64_stitch
+          ./cover64_stitch_graph_search \
+            --seconds "${{ github.event.inputs.seconds || '180' }}" \
+            --threads "${{ github.event.inputs.threads || '4' }}" \
+            --seed "${{ github.event.inputs.seed || '20260717' }}" \
+            --shard "${{ matrix.shard }}" \
+            --shards 20 \
+            --out "results/cover64_stitch/cover64_stitch_best_shard_${{ matrix.shard }}.json"
+      - name: Check shard result
+        if: always()
+        run: |
+          if [ -f "results/cover64_stitch/cover64_stitch_best_shard_${{ matrix.shard }}.json" ]; then
+            python scripts/check_cover64_stitch_result.py \
+              "results/cover64_stitch/cover64_stitch_best_shard_${{ matrix.shard }}.json" \
+              --min-covered "${{ github.event.inputs.min_covered_to_save || '63' }}" \
+              --max-lines 22
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cover64-stitch-22-shard-${{ matrix.shard }}
+          path: results/cover64_stitch/
+          if-no-files-found: warn
+
+  aggregate-cover64-stitch-results:
+    runs-on: ubuntu-latest
+    needs: cover64-stitch-search
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: cover64-stitch-22-shard-*
+          path: collected
+          merge-multiple: true
+      - run: python scripts/build_cover64_stitch_summary.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cover64-stitch-run-summary
+          path: |
+            collected/cover64_stitch_run_summary.json
+            collected/cover64_stitch_run_summary.md
+            collected/cover64-stitch-candidates.jsonl
+          if-no-files-found: warn
