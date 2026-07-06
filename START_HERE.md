@@ -76,7 +76,7 @@ Use the user's four-step rhythm:
 
 1. result-taking prompt: read `START_HERE.md` once at the start of a new chat, record completed main/full GitHub run results, artifacts, candidates, frontier, and memory;
 2. hypothesis prompt: think creatively, choose the next non-repeating hypothesis, and do any small local checks needed to make the idea launchable;
-3. launch-preparation prompt: **technical only**. Take the already chosen hypothesis from prompt 2 and prepare the GitHub launch package so the user can press Run. Do not invent a new hypothesis, do not re-test the idea, and do not open a new research branch unless the requested launch is technically impossible;
+3. launch-preparation prompt: **technical implementation only**. Take the already chosen hypothesis from prompt 2 and prepare runnable GitHub launch files so the user can press Run. This may include writing a new engine/generator/checker/summary builder if the chosen hypothesis requires it. Do not invent a new hypothesis, do not re-test the idea, and do not open a different research branch unless the requested launch is technically impossible;
 4. wrap-up prompt: review the whole chat, identify confusion/time loss, and update memory files if needed.
 
 Smoke-test is only a technical green-light before the long run. If the user sees a green check and launches the 5h+ full run, the next result-taking chat records the full run, not the smoke-test. Inspect smoke separately only if it failed, looked suspicious, or the user explicitly asks.
