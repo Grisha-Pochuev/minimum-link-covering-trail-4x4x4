@@ -1,144 +1,127 @@
 # smart-search-17-cover64-stitch-graph plan
 
-## Why this is not a repeat
+## Hypothesis
 
-The last two useful full runs reached the same wall:
-
-- run `28618565146`: first official GitHub `60/64`, but all shard-bests collapsed to one four-hole wall;
-- run `28674416173`: defect-relay attempt, still `60/64`, no new 60-family diversity.
-
-The repeated missing points are:
+The last two serious runs showed that repairing the same 60/64 ordered trail keeps collapsing to the old four-hole wall:
 
 ```text
 (0,0,1), (0,2,3), (0,3,1), (2,1,1)
 ```
 
-The new idea is different: stop asking the search to produce a valid ordered 22-link trail immediately. First search for an unordered 22-line skeleton that covers all 64 grid points, then optimize the graph of possible stitching between those 22 lines.
+The new hypothesis is deliberately different:
 
-This is a bridge hypothesis:
+> Do not search for a complete ordered 22-link trail immediately. First search for unordered 22-line sets that cover all 64 grid points and have a strong stitch/intersection graph. Then use those scaffolds as a bridge toward a real ordered trail.
 
-```text
-cover64 skeleton -> stitch graph -> ordered 22-link trail candidate
-```
+This separates the problem into two layers:
 
-It is not a proof and not a final candidate format.
+1. **coverage layer** — can 22 rich lines cover all 64 points?
+2. **stitch layer** — can those 22 lines be arranged into one connected polygonal trail?
 
-## Local preflight behind the package
+The local web-chat check found a seed line-set with:
 
-Starting from the previous `60/64` candidate `mlct22-3cf45a2e21fe611c`, remove old line indices `3`, `12`, and `18`, then add these three hole-closing lines:
+- `22` lines;
+- `64/64` coverage;
+- no zero-length lines;
+- stitch path lower bound around `18/22`;
+- stitch graph not yet good enough for a trail.
 
-```text
-(0,3,1) -> (1,2,1) -> (2,1,1) -> (3,0,1)
-(0,0,1) -> (1,1,1) -> (2,2,1) -> (3,3,1)
-(0,2,3) -> (1,1,2) -> (2,0,1)
-```
+This seed is not a proof and not a valid solution. It is search fuel.
 
-In scaled `vertices2` coordinates:
+## Why this is not a repeat of smart-search-16
 
-```text
-[0,6,2] -> [6,0,2]
-[0,0,2] -> [6,6,2]
-[0,4,6] -> [4,0,2]
-```
+`smart-search-16-defect-relay-60` tried to repair/relay around the already known ordered 60/64 skeleton. It failed: all shard-best curves returned to the same missing family.
 
-This gives a 22-line unordered skeleton covering `64/64`. The hard part is still ordering/stitching it into one polygonal trail.
+`smart-search-17-cover64-stitch-graph` changes the target object:
 
-Saved seed:
+- old target: ordered 22-link trail, measured mainly by `covered_count`;
+- new target: unordered 22-line scaffold, measured by `covered_count` and stitch-graph quality.
 
-```text
-data/search17/cover64_stitch_seed.json
-```
+A good result is not only `60/64 -> 61/64`. A useful result can also be:
 
-## Search target
-
-Each shard searches 22 unordered line segments and scores:
-
-1. `covered_count`, with strong priority for `64/64`;
-2. old four-hole wall covered count;
-3. overlap graph component size and greedy path length;
-4. endpoint graph component size and greedy path length.
-
-Definitions:
-
-- `overlap graph`: two lines are adjacent if they share at least one covered grid point;
-- `endpoint graph`: two lines are adjacent if the chosen finite segments share an endpoint.
-
-This remains only a stitching proxy. A high overlap/endpoint path is not automatically a valid ordered trail, but it is much closer to the real obstruction than another raw `60/64` repair.
+- many distinct `64/64` line-sets;
+- a `64/64` line-set with stitch path `20/22` or `21/22`;
+- a connected stitch graph with all 22 lines in one component;
+- evidence that certain line-set covers cannot be stitched.
 
 ## Files
 
 ```text
-cpp/cover64_stitch_graph_search.cpp
-scripts/check_cover64_stitch_result.py
+data/search17/local_cover64_stitch_graph_seed.json
+candidates/line-set-additions-local-cover64-stitch-chat-20260704.jsonl
+scripts/check_cover64_line_set.py
+scripts/search_cover64_stitch_graph.py
 scripts/build_cover64_stitch_summary.py
-data/search17/cover64_stitch_seed.json
 docs/smart-search-17-cover64-stitch-graph-plan.md
 docs/proposed-smart-search-17-cover64-stitch-graph.yml
 .github/workflows/smart-search-17-cover64-stitch-graph.yml
 ```
 
-## Workflow
+## Workflow contract
 
 ```text
 workflow: smart-search-17-cover64-stitch-graph
-workflow_dispatch-only: yes
+trigger: workflow_dispatch only
 push trigger: no
-seed check: python scripts/check_cover64_stitch_result.py data/search17/cover64_stitch_seed.json --expect-cover64 --max-lines 22
-compile: g++ -O3 -std=c++17 -pthread -DNDEBUG cpp/cover64_stitch_graph_search.cpp -o cover64_stitch_graph_search
-run: ./cover64_stitch_graph_search --seconds ... --threads ... --seed ... --shard ... --shards 20 --out results/cover64_stitch/cover64_stitch_best_shard_<shard>.json
-checker: python scripts/check_cover64_stitch_result.py results/cover64_stitch/cover64_stitch_best_shard_<shard>.json --min-covered <min_covered_to_save> --max-lines 22
-summary builder: python scripts/build_cover64_stitch_summary.py
-shard artifacts: cover64-stitch-22-shard-*
+shards/jobs: 20
+max-parallel: 20
+artifact per shard: cover64-stitch-22-shard-<shard>
 summary artifact: cover64-stitch-run-summary
 ```
 
-## Shard mode layout
+## Smoke-test inputs
 
 ```text
-0-3    seed64_stitch_improve
-4-7    overlap_stitch_pressure
-8-11   endpoint_stitch_pressure
-12-15  cover64_diversity
-16-18  old60_escape_mix
-19     seed64_control
+seconds: 180
+workers: 4
+seed: 20260717
+min_covered_to_save: 64
+min_stitch_path_to_save: 18
+box_min: -1
+box_max: 4
+max_universe: 9000
+max_lines: 22
+latest_run_id: 28674416173
+previous_frontier_run_id: 28618565146
+```
+
+## Full-run inputs after green smoke-test
+
+```text
+seconds: 21000
+workers: 4
+seed: 20260717
+min_covered_to_save: 64
+min_stitch_path_to_save: 18
+box_min: -1
+box_max: 4
+max_universe: 9000
+max_lines: 22
+latest_run_id: 28674416173
+previous_frontier_run_id: 28618565146
+expected wall time: about 5h50m per shard
 ```
 
 ## Success criteria
 
 Strong:
 
-- `covered_count = 64` and endpoint graph has path/component near `22/22`, suggesting a possible ordered trail reconstruction.
+- a `64/64` line-set with stitch path lower bound `22/22`; or
+- a `64/64` line-set with stitch path `21/22` and one clear local gap.
 
 Medium:
 
-- `covered_count = 64` and overlap graph path improves beyond the local preflight baseline by a visible margin.
+- several distinct `64/64` line-sets with stitch path at least `20/22`;
+- connected 22-line stitch graph with strong max component and high path lower bound.
 
 Weak but useful:
 
-- many distinct `64/64` skeletons with different stitch graph structures.
+- many distinct `64/64` line-sets with path `18/22` or `19/22`, giving raw material for a follow-up stitch repair.
 
 Failure:
 
-- all shards remain at the seed-like `64/64` skeleton with poor endpoint/overlap path metrics.
+- no better scaffold than the local seed;
+- repeated `64/64` line-sets but stitch graph stuck at disconnected/low-path forms.
 
-## Exact inputs
+## Important caveat
 
-Smoke-test:
-
-```text
-seconds: 180
-threads: 4
-seed: 20260717
-min_covered_to_save: 63
-```
-
-Full run after green smoke:
-
-```text
-seconds: 21000
-threads: 4
-seed: 20260717
-min_covered_to_save: 63
-```
-
-Expected wall time: about 5h50m per shard.
+This workflow searches line-set scaffolds, not certified polygonal trails. A `64/64` line-set with a good stitch graph is not automatically a 22-link solution. It only becomes a solution candidate after a separate ordered-trail reconstruction/check.
