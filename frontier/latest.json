@@ -1,8 +1,8 @@
 {
   "schema": "mlct-frontier-v1",
   "repository": "Grisha-Pochuev/minimum-link-covering-trail-4x4x4",
-  "updated_utc": "2026-07-04T17:20:00Z",
-  "status": "smart_search_16_defect_relay_recorded_no_numeric_improvement",
+  "updated_utc": "2026-07-06T20:30:00Z",
+  "status": "smart_search_17_cover64_stitch_launch_package_prepared",
   "latest_recorded_full_run": {
     "run_id": 28674416173,
     "workflow_name": "smart-search-16-defect-relay-60",
@@ -37,22 +37,6 @@
       "old_wall_repeat_count_shards_inferred": 20,
       "approx_vcpu_hours": 466.6667
     },
-    "mode_counts_corrected_shards": {
-      "integer_control": 1,
-      "old59_to_relay60": 3,
-      "old60_and_local_relay_control": 1,
-      "relay_then_push61": 4,
-      "window2_relay_from_official60": 7,
-      "window3_relay_from_official60": 4
-    },
-    "mode_counts_raw_summary_rows": {
-      "integer_control": 3,
-      "old59_to_relay60": 9,
-      "old60_and_local_relay_control": 3,
-      "relay_then_push61": 12,
-      "window2_relay_from_official60": 21,
-      "window3_relay_from_official60": 12
-    },
     "missing_patterns": [
       {"count_rows": 60, "count_shards_inferred": 20, "missing": [[0,0,1],[0,2,3],[0,3,1],[2,1,1]]}
     ],
@@ -66,15 +50,60 @@
       "important_observation": "The defect-relay / multi-60-skeleton attempt did not create independent 60-family diversity; all modes collapsed to the same four-hole wall."
     }
   },
+  "prepared_launch_package": {
+    "workflow": "smart-search-17-cover64-stitch-graph",
+    "workflow_file": ".github/workflows/smart-search-17-cover64-stitch-graph.yml",
+    "proposed_workflow_backup": "docs/proposed-smart-search-17-cover64-stitch-graph.yml",
+    "plan_file": "docs/smart-search-17-cover64-stitch-graph-plan.md",
+    "engine": "cpp/cover64_stitch_graph_search.cpp",
+    "checker": "scripts/check_cover64_stitch_result.py",
+    "summary_builder": "scripts/build_cover64_stitch_summary.py",
+    "seed_file": "data/search17/cover64_stitch_seed.json",
+    "hypothesis": "cover64 skeleton first, then optimize stitch graph",
+    "not_a_repeat_of": "smart-search-16-defect-relay-60 same-wall relay search",
+    "local_preflight_observation": {
+      "source_candidate": "mlct22-3cf45a2e21fe611c",
+      "removed_old_line_indices": [3, 12, 18],
+      "replacement_lines2": [[[0,6,2],[6,0,2]], [[0,0,2],[6,6,2]], [[0,4,6],[4,0,2]]],
+      "observed_unordered_covered_count": 64,
+      "interpretation": "A 22-line unordered skeleton covering 64/64 exists near the current 60/64 trail; the hard part is stitching it into one ordered polygonal trail."
+    },
+    "artifact_names": {
+      "shard_pattern": "cover64-stitch-22-shard-*",
+      "summary": "cover64-stitch-run-summary"
+    },
+    "success_criteria": {
+      "strong": "64/64 skeleton with endpoint graph path/component near 22/22, suggesting a possible ordered trail reconstruction",
+      "medium": "64/64 skeleton with overlap graph path clearly better than local preflight baseline",
+      "weak_but_useful": "many distinct 64/64 skeletons with different stitch graph structures",
+      "failure": "seed-like 64/64 skeletons remain poorly stitchable"
+    }
+  },
   "current_next_step": {
-    "step_type": "hypothesis_after_recorded_full_run",
-    "instruction": "Do not rerun smart-search-16 with the same seed/modes. First fix the aggregator counting metadata rows as candidates, then either do exact/local analysis of the old four-hole wall or prepare a new skeleton-generation hypothesis that creates genuinely different 58-60 structures before applying four-hole pressure."
+    "step_type": "run_smoke_test_for_prepared_launch_package",
+    "instruction": "Run a short smart-search-17-cover64-stitch-graph smoke-test. If seed check, compile, shard artifacts, checker, and aggregation are green, proceed to the full 20-shard run. Do not rerun smart-search-16 with the same seed/modes."
+  },
+  "recommended_inputs": {
+    "smoke_test": {
+      "workflow": "smart-search-17-cover64-stitch-graph",
+      "seconds": 180,
+      "threads": 4,
+      "seed": 20260717,
+      "min_covered_to_save": 63
+    },
+    "full_run_after_green_smoke": {
+      "workflow": "smart-search-17-cover64-stitch-graph",
+      "seconds": 21000,
+      "threads": 4,
+      "seed": 20260717,
+      "min_covered_to_save": 63
+    }
   },
   "candidate_preservation_rule_for_future_runs": {
-    "rule_type": "threshold_and_above",
-    "max_links": 22,
-    "min_covered_to_save": 56,
-    "save_condition": "covered_count >= 56 and links <= 22"
+    "rule_type": "cover64_stitch_skeleton_not_trail_bank",
+    "max_lines": 22,
+    "min_covered_to_save": 63,
+    "note": "Do not merge cover64 stitch skeletons into the normal trail candidate bank until they are converted into ordered polygonal-trail candidates."
   },
   "standard_web_chat_cycle": [
     "record completed full-run results",
