@@ -2,6 +2,22 @@
 
 This file is for ChatGPT web-chat work on this repository. It is not a mathematical proof. It is a compact operating memory so the next chat spends fewer steps rediscovering the same workflow.
 
+## Main process rule
+
+The project uses four web-chat steps:
+
+```text
+1. Record a completed run.
+2. Think creatively and choose the next hypothesis.
+3. Prepare the GitHub launch package for that already chosen hypothesis.
+4. Review the chat and update memory.
+```
+
+Important distinction:
+
+- Step 2 is the research/fantasy/checking step.
+- Step 3 is not a new research step. Step 3 must not re-test, re-argue, or replace the chosen hypothesis unless the requested launch is technically impossible. Step 3 is mostly mechanical: make files, verify workflow, give exact smoke/full inputs so the user can press Run.
+
 ## What the recent web-chat process showed
 
 The slow part was not only the math search itself. The slow part was repeatedly reconstructing project state from scattered files and occasionally confusing a planned workflow with a workflow that actually exists in GitHub.
@@ -10,98 +26,101 @@ Best optimization: in a new chat, read `START_HERE.md` once at the very beginnin
 
 Do not treat "all runs" as a request to blindly scan everything. First use the saved frontier and run summaries as the index. Then inspect only the exact run folders, workflow, bank additions, originals, and artifacts that are relevant to the current frontier.
 
-Important correction from 2026-06-30: do not say a workflow has been created merely because a launch plan exists in chat. After creating or editing a workflow, fetch the workflow file back from GitHub and verify its path, name, inputs, artifact names, and generator path.
-
-Important correction from 2026-07-01: after a hypothesis/preflight chat prepares a new workflow, keep `START_HERE.md`, `frontier/latest.md`, and `frontier/latest.json` synchronized.
-
-Important correction after user clarification on 2026-07-01: do not add a fifth mandatory smoke-test result-taking step. The user's workflow has four prompts. Smoke-test is only a technical launch gate inside the launch-preparation step. If the user sees a green check and then launches the long run, the next result-taking prompt should normally record the long/full run, not the smoke-test.
-
-Important correction from 2026-07-02: if the GitHub connector cannot write executable workflow files under `.github/workflows/`, prepare `docs/proposed-<workflow>.yml`, tell the user to copy its raw YAML into `.github/workflows/<workflow>.yml`, then fetch the real workflow file back and verify that the first line is `name: ...`.
+Important correction from 2026-07-07: the launch-preparation prompt was too long and pulled the assistant back into hypothesis testing. It has been simplified. In prompt 3, do not do new local experiments or creative exploration. Only prepare the launch package for the hypothesis already chosen in prompt 2.
 
 Important correction from 2026-07-07: `smart-search-17-cover64-stitch-graph` is a line-set scaffold search, not a trail proof. Do not merge its outputs into the normal ordered-trail bank until they are converted into checked polygonal-trail candidates.
 
-## Standard four-prompt cycle
-
-```text
-1. Result-taking prompt:
-   Start the chat by reading START_HERE.md once, then record completed main/full GitHub run results.
-
-2. Hypothesis prompt:
-   Use the already-loaded project context, think broadly, form a new non-repeating hypothesis, and run small local checks if useful.
-
-3. Launch-preparation prompt:
-   Use the already-loaded context to prepare files and exact GitHub inputs. Smoke-test can be used as a quick green-light, but it is not a separate scientific stage.
-
-4. Wrap-up prompt:
-   Review confusion/time loss and update memory files.
-```
-
 ## Fast checklist before preparing or analyzing a launch
 
+Use this checklist only as a technical guardrail. Do not turn it into a new research phase.
+
 ```text
-1. In a new chat only: read START_HERE.md once at the beginning.
-2. Use the context already opened earlier in the chat; avoid rereading START_HERE.md in prompts 2-4.
-3. Use frontier/latest.md, frontier/latest.json, and this runbook as compact indexes when needed.
-4. Read the prepared workflow file from .github/workflows/ if it exists.
-5. Read the docs plan or docs/proposed workflow for that workflow.
-6. Check that the workflow is workflow_dispatch-only and has no push trigger.
-7. Check that the real workflow is YAML, not a copied plan document. Its first line should usually be `name: <workflow>`.
-8. Check seed run ids and candidate-bank additions.
-9. Check artifact names: shard artifact pattern and summary artifact name.
-10. Check engine/checker/summary builder paths match.
-11. Check that the new hypothesis is not just a same-seed rerun of a saturated workflow.
-12. Check that local/preflight notes are not being misread as proof or as evidence of a solution.
-13. Remember: green smoke-test normally means proceed to full run; do not make a separate smoke-result chat unless smoke failed, looked suspicious, or the user asks.
-14. After creating/updating files, fetch them back from GitHub before reporting success.
+1. Use frontier/latest.* and START_HERE.md context already opened earlier in the chat.
+2. Confirm the chosen hypothesis and workflow name from prompt 2 or frontier/latest.*.
+3. Create/update only the files needed for launch: workflow, proposed backup if needed, engine/generator, checker, summary builder, seed files, plan doc, memory pointers.
+4. Verify real workflow YAML begins with name: and is workflow_dispatch-only.
+5. Verify no push trigger.
+6. Verify artifact names, seed paths, engine/checker/summary paths, shard count, and exact inputs.
+7. Stop. Give smoke-test and full-run inputs. Do not run extra hypothesis checks unless the workflow cannot be made technically runnable.
 ```
 
-## Optimized prompt 1: after a full run finishes
+## Prompt 1 — record completed run
+
+Use when a main/full GitHub run has completed and needs to be recorded. This is normally the boot prompt for a fresh web chat.
 
 ```text
 Сними результаты завершённого GitHub run: <RUN_URL>.
 
-Это начало нового рабочего чата, поэтому сначала один раз открой START_HERE.md как долговременную память проекта. Потом открой frontier/latest.md, frontier/latest.json, docs/web-chat-runbook-prompts.md, workflow-файл, который запустил run, relevant runs/, candidate bank/additions/originals, jobs, logs and artifacts.
+Сначала открой START_HERE.md как память проекта. Затем используй frontier/latest.*, runbook, workflow этого run, artifacts, jobs/logs и нужные runs/candidates.
 
-Проверь jobs, logs, artifacts, aggregation, best covered_count, links, mode, candidate_id, source artifact, missing points, repeated missing patterns, and mode breakdown.
+Запиши результат в репозиторий и сделай коммит:
+- runs/<date>-<workflow>/summary.md и нужные json/jsonl;
+- frontier/latest.md и frontier/latest.json;
+- START_HERE.md, если изменилась память;
+- candidate additions/originals, если появились новые кривые или важные shard-best записи.
 
-Сравни с previous frontier. Если есть новый useful result, обнови runs/<date>-<workflow>/, frontier/latest.*, START_HERE.md, candidate bank additions, and originals index. Если нет численного улучшения, всё равно запиши структурный вывод: что именно изменилось в defect family.
-
-Обязательно запиши кривые в соответствующие три банка кривых: compact reusable bank/additions для дальнейшего поиска, run-level additions для этого прогона, and originals archive/index без потери реального разнообразия shard-best кривых. Не смешивай эти три роли.
-
-Сделай коммит. В ответе коротко объясни: было/стало, что дали режимы, сколько shard-best curves, сколько compact representatives, что записано в каждый из трёх банков кривых, и какой следующий не-повторяющийся шаг.
+В конце коротко скажи:
+1. лучший результат было/стало;
+2. сколько shard-best кривых получили;
+3. сколько новых compact/original кандидатов записали;
+4. какие дырки или defect-family повторялись;
+5. какой следующий не-повторяющийся шаг.
 ```
 
-## Optimized prompt 2: make the next hypothesis
+## Prompt 2 — choose next hypothesis
+
+This is the only step where broad thinking, fantasy, and local exploratory checks are expected.
 
 ```text
 Теперь сделай следующий исследовательский шаг: подумай, куда нам идти дальше.
 
-Опирайся на уже открытый в этом чате контекст: результаты последнего записанного прогона, frontier, runbook, summaries, candidate banks, originals, artifacts и любые новые файлы или источники, которые я добавил для этого шага.
+Опирайся на уже открытый контекст: последний записанный run, frontier, run summaries, candidate banks, originals, artifacts и новые источники, которые я добавил.
 
-Не своди задачу к простому улучшению прошлого workflow. Посмотри шире: какие структуры мы могли не заметить, где может быть новый источник кривых, какие старые стены повторяются, какие данные из банков или новых источников могут подсказать другой заход.
+Не своди задачу к повтору прошлого workflow. Посмотри шире: какие структуры мы могли не заметить, где может быть новый источник кривых, какие старые стены повторяются.
 
-Сформулируй несколько возможных направлений, выбери самое перспективное и проверь его прямо здесь в чате маленькими локальными проверками. Доработай идею до состояния, где её можно либо отвергнуть, либо превратить в GitHub launch package.
+Выбери одну гипотезу и, если это полезно, проверь её маленькими локальными проверками прямо в чате. Доведи идею до состояния, где её можно превратить в GitHub launch package.
 
-В конце коротко скажи: какая гипотеза выбрана, почему она не повтор прошлого, что показали локальные проверки, и стоит ли готовить под неё большой GitHub-прогон.
+В конце коротко скажи: какая гипотеза выбрана, почему она не повтор прошлого, что показали проверки, и стоит ли готовить под неё большой GitHub-прогон.
 ```
 
-## Optimized prompt 3: prepare the next GitHub launch
+## Prompt 3 — prepare launch package only
+
+Use after prompt 2, when the hypothesis is already chosen. This prompt is intentionally short and technical.
 
 ```text
-Подготовь пакет запуска на GitHub под выбранную гипотезу.
+Подготовь GitHub launch package под уже выбранную гипотезу из предыдущего шага.
 
-Используй уже открытый в этом чате контекст: frontier, runbook, выбранную гипотезу, вывод локальной проверки, relevant runs, candidate bank/additions/originals, prepared workflow or proposed workflow, and docs plan. Не открывай START_HERE.md заново, если мы уже открывали его в начале этого чата.
+Не придумывай новую гипотезу и не запускай дополнительные исследовательские проверки. Сейчас задача техническая: сделать так, чтобы я мог нажать Run.
 
-Создай или измени нужные обычные файлы: generator/engine, plan doc, seed files, candidate additions, START_HERE.md or runbook if memory must change.
+Сделай или обнови нужные файлы:
+- workflow в .github/workflows/ или точный proposed YAML в docs/;
+- engine/generator;
+- checker;
+- summary builder;
+- seed/input files;
+- plan doc;
+- frontier/latest.* и START_HERE.md, если нужно обновить память запуска.
 
-Если текущий чатовый GitHub-коннектор блокирует запись в `.github/workflows/`, не притворяйся, что workflow создан. Положи точный YAML в `docs/proposed-<workflow>.yml` и дай пошаговую инструкцию, как вручную скопировать его в `.github/workflows/<workflow>.yml`.
+Проверь только техническую готовность:
+- workflow начинается с name:;
+- workflow_dispatch-only, без push;
+- 20 jobs/shards и правильный max-parallel, если это full search;
+- seed paths, engine/checker/summary paths совпадают;
+- artifact names совпадают;
+- smoke и full inputs записаны.
 
-Проверь запуск: workflow_dispatch-only, no push trigger, real workflow YAML starts with name:, seed run ids and seed sources are aligned, artifact names and aggregation match, engine/checker/summary builder paths match, new hypothesis is not a repeat.
+В конце дай только:
+1. что создано/обновлено;
+2. готов ли workflow к ручному запуску;
+3. exact inputs для smoke-test;
+4. exact inputs для full run.
 
-Если всё clean, дай exact GitHub inputs for smoke-test and full run. Do not launch anything automatically unless I explicitly ask and the available tool actually supports workflow_dispatch.
+Ничего не запускай автоматически, если я явно не попросил.
 ```
 
-## Optimized prompt 4: whole-chat wrap-up
+## Prompt 4 — whole-chat wrap-up
+
+Use at the end of a long web-chat working session.
 
 ```text
 Посмотри на всю работу в этом чате целиком.
@@ -110,9 +129,9 @@ Important correction from 2026-07-07: `smart-search-17-cover64-stitch-graph` is 
 
 Не открывай START_HERE.md заново только ради чтения, если он уже был открыт в начале чата. Но если выводы сегодняшнего чата нужно сохранить в долговременную память, измени START_HERE.md, frontier/latest.*, docs/web-chat-runbook-prompts.md, plan docs или другие файлы.
 
-Особенно проверь третий шаг: мог ли чат сам создать workflow, был ли manual fallback, не был ли случайно скопирован markdown plan вместо YAML, какие inputs реально нужны для smoke и full.
+Особенно проверь, не сбивает ли prompt 3: он должен готовить запуск, а не заново исследовать гипотезу.
 
-В конце коротко скажи: что изменил, зачем изменил, какой следующий шаг теперь записан в памяти проекта, и какие четыре промпта лучше использовать дальше.
+В конце коротко скажи: что изменил, зачем изменил, какой следующий шаг теперь записан в памяти проекта, и какие промпты лучше использовать дальше.
 ```
 
 ## Current prepared launch package
