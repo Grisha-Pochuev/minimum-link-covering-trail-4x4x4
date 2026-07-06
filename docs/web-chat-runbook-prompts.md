@@ -16,7 +16,8 @@ The project uses four web-chat steps:
 Important distinction:
 
 - Step 2 is the research/fantasy/checking step.
-- Step 3 is not a new research step. Step 3 must not re-test, re-argue, or replace the chosen hypothesis unless the requested launch is technically impossible. Step 3 is mostly mechanical: make files, verify workflow, give exact smoke/full inputs so the user can press Run.
+- Step 3 is not a new research step. Step 3 must not re-test, re-argue, or replace the chosen hypothesis unless the requested launch is technically impossible. Step 3 is mostly mechanical: make the launch files, verify the workflow, give exact smoke/full inputs so the user can press Run.
+- Step 4 is where retrospective memory cleanup belongs.
 
 ## What the recent web-chat process showed
 
@@ -35,13 +36,15 @@ Important correction from 2026-07-07: `smart-search-17-cover64-stitch-graph` is 
 Use this checklist only as a technical guardrail. Do not turn it into a new research phase.
 
 ```text
-1. Use frontier/latest.* and START_HERE.md context already opened earlier in the chat.
+1. Use the already-opened context from prompt 1 and prompt 2.
 2. Confirm the chosen hypothesis and workflow name from prompt 2 or frontier/latest.*.
-3. Create/update only the files needed for launch: workflow, proposed backup if needed, engine/generator, checker, summary builder, seed files, plan doc, memory pointers.
-4. Verify real workflow YAML begins with name: and is workflow_dispatch-only.
-5. Verify no push trigger.
-6. Verify artifact names, seed paths, engine/checker/summary paths, shard count, and exact inputs.
-7. Stop. Give smoke-test and full-run inputs. Do not run extra hypothesis checks unless the workflow cannot be made technically runnable.
+3. Create/update only launch files: workflow, proposed backup if needed, engine/generator, checker, summary builder, seed/input files, plan doc.
+4. Update frontier/latest.* only if it is needed to store the exact prepared launch inputs/current workflow pointer.
+5. Do not update START_HERE.md during prompt 3 unless the user explicitly asks or the next chat would otherwise lose the launch package. Normal memory cleanup belongs in prompt 4.
+6. Verify real workflow YAML begins with name: and is workflow_dispatch-only.
+7. Verify no push trigger.
+8. Verify artifact names, seed paths, engine/checker/summary paths, shard count, and exact inputs.
+9. Stop. Give smoke-test and full-run inputs. Do not run extra hypothesis checks unless the workflow cannot be made technically runnable.
 ```
 
 ## Prompt 1 — record completed run
@@ -51,12 +54,12 @@ Use when a main/full GitHub run has completed and needs to be recorded. This is 
 ```text
 Сними результаты завершённого GitHub run: <RUN_URL>.
 
-Сначала открой START_HERE.md как память проекта. Затем используй frontier/latest.*, runbook, workflow этого run, artifacts, jobs/logs и нужные runs/candidates.
+Это начало нового рабочего чата, поэтому сначала открой START_HERE.md как долговременную память проекта. Затем открой frontier/latest.md, frontier/latest.json, docs/web-chat-runbook-prompts.md, workflow этого run, artifacts, jobs/logs и нужные runs/candidates.
 
 Запиши результат в репозиторий и сделай коммит:
 - runs/<date>-<workflow>/summary.md и нужные json/jsonl;
 - frontier/latest.md и frontier/latest.json;
-- START_HERE.md, если изменилась память;
+- START_HERE.md, если изменилась долговременная память;
 - candidate additions/originals, если появились новые кривые или важные shard-best записи.
 
 В конце коротко скажи:
@@ -74,7 +77,7 @@ This is the only step where broad thinking, fantasy, and local exploratory check
 ```text
 Теперь сделай следующий исследовательский шаг: подумай, куда нам идти дальше.
 
-Опирайся на уже открытый контекст: последний записанный run, frontier, run summaries, candidate banks, originals, artifacts и новые источники, которые я добавил.
+START_HERE.md уже был открыт в этом чате, не открывай его заново. Опирайся на уже открытый контекст: последний записанный run, frontier, run summaries, candidate banks, originals, artifacts и новые источники, которые я добавил.
 
 Не своди задачу к повтору прошлого workflow. Посмотри шире: какие структуры мы могли не заметить, где может быть новый источник кривых, какие старые стены повторяются.
 
@@ -90,16 +93,17 @@ Use after prompt 2, when the hypothesis is already chosen. This prompt is intent
 ```text
 Подготовь GitHub launch package под уже выбранную гипотезу из предыдущего шага.
 
-Не придумывай новую гипотезу и не запускай дополнительные исследовательские проверки. Сейчас задача техническая: сделать так, чтобы я мог нажать Run.
+START_HERE.md уже был открыт в этом чате, не открывай его заново. Не придумывай новую гипотезу и не запускай дополнительные исследовательские проверки. Сейчас задача техническая: сделать файлы запуска, чтобы я мог нажать Run.
 
-Сделай или обнови нужные файлы:
+Создай или обнови только технические файлы запуска:
 - workflow в .github/workflows/ или точный proposed YAML в docs/;
 - engine/generator;
 - checker;
 - summary builder;
 - seed/input files;
-- plan doc;
-- frontier/latest.* и START_HERE.md, если нужно обновить память запуска.
+- plan doc, если нужен для запуска.
+
+Не делай ретроспективный анализ и обычно не трогай START_HERE.md. Если нужно записать exact launch inputs/current workflow pointer, обнови frontier/latest.* или runbook; долговременную чистку памяти оставь для prompt 4.
 
 Проверь только техническую готовность:
 - workflow начинается с name:;
@@ -125,13 +129,21 @@ Use at the end of a long web-chat working session.
 ```text
 Посмотри на всю работу в этом чате целиком.
 
-Оцени, что получилось хорошо, где мы потеряли время, где была путаница, и какие правила или файлы памяти могут сбить следующий чат.
+START_HERE.md уже был открыт в начале чата, не открывай его заново только ради чтения. Но если выводы сегодняшнего чата нужно сохранить в долговременную память, измени START_HERE.md, frontier/latest.*, docs/web-chat-runbook-prompts.md, plan docs или другие файлы.
 
-Не открывай START_HERE.md заново только ради чтения, если он уже был открыт в начале чата. Но если выводы сегодняшнего чата нужно сохранить в долговременную память, измени START_HERE.md, frontier/latest.*, docs/web-chat-runbook-prompts.md, plan docs или другие файлы.
+Оцени:
+- что получилось хорошо;
+- где мы потеряли время;
+- где была путаница;
+- какие правила или файлы памяти могут сбить следующий чат.
 
-Особенно проверь, не сбивает ли prompt 3: он должен готовить запуск, а не заново исследовать гипотезу.
+Особенно проверь prompt 3: он должен готовить запуск, а не заново исследовать гипотезу.
 
-В конце коротко скажи: что изменил, зачем изменил, какой следующий шаг теперь записан в памяти проекта, и какие промпты лучше использовать дальше.
+В конце коротко скажи:
+1. что изменил;
+2. зачем изменил;
+3. какой следующий шаг теперь записан в памяти проекта;
+4. какие промпты лучше использовать дальше.
 ```
 
 ## Current prepared launch package
