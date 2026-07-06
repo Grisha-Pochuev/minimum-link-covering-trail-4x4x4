@@ -1,6 +1,6 @@
 # Current search frontier
 
-Status: `smart-search-16-defect-relay-60` full run completed successfully. Numeric frontier remains `60/64`; run `28674416173` is now the latest recorded completed full run. It did not find `61/64+` or a complete `64/64` candidate. It also did not produce the intended multi-60 diversity: all practical shard-best results collapsed back to the same old four-hole wall from run `28618565146`.
+Status: `smart-search-16-defect-relay-60` full run completed successfully. Numeric frontier remains `60/64`; run `28674416173` is the latest recorded completed full run. It did not find `61/64+` or a complete `64/64` candidate. It also did not produce the intended multi-60 diversity: all practical shard-best results collapsed back to the same old four-hole wall from run `28618565146`.
 
 Latest recorded full run:
 
@@ -75,15 +75,56 @@ Corrected by actual shard mapping:
 
 All modes led to the same four-point wall; no mode found `61/64+`.
 
-## Comparison with previous frontier
+## Prepared next launch package
 
-Previous latest useful run was `28618565146`, with best `60/64`, `1` compact representative, and the same dominant four-point wall in all 20 shard-best artifacts.
+Prepared workflow:
 
-Run `28674416173` did not improve the numeric frontier and did not create independent 60-family diversity. It is useful because it tested the defect-relay / multi-60-skeleton hypothesis and showed that this exact setup still collapses to the old wall.
+```text
+workflow: smart-search-17-cover64-stitch-graph
+workflow file: .github/workflows/smart-search-17-cover64-stitch-graph.yml
+proposed workflow backup: docs/proposed-smart-search-17-cover64-stitch-graph.yml
+plan file: docs/smart-search-17-cover64-stitch-graph-plan.md
+engine: cpp/cover64_stitch_graph_search.cpp
+checker: scripts/check_cover64_stitch_result.py
+summary builder: scripts/build_cover64_stitch_summary.py
+seed: data/search17/cover64_stitch_seed.json
+```
+
+Hypothesis: stop trying to repair the same ordered `60/64` trail. First search for unordered 22-line skeletons covering `64/64`; then optimize the stitch graph between those lines. This is not a proof and not yet a valid polygonal trail.
+
+Local preflight seed: from the official 60/64 candidate, remove old line indices `3`, `12`, and `18`, then add three hole-closing lines. This gives a 22-line unordered skeleton covering all `64/64` grid points.
+
+Artifact names:
+
+```text
+shard artifacts: cover64-stitch-22-shard-*
+summary artifact: cover64-stitch-run-summary
+summary files:
+  collected/cover64_stitch_run_summary.json
+  collected/cover64_stitch_run_summary.md
+  collected/cover64-stitch-candidates.jsonl
+```
 
 ## Current next step
 
-Do not rerun `smart-search-16-defect-relay-60` with the same seed and modes. The next step should be non-repeating:
+Run a short smoke-test of `smart-search-17-cover64-stitch-graph`. If seed check, compile, shard artifacts, checker, and aggregation are green, run the full 20-shard search.
 
-1. fix the defect-relay aggregator so metadata rows are not counted as compact candidates;
-2. either run exact/local analysis of the old four-hole wall, or prepare a new skeleton-generation approach that first creates genuinely different 58-60 structures and only then applies four-hole pressure.
+Exact smoke-test inputs:
+
+```text
+seconds: 180
+threads: 4
+seed: 20260717
+min_covered_to_save: 63
+```
+
+Exact full-run inputs after green smoke:
+
+```text
+seconds: 21000
+threads: 4
+seed: 20260717
+min_covered_to_save: 63
+```
+
+Do not rerun `smart-search-16-defect-relay-60` with the same seed and modes.
