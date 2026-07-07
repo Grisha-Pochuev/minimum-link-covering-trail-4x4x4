@@ -74,7 +74,6 @@ Saved run-17 memory:
 runs/2026-07-07-smart-search-17-cover64-stitch-graph-full/summary.md
 runs/2026-07-07-smart-search-17-cover64-stitch-graph-full/best_line_set.json
 runs/2026-07-07-smart-search-17-cover64-stitch-graph-full/raw_cover64_stitch_run_summary.json
-runs/2026-07-07-smart-search-17-cover64-stitch-graph-full/cover64-stitch-candidates.jsonl
 runs/2026-07-07-smart-search-17-cover64-stitch-graph-full/mode_breakdown.json
 runs/2026-07-07-smart-search-17-cover64-stitch-graph-full/stitch_path_histogram.json
 runs/2026-07-07-smart-search-17-cover64-stitch-graph-full/compact_representatives.md
