@@ -1,6 +1,6 @@
 # Current search frontier
 
-Status: completed `smart-search-17-cover64-stitch-graph` full run recorded. The normal ordered-trail frontier remains `60/64`, because search-17 outputs are unordered line-set scaffolds, not certified polygonal trails. The scaffold frontier improved sharply: 22 unordered lines covering `64/64`, with stitch graph components=`1` and path lower bound=`22/22`.
+Status: `smart-search-18-order-from-cover64-stitch` launch package prepared after completed `smart-search-17-cover64-stitch-graph` full run. The normal ordered-trail frontier remains `60/64`; the scaffold frontier from search-17 remains `64/64` with stitch path lower bound `22/22`. Search-18 is the next technical package to convert search-17 scaffolds into actual ordered polygonal chains.
 
 Latest recorded full run:
 
@@ -81,21 +81,70 @@ candidates/line-set-additions-run28825060197-cover64-stitch.jsonl  # 4 strongest
 candidates/originals/run28825060197-cover64-stitch-line-set-index.jsonl
 ```
 
-## Current next step
+## Current prepared launch package
 
-Prepare a new non-repeating reconstruction workflow, tentatively:
+Prepared next workflow:
 
 ```text
-smart-search-18-order-from-cover64-stitch
+workflow: smart-search-18-order-from-cover64-stitch
+workflow file: .github/workflows/smart-search-18-order-from-cover64-stitch.yml
+proposed workflow backup: docs/proposed-smart-search-18-order-from-cover64-stitch.yml
+plan file: docs/smart-search-18-order-from-cover64-stitch-plan.md
+engine: scripts/order_from_cover64_stitch.py
+checker: scripts/check_ordered_trail_scaled.py
+summary builder: scripts/build_order_from_cover64_stitch_summary.py
+input scaffold: runs/2026-07-07-smart-search-17-cover64-stitch-graph-full/best_line_set.json
+input bank: candidates/line-set-additions-run28825060197-cover64-stitch.jsonl
 ```
 
-Goal: take the best search-17 `64/64`, `22/22` stitch scaffolds and try to reconstruct a real ordered 22-link polygonal trail.
+Hypothesis: `contact-aware ordered reconstruction from cover64 scaffolds`.
 
-The next checker/engine must separate:
+Simple meaning: search-17 found `64/64` unordered 22-line scaffolds with stitch path `22/22`; search-18 now chooses concrete contact vertices and actual segment endpoints, scoring real ordered-chain coverage rather than graph stitchability.
 
-1. graph adjacency by shared covered grid point;
-2. actual consecutive trail vertex feasibility;
-3. preserving coverage when a line is shortened to use an intersection/contact point;
-4. final exact ordered-trail validation by a `check_trail`-style checker.
+Workflow checks:
 
-Do not rerun `smart-search-17-cover64-stitch-graph` with the same seed as the next serious step. It already found the intended scaffold breakthrough; the bottleneck moved to ordered reconstruction.
+- `workflow_dispatch` only;
+- no `push` trigger;
+- 20 shards/jobs with `max-parallel: 20`;
+- shard artifacts: `order-cover64-stitch-22-shard-*`;
+- summary artifact: `order-cover64-stitch-run-summary`.
+
+## Launch inputs for smart-search-18
+
+Smoke-test inputs:
+
+```text
+workflow: smart-search-18-order-from-cover64-stitch
+seconds: 180
+workers: 4
+seed: 20260718
+min_actual_covered_to_save: 38
+beam_width: 512
+branch_limit: 5
+start_limit: 22
+max_mutations: 2
+box_min: -1
+box_max: 4
+candidate_lines: 3000
+min_line_cover: 2
+```
+
+Full-run inputs after green smoke:
+
+```text
+workflow: smart-search-18-order-from-cover64-stitch
+seconds: 21000
+workers: 4
+seed: 20260718
+min_actual_covered_to_save: 38
+beam_width: 512
+branch_limit: 5
+start_limit: 22
+max_mutations: 2
+box_min: -1
+box_max: 4
+candidate_lines: 3000
+min_line_cover: 2
+```
+
+Expected useful result means either a checked ordered 22-link candidate improving the `60/64` frontier, or a clear contact-loss diagnostic explaining why the search-17 `22/22` scaffold graph does not convert into a high-coverage polygonal chain. If the smoke-test gets a green check and the user launches the full run, the next result-taking prompt should record the full run, not separately analyze the smoke unless it failed or looked suspicious.
