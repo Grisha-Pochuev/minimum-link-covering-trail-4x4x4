@@ -1,22 +1,25 @@
 # Current search frontier
 
-Status: `smart-search-17-cover64-stitch-graph` launch package prepared after the completed `smart-search-16-defect-relay-60` run. The latest recorded full run remains `28674416173`; numeric frontier remains `60/64`. The next prepared run is not another 60/64 repair. It searches unordered 22-line `64/64` scaffolds and optimizes their stitch graph.
+Status: completed `smart-search-17-cover64-stitch-graph` full run recorded. The normal ordered-trail frontier remains `60/64`, because search-17 outputs are unordered line-set scaffolds, not certified polygonal trails. The scaffold frontier improved sharply: 22 unordered lines covering `64/64`, with stitch graph components=`1` and path lower bound=`22/22`.
 
 Latest recorded full run:
 
 - Repository: `Grisha-Pochuev/minimum-link-covering-trail-4x4x4`
-- Final run id: `28674416173`
-- Workflow: `smart-search-16-defect-relay-60`
-- Commit SHA of the run: `dd8414cdfe2d8c2a97e02a8223d87d69ead9a3c7`
+- Final run id: `28825060197`
+- Run URL: https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/28825060197
+- Workflow: `smart-search-17-cover64-stitch-graph`
+- Commit SHA of the run: `5adc2b0d1efe0d89f324c758e44bd23e24d18d28`
 - Status: `success`
 - Duration: full run, `21000` seconds per shard
 - Threads per shard: `4`
 - Shards/jobs: `20`
-- Seed: `20260716`
-- Result type: heuristic search, not a proof
-- Artifacts: `defect-relay-run-summary`, `defect-relay-22-shard-*`
+- Seed: `20260717`
+- Result type: heuristic line-set scaffold search, not a proof and not an ordered-trail certificate
+- Artifacts: `cover64-stitch-run-summary`, `cover64-stitch-22-shard-*`
 
-## Best recorded GitHub Actions trail result
+## Best recorded GitHub Actions ordered-trail result
+
+The best checked ordered-trail candidate remains unchanged from run `28674416173`:
 
 - candidate id: `mlct22-3cf45a2e21fe611c`
 - covered_count: `60 / 64`
@@ -29,71 +32,71 @@ Latest recorded full run:
 - missing count: `4`
 - missing: `(0,0,1)`, `(0,2,3)`, `(0,3,1)`, `(2,1,1)`
 
-The best ordered-trail candidate is still partial. It has exactly 22 links and covers 60 of the 64 grid points. This is not a complete covering trail and not a proof.
+The ordered-trail candidate is still partial. It has exactly 22 links and covers 60 of the 64 grid points. This is not a complete covering trail and not a proof.
+
+## Best recorded cover64 stitch scaffold
+
+Best search-17 scaffold:
+
+- candidate id: `mlct22-lineset-9772981a21b2a88a`
+- covered_count: `64 / 64`
+- line_count: `22`
+- stitch graph: components=`1`, max_component=`22/22`, path_lower_bound=`22/22`, edges=`23`
+- mode: `old_wall_line_injection`
+- source artifact: `cover64-stitch-22-shard-12`
+- source shard: `12`
+- source file: `runs/2026-07-07-smart-search-17-cover64-stitch-graph-full/best_line_set.json`
+- status: `line_set_seed_not_a_trail`
+
+Important caveat: this is an unordered 22-line scaffold. A line-set graph path is not yet the same as a valid ordered polygonal trail. Do not merge this into the ordinary ordered-trail candidate bank until a reconstruction/checker produces actual consecutive trail vertices.
 
 ## Last run lesson
 
-Run `28674416173` did not improve the numeric frontier and did not create independent 60-family diversity. It is useful because it tested the defect-relay / multi-60-skeleton hypothesis and showed that this exact setup still collapses to the old wall.
+Run `28825060197` answered a key structural question. The `60/64` ordered-trail wall is not caused by a shortage of rich 22-line coverage scaffolds: the run found many 22-line unordered scaffolds covering all 64 grid points.
 
-Corrected run-16 counts:
+Corrected search-17 counts:
 
-- practical shard-best curves: `20`
-- all inferred shard-best curves were `60/64`
-- compact reusable bank additions saved: `0`
-- new exact full-geometry representatives: `0`
-- dominant missing pattern in practical shard-bests: `20 / 20`: `(0,0,1)`, `(0,2,3)`, `(0,3,1)`, `(2,1,1)`
+- raw aggregator result rows: `40`
+- raw aggregator cover64 rows: `40`
+- compact line-set rows saved in `cover64-stitch-candidates.jsonl`: `20`
+- unique compact line-sets: `20`
+- compact representatives with `stitch_path_lower_bound = 22`: `4`
+- compact representatives with `stitch_path_lower_bound = 21`: `13`
+- compact representatives with `stitch_path_lower_bound = 20`: `3`
+- ordinary ordered-trail compact candidates added: `0`
+- strongest full line-set additions saved: `4`; compact line-set representatives indexed: `20`
 
-Counting caution: the defect-relay aggregator counted best JSON, relay60 JSONL, and missing-pattern JSON. This is why the artifact summary reports `60` relay rows and `unique compact = 2`. The second compact row is metadata without `vertices2`, not a new curve.
+There is no missing-point defect family at the scaffold level: all saved compact line-set representatives cover `64/64`. The remaining problem is stricter trail reconstruction from these scaffolds.
 
-Saved run-16 memory:
-
-```text
-runs/2026-07-03-smart-search-16-defect-relay-60-full/summary.md
-runs/2026-07-03-smart-search-16-defect-relay-60-full/best_candidate.json
-runs/2026-07-03-smart-search-16-defect-relay-60-full/mode_breakdown.json
-runs/2026-07-03-smart-search-16-defect-relay-60-full/raw_defect_relay_run_summary.json
-runs/2026-07-03-smart-search-16-defect-relay-60-full/relay60-diversity.jsonl
-runs/2026-07-03-smart-search-16-defect-relay-60-full/compact_representatives.md
-runs/2026-07-03-smart-search-16-defect-relay-60-full/shard-best-summary.jsonl
-candidates/originals/run28674416173-shard-bests-index.jsonl
-```
-
-## Current prepared launch package
-
-Prepared next workflow:
+Saved run-17 memory:
 
 ```text
-workflow: smart-search-17-cover64-stitch-graph
-workflow file: .github/workflows/smart-search-17-cover64-stitch-graph.yml
-proposed workflow backup: docs/proposed-smart-search-17-cover64-stitch-graph.yml
-plan file: docs/smart-search-17-cover64-stitch-graph-plan.md
-seed file: data/search17/local_cover64_stitch_graph_seed.json
-local line-set addition: candidates/line-set-additions-local-cover64-stitch-chat-20260704.jsonl
-checker: scripts/check_cover64_line_set.py
-search engine: scripts/search_cover64_stitch_graph.py
-summary builder: scripts/build_cover64_stitch_summary.py
+runs/2026-07-07-smart-search-17-cover64-stitch-graph-full/summary.md
+runs/2026-07-07-smart-search-17-cover64-stitch-graph-full/best_line_set.json
+runs/2026-07-07-smart-search-17-cover64-stitch-graph-full/raw_cover64_stitch_run_summary.json
+runs/2026-07-07-smart-search-17-cover64-stitch-graph-full/cover64-stitch-candidates.jsonl
+runs/2026-07-07-smart-search-17-cover64-stitch-graph-full/mode_breakdown.json
+runs/2026-07-07-smart-search-17-cover64-stitch-graph-full/stitch_path_histogram.json
+runs/2026-07-07-smart-search-17-cover64-stitch-graph-full/compact_representatives.md
+candidates/line-set-additions-run28825060197-cover64-stitch.jsonl  # 4 strongest stitch-22 full scaffolds
+candidates/originals/run28825060197-cover64-stitch-line-set-index.jsonl
 ```
-
-Hypothesis: `cover64 stitch graph`. Instead of repairing the same ordered 60/64 trail, search for unordered 22-line scaffolds that cover all 64 points, then optimize stitch graph quality. This is not a proof and not a valid trail by itself.
-
-Local seed behind the package:
-
-- `22` lines;
-- `64/64` coverage;
-- no zero-length lines;
-- stitch path lower bound around `18/22`;
-- used only as a technical seed/scaffold, not as a solution.
-
-Workflow checks:
-
-- `workflow_dispatch` only;
-- no `push` trigger;
-- 20 shards/jobs with max-parallel 20;
-- shard artifacts: `cover64-stitch-22-shard-*`;
-- summary artifact: `cover64-stitch-run-summary`.
 
 ## Current next step
 
-Run a short smoke-test of `smart-search-17-cover64-stitch-graph`. If the seed check, search script, shard artifacts, checker, and aggregation are green, proceed to the full 20-shard run.
+Prepare a new non-repeating reconstruction workflow, tentatively:
 
-Do not launch another identical `smart-search-16-defect-relay-60` run with the same seed and modes.
+```text
+smart-search-18-order-from-cover64-stitch
+```
+
+Goal: take the best search-17 `64/64`, `22/22` stitch scaffolds and try to reconstruct a real ordered 22-link polygonal trail.
+
+The next checker/engine must separate:
+
+1. graph adjacency by shared covered grid point;
+2. actual consecutive trail vertex feasibility;
+3. preserving coverage when a line is shortened to use an intersection/contact point;
+4. final exact ordered-trail validation by a `check_trail`-style checker.
+
+Do not rerun `smart-search-17-cover64-stitch-graph` with the same seed as the next serious step. It already found the intended scaffold breakthrough; the bottleneck moved to ordered reconstruction.
