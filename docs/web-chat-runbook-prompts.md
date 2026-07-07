@@ -151,45 +151,73 @@ START_HERE.md уже был открыт в начале чата, не откр
 4. какие промпты лучше использовать дальше.
 ```
 
-## Current result and next launch direction
+## Current prepared launch package
 
-As of 2026-07-07, the latest recorded full run is:
-
-```text
-workflow: smart-search-17-cover64-stitch-graph
-run id: 28825060197
-run folder: runs/2026-07-07-smart-search-17-cover64-stitch-graph-full
-```
-
-Search-17 result:
+As of 2026-07-07, the prepared launch package is:
 
 ```text
-best unordered scaffold: 64/64
-line count: 22
-best stitch graph components: 1
-best stitch path lower bound: 22/22
-compact line-set representatives indexed: 20
-strongest full line-set additions saved: 4
-ordinary ordered-trail candidates added: 0
+workflow: smart-search-18-order-from-cover64-stitch
+workflow file: .github/workflows/smart-search-18-order-from-cover64-stitch.yml
+proposed workflow backup: docs/proposed-smart-search-18-order-from-cover64-stitch.yml
+plan file: docs/smart-search-18-order-from-cover64-stitch-plan.md
+engine: scripts/order_from_cover64_stitch.py
+checker: scripts/check_ordered_trail_scaled.py
+summary builder: scripts/build_order_from_cover64_stitch_summary.py
+input scaffold: runs/2026-07-07-smart-search-17-cover64-stitch-graph-full/best_line_set.json
+input bank: candidates/line-set-additions-run28825060197-cover64-stitch.jsonl
 ```
 
-Saved files:
+This package intentionally follows `smart-search-17-cover64-stitch-graph` without repeating it. Search-17 found unordered `64/64` scaffolds. Search-18 tries contact-aware ordered reconstruction: concrete line order, concrete contact vertices, and actual `vertices2` chain coverage.
+
+Expected workflow details:
 
 ```text
-runs/2026-07-07-smart-search-17-cover64-stitch-graph-full/summary.md
-runs/2026-07-07-smart-search-17-cover64-stitch-graph-full/best_line_set.json
-runs/2026-07-07-smart-search-17-cover64-stitch-graph-full/raw_cover64_stitch_run_summary.json
-runs/2026-07-07-smart-search-17-cover64-stitch-graph-full/compact_representatives.md
-candidates/line-set-additions-run28825060197-cover64-stitch.jsonl  # 4 strongest stitch-22 full scaffolds
-candidates/originals/run28825060197-cover64-stitch-line-set-index.jsonl
+workflow_dispatch-only: yes
+push trigger: no
+control check 1: python scripts/check_trail.py data/ripa_23_trail.json --expected-links 23 --require-full
+control check 2: python scripts/check_cover64_line_set.py runs/2026-07-07-smart-search-17-cover64-stitch-graph-full/best_line_set.json --expect-covered 64 --max-lines 22 --min-stitch-path 22
+engine: python scripts/order_from_cover64_stitch.py
+checker: python scripts/check_ordered_trail_scaled.py
+summary builder: python scripts/build_order_from_cover64_stitch_summary.py
+shard artifacts: order-cover64-stitch-22-shard-*
+summary artifact: order-cover64-stitch-run-summary
+shards/jobs: 20
+max-parallel: 20
 ```
 
-The next non-repeating launch direction is:
+Smoke-test inputs:
 
 ```text
-smart-search-18-order-from-cover64-stitch
+seconds: 180
+workers: 4
+seed: 20260718
+min_actual_covered_to_save: 38
+beam_width: 512
+branch_limit: 5
+start_limit: 22
+max_mutations: 2
+box_min: -1
+box_max: 4
+candidate_lines: 3000
+min_line_cover: 2
 ```
 
-Goal: take the best search-17 `64/64`, `22/22` line-set scaffolds and try to convert them into actual ordered 22-link polygonal trails.
+Full-run inputs after green smoke-test:
 
-Known caveat: graph adjacency by shared covered grid points is not enough. A valid trail needs a sequence of actual consecutive segments with compatible trail vertices and final exact `check_trail` validation.
+```text
+seconds: 21000
+workers: 4
+seed: 20260718
+min_actual_covered_to_save: 38
+beam_width: 512
+branch_limit: 5
+start_limit: 22
+max_mutations: 2
+box_min: -1
+box_max: 4
+candidate_lines: 3000
+min_line_cover: 2
+expected wall time: about 5h50m per shard
+```
+
+Known caveat: smoke-test is only the technical green light. If it passes and the user launches the full run, the next result-taking chat should record the full run, not spend a separate step analyzing the smoke unless it failed or looked suspicious.
