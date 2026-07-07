@@ -19,9 +19,9 @@
     "rule_type": "cover64_stitch_skeleton_not_trail_bank"
   },
   "current_next_step": {
-    "instruction": "Build a reconstruction/check workflow that takes the best search-17 64/64, 22/22 line-set scaffolds and tries to convert them into actual ordered 22-link polygonal trails. Do not rerun search-17 with the same seed as the next serious step.",
-    "step_type": "prepare_ordered_reconstruction_from_cover64_stitch_scaffolds",
-    "tentative_workflow": "smart-search-18-order-from-cover64-stitch"
+    "instruction": "Run a short smoke-test of smart-search-18-order-from-cover64-stitch. If the technical checks, shard artifacts, scaled ordered checker, and aggregation are green, proceed to the full 20-shard run. Do not rerun search-17 with the same seed as the next serious step.",
+    "step_type": "run_smoke_test_for_prepared_search18_launch_package",
+    "workflow": "smart-search-18-order-from-cover64-stitch"
   },
   "latest_recorded_full_run": {
     "best_scaffold_result": {
@@ -56,13 +56,6 @@
       "scaffold_frontier_changed": true
     },
     "head_commit_sha": "5adc2b0d1efe0d89f324c758e44bd23e24d18d28",
-    "mode_breakdown": {
-      "component_bridge_pressure": {"best_covered": 64, "best_stitch_path_lower_bound": 22, "count": 8, "cover64": 8, "unique_compact": 4},
-      "cover64_from_seed_rewire": {"best_covered": 64, "best_stitch_path_lower_bound": 22, "count": 8, "cover64": 8, "unique_compact": 4},
-      "cover64_stitch_connectivity_pressure": {"best_covered": 64, "best_stitch_path_lower_bound": 21, "count": 8, "cover64": 8, "unique_compact": 4},
-      "old_wall_line_injection": {"best_covered": 64, "best_stitch_path_lower_bound": 22, "count": 8, "cover64": 8, "unique_compact": 4},
-      "random_greedy_cover64_scaffold": {"best_covered": 64, "best_stitch_path_lower_bound": 22, "count": 8, "cover64": 8, "unique_compact": 4}
-    },
     "parameters": {
       "box_max": 4,
       "box_min": -1,
@@ -95,6 +88,55 @@
     "stitch_path_histogram": [{"count": 8, "stitch_path": 22}, {"count": 26, "stitch_path": 21}, {"count": 6, "stitch_path": 20}],
     "workflow_name": "smart-search-17-cover64-stitch-graph"
   },
+  "prepared_launch_package": {
+    "artifact_names": {
+      "shard_pattern": "order-cover64-stitch-22-shard-*",
+      "summary": "order-cover64-stitch-run-summary"
+    },
+    "checker": "scripts/check_ordered_trail_scaled.py",
+    "engine": "scripts/order_from_cover64_stitch.py",
+    "hypothesis": "contact-aware ordered reconstruction from cover64 scaffolds",
+    "input_bank": "candidates/line-set-additions-run28825060197-cover64-stitch.jsonl",
+    "input_scaffold": "runs/2026-07-07-smart-search-17-cover64-stitch-graph-full/best_line_set.json",
+    "not_a_repeat_of": "smart-search-17-cover64-stitch-graph scaffold-only search",
+    "plan_file": "docs/smart-search-18-order-from-cover64-stitch-plan.md",
+    "proposed_workflow_backup": "docs/proposed-smart-search-18-order-from-cover64-stitch.yml",
+    "summary_builder": "scripts/build_order_from_cover64_stitch_summary.py",
+    "workflow": "smart-search-18-order-from-cover64-stitch",
+    "workflow_file": ".github/workflows/smart-search-18-order-from-cover64-stitch.yml"
+  },
+  "recommended_inputs": {
+    "full_run_after_green_smoke": {
+      "beam_width": 512,
+      "box_max": 4,
+      "box_min": -1,
+      "branch_limit": 5,
+      "candidate_lines": 3000,
+      "max_mutations": 2,
+      "min_actual_covered_to_save": 38,
+      "min_line_cover": 2,
+      "seconds": 21000,
+      "seed": 20260718,
+      "start_limit": 22,
+      "workers": 4,
+      "workflow": "smart-search-18-order-from-cover64-stitch"
+    },
+    "smoke_test": {
+      "beam_width": 512,
+      "box_max": 4,
+      "box_min": -1,
+      "branch_limit": 5,
+      "candidate_lines": 3000,
+      "max_mutations": 2,
+      "min_actual_covered_to_save": 38,
+      "min_line_cover": 2,
+      "seconds": 180,
+      "seed": 20260718,
+      "start_limit": 22,
+      "workers": 4,
+      "workflow": "smart-search-18-order-from-cover64-stitch"
+    }
+  },
   "repository": "Grisha-Pochuev/minimum-link-covering-trail-4x4x4",
   "schema": "mlct-frontier-v1",
   "standard_web_chat_cycle": [
@@ -103,6 +145,6 @@
     "prepare the next GitHub launch for the chosen hypothesis",
     "wrap up and update memory"
   ],
-  "status": "smart_search_17_cover64_stitch_full_run_recorded",
-  "updated_utc": "2026-07-07T21:30:00Z"
+  "status": "smart_search_18_order_from_cover64_launch_package_prepared",
+  "updated_utc": "2026-07-07T22:30:00Z"
 }
