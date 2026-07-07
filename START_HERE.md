@@ -105,39 +105,89 @@ Use the user's four-step rhythm:
 
 Smoke-test is only a technical green-light before the long run. If the user sees a green check and launches the 5h+ full run, the next result-taking chat records the full run, not the smoke-test. Inspect smoke separately only if it failed, looked suspicious, or the user explicitly asks.
 
-## 5. Current next step
+## 5. Current prepared launch
 
-There is no prepared next launch package yet after recording search-18.
-
-Next step should be prompt 2: choose a new hypothesis based on the search-18 failure. The main diagnostic question is why unordered `64/64` line-set coverage collapsed to only `44/64` actual ordered-chain coverage.
-
-Likely direction for the next non-repeating launch package:
+A launch package now exists for the chosen post-search-18 hypothesis:
 
 ```text
-stronger contact-state reconstruction from search-17 scaffolds
+smart-search-19-contact-state-dp
 ```
 
-Meaning:
+Files:
 
-- do not only find a path in the line-set graph;
-- track concrete contact vertices/intersections;
-- track actual covered grid-point mask while ordering;
-- use dynamic programming or beam search over `(line, contact point, covered mask)` states;
-- compare the ordered chain against the source scaffold to identify exactly which scaffold lines lose their covered points during ordering;
-- save failed-but-informative reconstructions separately from ordinary ordered-trail candidates.
+- workflow: `.github/workflows/smart-search-19-contact-state-dp.yml`
+- engine: `scripts/contact_state_dp_from_scaffolds.py`
+- summary builder: `scripts/build_contact_state_dp_summary.py`
+- checker: `scripts/check_ordered_trail_scaled.py`
+- plan: `docs/smart-search-19-contact-state-dp-plan.md`
+
+Hypothesis implemented: stronger contact-state reconstruction from search-17 scaffolds. It tracks concrete contact points, actual covered grid masks, and per-line contact loss (`full scaffold line mask -> chosen ordered piece mask -> lost grid points`) instead of relying only on the abstract stitch graph.
+
+The engine is currently Python. That is acceptable for this launch as a hypothesis/prototype run. If search-19 shows a real signal, the heavy contact-state DP/beam loop should be ported to C++ while Python remains the workflow/JSON/summary wrapper.
+
+## 6. Current next step
+
+There was an initial red run:
+
+- run id: `28902841543`
+- workflow: `smart-search-19-contact-state-dp`
+- status: red because the checker step had a technical heredoc/shell bug, not because the engine failed
+- observation: shard engine steps ran, but `Check ordered-chain JSON geometry` failed
+- fix commit: `ed5c56c90bca2044d55cbab6f48c0fb8c3b4071f` (`Fix contact-state checker heredoc`)
+
+Do **not** use `Re-run failed jobs` on run `28902841543`, because that run used the older broken commit. The next action is a fresh manual `Run workflow` on branch `main` for `smart-search-19-contact-state-dp`.
+
+Smoke-test inputs:
+
+```text
+seconds: 180
+workers: 4
+seed: 20260719
+beam_width: 2048
+state_cap: 200000
+candidate_scaffolds: 4
+max_mutations: 1
+box_min: -1
+box_max: 4
+min_piece_cover: 1
+save_min_covered: 38
+branch_limit: 6
+start_limit: 22
+candidate_lines: 3000
+```
+
+Full-run inputs:
+
+```text
+seconds: 21000
+workers: 4
+seed: 20260719
+beam_width: 8192
+state_cap: 2000000
+candidate_scaffolds: 4
+max_mutations: 2
+box_min: -1
+box_max: 4
+min_piece_cover: 1
+save_min_covered: 44
+branch_limit: 6
+start_limit: 22
+candidate_lines: 3000
+```
 
 Expected useful result means either a checked ordered 22-link trail candidate improving the `60/64` frontier, or a precise obstruction explaining why the search-17 `22/22` line-set stitch graph does not translate into a high-coverage polygonal chain.
 
-## 6. Wrap-up caution from latest result-taking
+## 7. Wrap-up caution from latest chat
 
 What worked well:
 
-- The run was recorded index-first: START_HERE, frontier, runbook, exact workflow, then summary artifact.
-- Old runs/logs/candidate banks were not blindly opened because the summary artifact was complete and all jobs succeeded.
-- Candidate banks were kept separate: no weak ordered reconstruction was merged into the ordinary ordered-trail bank.
+- The chat followed the four-step rhythm: record run, choose hypothesis, prepare launch, then clean up memory.
+- The search-19 launch package was created with real workflow, engine, checker, summary builder, plan doc, and exact inputs.
+- The red run was diagnosed correctly as a technical workflow/checker failure, not as a mathematical failure.
 
 Potential confusion for the next chat:
 
 - `64/64` in search-17 still means unordered scaffold coverage, not solved 22-link trail.
 - `44/64` in search-18 is a real ordered-chain reconstruction diagnostic, but it is not useful as a frontier candidate.
-- The next step is not “run search-18 longer”; it is to design a stronger reconstruction model.
+- Run `28902841543` should not be recorded as a completed full result unless the user explicitly asks to inspect its artifacts; it was a failed technical launch attempt.
+- The next step is not “run search-18 longer” and not “rerun failed jobs”; it is a fresh `smart-search-19-contact-state-dp` run from fixed `main`.
