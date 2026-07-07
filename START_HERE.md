@@ -103,7 +103,6 @@ workflow: smart-search-18-order-from-cover64-stitch
 workflow file: .github/workflows/smart-search-18-order-from-cover64-stitch.yml
 proposed workflow backup: docs/proposed-smart-search-18-order-from-cover64-stitch.yml
 plan file: docs/smart-search-18-order-from-cover64-stitch-plan.md
-interactive explainer: docs/smart-search-18-order-from-cover64-stitch-interactive.html
 engine: scripts/order_from_cover64_stitch.py
 checker: scripts/check_ordered_trail_scaled.py
 summary builder: scripts/build_order_from_cover64_stitch_summary.py
@@ -169,7 +168,6 @@ What worked well in this chat:
 
 - Prompt 2 and prompt 3 were separated correctly: research hypothesis first, technical launch package second.
 - The search-18 package implements the chosen idea rather than repeating search-17.
-- The interactive HTML explainer is now saved in `docs/`, not only as a transient chat download.
 
 Potential confusion for the next chat:
 
