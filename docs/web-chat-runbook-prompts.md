@@ -27,11 +27,11 @@ Best optimization: in a new chat, read `START_HERE.md` once at the very beginnin
 
 Do not treat "all runs" as a request to blindly scan everything. First use the saved frontier and run summaries as the index. Then inspect only the exact run folders, workflow, bank additions, originals, and artifacts that are relevant to the current frontier.
 
-Important correction from 2026-07-07: the launch-preparation prompt was too long and pulled the assistant back into hypothesis testing. It has been simplified. In prompt 3, do not do new local experiments or creative exploration. Only prepare the launch package for the hypothesis already chosen in prompt 2. Creating a new engine is allowed when it is the technical implementation of that chosen hypothesis.
-
 Important correction from 2026-07-07: `smart-search-17-cover64-stitch-graph` outputs are line-set scaffolds, not trail proofs. Do not merge them into the normal ordered-trail bank until they are converted into checked polygonal-trail candidates.
 
-New result from 2026-07-07: full run `28825060197` found `64/64` unordered 22-line scaffolds and 4 compact representatives with stitch path lower bound `22/22`. This changes the bottleneck: the next non-repeating step should be ordered reconstruction from search-17 scaffolds, not another search-17 run with the same seed.
+Result from 2026-07-07 run `28825060197`: full search-17 found `64/64` unordered 22-line scaffolds and 4 compact representatives with stitch path lower bound `22/22`. This changed the bottleneck from finding rich scaffolds to ordered reconstruction.
+
+Result from 2026-07-07 run `28875314204`: full search-18 tried contact-aware ordered reconstruction from search-17 scaffolds. It completed successfully, but the best checked ordered-chain reconstruction was only `44/64`, far below the standing ordered-trail frontier `60/64`. This means the current reconstruction engine is too weak; the next step should diagnose contact/coverage loss and design a stronger contact-state reconstruction model, not rerun search-18 unchanged.
 
 ## Fast checklist before preparing or analyzing a launch
 
@@ -151,73 +151,30 @@ START_HERE.md уже был открыт в начале чата, не откр
 4. какие промпты лучше использовать дальше.
 ```
 
-## Current prepared launch package
+## Current state after search-18
 
-As of 2026-07-07, the prepared launch package is:
+As of the completed result-taking step for run `28875314204`, there is no prepared next launch package yet.
 
-```text
-workflow: smart-search-18-order-from-cover64-stitch
-workflow file: .github/workflows/smart-search-18-order-from-cover64-stitch.yml
-proposed workflow backup: docs/proposed-smart-search-18-order-from-cover64-stitch.yml
-plan file: docs/smart-search-18-order-from-cover64-stitch-plan.md
-engine: scripts/order_from_cover64_stitch.py
-checker: scripts/check_ordered_trail_scaled.py
-summary builder: scripts/build_order_from_cover64_stitch_summary.py
-input scaffold: runs/2026-07-07-smart-search-17-cover64-stitch-graph-full/best_line_set.json
-input bank: candidates/line-set-additions-run28825060197-cover64-stitch.jsonl
-```
-
-This package intentionally follows `smart-search-17-cover64-stitch-graph` without repeating it. Search-17 found unordered `64/64` scaffolds. Search-18 tries contact-aware ordered reconstruction: concrete line order, concrete contact vertices, and actual `vertices2` chain coverage.
-
-Expected workflow details:
+Current frontier:
 
 ```text
-workflow_dispatch-only: yes
-push trigger: no
-control check 1: python scripts/check_trail.py data/ripa_23_trail.json --expected-links 23 --require-full
-control check 2: python scripts/check_cover64_line_set.py runs/2026-07-07-smart-search-17-cover64-stitch-graph-full/best_line_set.json --expect-covered 64 --max-lines 22 --min-stitch-path 22
-engine: python scripts/order_from_cover64_stitch.py
-checker: python scripts/check_ordered_trail_scaled.py
-summary builder: python scripts/build_order_from_cover64_stitch_summary.py
-shard artifacts: order-cover64-stitch-22-shard-*
-summary artifact: order-cover64-stitch-run-summary
-shards/jobs: 20
-max-parallel: 20
+best ordered-trail candidate: 60/64, run 28674416173
+best unordered cover64 scaffold: 64/64 line-set, run 28825060197
+latest full run: 28875314204, smart-search-18-order-from-cover64-stitch
+latest full run best ordered reconstruction: 44/64
+ordinary candidate-bank additions from search-18: 0
+diagnostic ordered-chain rows from search-18: 17
 ```
 
-Smoke-test inputs:
+Saved files:
 
 ```text
-seconds: 180
-workers: 4
-seed: 20260718
-min_actual_covered_to_save: 38
-beam_width: 512
-branch_limit: 5
-start_limit: 22
-max_mutations: 2
-box_min: -1
-box_max: 4
-candidate_lines: 3000
-min_line_cover: 2
+runs/2026-07-07-smart-search-18-order-from-cover64-stitch-full/summary.md
+runs/2026-07-07-smart-search-18-order-from-cover64-stitch-full/best_ordered_candidate.json
+runs/2026-07-07-smart-search-18-order-from-cover64-stitch-full/mode_breakdown.json
+runs/2026-07-07-smart-search-18-order-from-cover64-stitch-full/order-cover64-stitch-run-summary.zip
+candidates/diagnostic-order-from-cover64-run28875314204.jsonl
+candidates/originals/run28875314204-order-from-cover64-index.jsonl
 ```
 
-Full-run inputs after green smoke-test:
-
-```text
-seconds: 21000
-workers: 4
-seed: 20260718
-min_actual_covered_to_save: 38
-beam_width: 512
-branch_limit: 5
-start_limit: 22
-max_mutations: 2
-box_min: -1
-box_max: 4
-candidate_lines: 3000
-min_line_cover: 2
-expected wall time: about 5h50m per shard
-```
-
-Known caveat: smoke-test is only the technical green light. If it passes and the user launches the full run, the next result-taking chat should record the full run, not spend a separate step analyzing the smoke unless it failed or looked suspicious.
+Next prompt should be Prompt 2: choose a new hypothesis. A likely direction is stronger contact-state reconstruction from search-17 scaffolds, using actual covered-mask preservation during ordering, not only abstract line-set graph pathability.
