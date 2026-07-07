@@ -1,0 +1,228 @@
+name: smart-search-19-contact-state-dp
+run-name: smart-search-19-contact-state-dp
+
+permissions:
+  contents: read
+  actions: read
+
+on:
+  workflow_dispatch:
+    inputs:
+      seconds:
+        description: "Seconds per shard. Use 180 for smoke, 21000 for full."
+        required: false
+        default: "180"
+      workers:
+        description: "Python worker processes per shard. Use 4."
+        required: false
+        default: "4"
+      seed:
+        description: "Seed. Baseline for smoke/full is 20260719."
+        required: false
+        default: "20260719"
+      beam_width:
+        description: "Beam width for contact-state DP/beam. Smoke 2048, full 8192."
+        required: false
+        default: "2048"
+      state_cap:
+        description: "Maximum generated states kept per layer before pruning. Smoke 200000, full 2000000."
+        required: false
+        default: "200000"
+      candidate_scaffolds:
+        description: "How many strongest search-17/search-18 scaffolds to use. Use 4."
+        required: false
+        default: "4"
+      max_mutations:
+        description: "Maximum controlled line replacements in mutation shards. Smoke 1, full 2."
+        required: false
+        default: "1"
+      box_min:
+        description: "Minimum endpoint coordinate before scaling. Use -1."
+        required: false
+        default: "-1"
+      box_max:
+        description: "Maximum endpoint coordinate before scaling. Use 4."
+        required: false
+        default: "4"
+      min_piece_cover:
+        description: "Minimum grid points covered by a chosen line piece. Use 1."
+        required: false
+        default: "1"
+      save_min_covered:
+        description: "Minimum actual ordered-chain coverage for preferred JSONL rows. Smoke 38, full 44."
+        required: false
+        default: "38"
+      branch_limit:
+        description: "Branching limit for contact-state expansions. Default 6."
+        required: false
+        default: "6"
+      start_limit:
+        description: "How many possible start lines to try. Default 22."
+        required: false
+        default: "22"
+      candidate_lines:
+        description: "Maximum generated replacement lines kept. Default 3000."
+        required: false
+        default: "3000"
+
+jobs:
+  check-known-23:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python scripts/check_trail.py data/ripa_23_trail.json --expected-links 23 --require-full
+
+  check-search17-input-scaffolds:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Check best scaffold
+        run: python scripts/check_cover64_line_set.py runs/2026-07-07-smart-search-17-cover64-stitch-graph-full/best_line_set.json --expect-covered 64 --max-lines 22 --min-stitch-path 22
+      - name: Check strongest scaffold additions
+        run: |
+          python - <<'PY'
+          import json
+          import subprocess
+          import tempfile
+          from pathlib import Path
+
+          p = Path("candidates/line-set-additions-run28825060197-cover64-stitch.jsonl")
+          rows = [json.loads(x) for x in p.read_text().splitlines() if x.strip()]
+          if len(rows) < 4:
+              raise SystemExit(f"expected at least 4 strongest scaffolds, got {len(rows)}")
+          with tempfile.TemporaryDirectory() as td:
+              for i, row in enumerate(rows[:4]):
+                  q = Path(td) / f"scaffold_{i}.json"
+                  q.write_text(json.dumps(row))
+                  subprocess.check_call([
+                      "python",
+                      "scripts/check_cover64_line_set.py",
+                      str(q),
+                      "--expect-covered",
+                      "64",
+                      "--max-lines",
+                      "22",
+                      "--min-stitch-path",
+                      "22",
+                  ])
+          PY
+
+  contact-state-dp:
+    runs-on: ubuntu-latest
+    needs: [check-known-23, check-search17-input-scaffolds]
+    timeout-minutes: 359
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run contact-state DP shard
+        run: |
+          mkdir -p results/contact_state_dp
+          python scripts/contact_state_dp_from_scaffolds.py \
+            --input-json runs/2026-07-07-smart-search-17-cover64-stitch-graph-full/best_line_set.json \
+            --input-jsonl candidates/line-set-additions-run28825060197-cover64-stitch.jsonl \
+            --diagnostic-json runs/2026-07-07-smart-search-18-order-from-cover64-stitch-full/best_ordered_candidate.json \
+            --diagnostic-jsonl candidates/diagnostic-order-from-cover64-run28875314204.jsonl \
+            --seconds "${{ github.event.inputs.seconds || '180' }}" \
+            --workers "${{ github.event.inputs.workers || '4' }}" \
+            --seed "${{ github.event.inputs.seed || '20260719' }}" \
+            --shard "${{ matrix.shard }}" \
+            --shards 20 \
+            --beam-width "${{ github.event.inputs.beam_width || '2048' }}" \
+            --branch-limit "${{ github.event.inputs.branch_limit || '6' }}" \
+            --start-limit "${{ github.event.inputs.start_limit || '22' }}" \
+            --state-cap "${{ github.event.inputs.state_cap || '200000' }}" \
+            --candidate-scaffolds "${{ github.event.inputs.candidate_scaffolds || '4' }}" \
+            --max-mutations "${{ github.event.inputs.max_mutations || '1' }}" \
+            --box-min "${{ github.event.inputs.box_min || '-1' }}" \
+            --box-max "${{ github.event.inputs.box_max || '4' }}" \
+            --candidate-lines "${{ github.event.inputs.candidate_lines || '3000' }}" \
+            --min-piece-cover "${{ github.event.inputs.min_piece_cover || '1' }}" \
+            --out "results/contact_state_dp/contact_state_dp_best_shard_${{ matrix.shard }}.json" \
+            --preferred-out "results/contact_state_dp/preferred_contact_state_dp_shard_${{ matrix.shard }}.jsonl" \
+            --loss-report-out "results/contact_state_dp/contact_loss_report_shard_${{ matrix.shard }}.json"
+
+      - name: Check ordered-chain JSON geometry
+        if: always()
+        run: |
+          if [ -f "results/contact_state_dp/contact_state_dp_best_shard_${{ matrix.shard }}.json" ]; then
+            python - <<'PY'
+            import json
+            import subprocess
+            from pathlib import Path
+            p = Path("results/contact_state_dp/contact_state_dp_best_shard_${{ matrix.shard }}.json")
+            d = json.loads(p.read_text())
+            if d.get("vertices2"):
+                subprocess.check_call(["python", "scripts/check_ordered_trail_scaled.py", str(p), "--min-covered", "1"])
+            else:
+                print("no vertices2 in shard output; checker skipped")
+            PY
+          fi
+
+      - name: Apply save_min_covered gate to preferred JSONL
+        if: always()
+        env:
+          SHARD: ${{ matrix.shard }}
+          MIN_COVERED: ${{ github.event.inputs.save_min_covered || '38' }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+
+          shard = os.environ["SHARD"]
+          min_covered = int(os.environ.get("MIN_COVERED") or 38)
+          p = Path(f"results/contact_state_dp/contact_state_dp_best_shard_{shard}.json")
+          out = Path(f"results/contact_state_dp/preferred_contact_state_dp_shard_{shard}.jsonl")
+          if p.exists():
+              d = json.loads(p.read_text())
+              d.setdefault("source_shard", int(shard))
+              d.setdefault("source_artifact", f"contact-state-dp-22-shard-{shard}")
+              d.setdefault("source_workflow", "smart-search-19-contact-state-dp")
+              p.write_text(json.dumps(d, indent=2, sort_keys=True))
+              if int(d.get("covered_count", 0) or 0) >= min_covered or int(d.get("links", 0) or 0) >= 22:
+                  out.write_text(json.dumps(d, sort_keys=True) + "\n")
+              elif out.exists():
+                  out.unlink()
+          PY
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: contact-state-dp-22-shard-${{ matrix.shard }}
+          path: results/contact_state_dp/
+          if-no-files-found: warn
+
+  aggregate-contact-state-dp:
+    runs-on: ubuntu-latest
+    needs: contact-state-dp
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: contact-state-dp-22-shard-*
+          path: collected
+          merge-multiple: true
+      - run: python scripts/build_contact_state_dp_summary.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: contact-state-dp-run-summary
+          path: |
+            collected/contact_state_dp_run_summary.json
+            collected/contact_state_dp_run_summary.md
+            collected/contact-state-dp-candidates.jsonl
+          if-no-files-found: warn
