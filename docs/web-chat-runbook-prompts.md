@@ -29,7 +29,9 @@ Do not treat "all runs" as a request to blindly scan everything. First use the s
 
 Important correction from 2026-07-07: the launch-preparation prompt was too long and pulled the assistant back into hypothesis testing. It has been simplified. In prompt 3, do not do new local experiments or creative exploration. Only prepare the launch package for the hypothesis already chosen in prompt 2. Creating a new engine is allowed when it is the technical implementation of that chosen hypothesis.
 
-Important correction from 2026-07-07: `smart-search-17-cover64-stitch-graph` is a line-set scaffold search, not a trail proof. Do not merge its outputs into the normal ordered-trail bank until they are converted into checked polygonal-trail candidates.
+Important correction from 2026-07-07: `smart-search-17-cover64-stitch-graph` outputs are line-set scaffolds, not trail proofs. Do not merge them into the normal ordered-trail bank until they are converted into checked polygonal-trail candidates.
+
+New result from 2026-07-07: full run `28825060197` found `64/64` unordered 22-line scaffolds and 4 compact representatives with stitch path lower bound `22/22`. This changes the bottleneck: the next non-repeating step should be ordered reconstruction from search-17 scaffolds, not another search-17 run with the same seed.
 
 ## Fast checklist before preparing or analyzing a launch
 
@@ -149,71 +151,45 @@ START_HERE.md уже был открыт в начале чата, не откр
 4. какие промпты лучше использовать дальше.
 ```
 
-## Current prepared launch package
+## Current result and next launch direction
 
-As of 2026-07-07, the prepared launch package is:
+As of 2026-07-07, the latest recorded full run is:
 
 ```text
 workflow: smart-search-17-cover64-stitch-graph
-workflow file: .github/workflows/smart-search-17-cover64-stitch-graph.yml
-proposed workflow backup: docs/proposed-smart-search-17-cover64-stitch-graph.yml
-plan file: docs/smart-search-17-cover64-stitch-graph-plan.md
-engine: scripts/search_cover64_stitch_graph.py
-checker: scripts/check_cover64_line_set.py
-summary builder: scripts/build_cover64_stitch_summary.py
-seed: data/search17/local_cover64_stitch_graph_seed.json
-local line-set addition: candidates/line-set-additions-local-cover64-stitch-chat-20260704.jsonl
+run id: 28825060197
+run folder: runs/2026-07-07-smart-search-17-cover64-stitch-graph-full
 ```
 
-This package intentionally replaces repeating `smart-search-16-defect-relay-60`. The new serious search should use the cover64 stitch graph hypothesis: first find/optimize unordered 22-line `64/64` scaffolds, then use those as raw material for ordered-trail reconstruction.
-
-Expected workflow details:
+Search-17 result:
 
 ```text
-workflow_dispatch-only: yes
-push trigger: no
-control check 1: python scripts/check_trail.py data/ripa_23_trail.json --expected-links 23 --require-full
-control check 2: python scripts/check_cover64_line_set.py data/search17/local_cover64_stitch_graph_seed.json --expect-covered 64 --max-lines 22 --min-stitch-path 18
-engine: python scripts/search_cover64_stitch_graph.py
-checker: python scripts/check_cover64_line_set.py results/cover64_stitch/cover64_stitch_best_shard_<shard>.json --max-lines 22
-summary builder: python scripts/build_cover64_stitch_summary.py
-shard artifacts: cover64-stitch-22-shard-*
-summary artifact: cover64-stitch-run-summary
-shards/jobs: 20
-max-parallel: 20
+best unordered scaffold: 64/64
+line count: 22
+best stitch graph components: 1
+best stitch path lower bound: 22/22
+compact line-set representatives indexed: 20
+strongest full line-set additions saved: 4
+ordinary ordered-trail candidates added: 0
 ```
 
-Smoke-test inputs:
+Saved files:
 
 ```text
-seconds: 180
-workers: 4
-seed: 20260717
-min_covered_to_save: 64
-min_stitch_path_to_save: 18
-box_min: -1
-box_max: 4
-max_universe: 9000
-max_lines: 22
-latest_run_id: 28674416173
-previous_frontier_run_id: 28618565146
+runs/2026-07-07-smart-search-17-cover64-stitch-graph-full/summary.md
+runs/2026-07-07-smart-search-17-cover64-stitch-graph-full/best_line_set.json
+runs/2026-07-07-smart-search-17-cover64-stitch-graph-full/raw_cover64_stitch_run_summary.json
+runs/2026-07-07-smart-search-17-cover64-stitch-graph-full/compact_representatives.md
+candidates/line-set-additions-run28825060197-cover64-stitch.jsonl  # 4 strongest stitch-22 full scaffolds
+candidates/originals/run28825060197-cover64-stitch-line-set-index.jsonl
 ```
 
-Full-run inputs after green smoke-test:
+The next non-repeating launch direction is:
 
 ```text
-seconds: 21000
-workers: 4
-seed: 20260717
-min_covered_to_save: 64
-min_stitch_path_to_save: 18
-box_min: -1
-box_max: 4
-max_universe: 9000
-max_lines: 22
-latest_run_id: 28674416173
-previous_frontier_run_id: 28618565146
-expected wall time: about 5h50m per shard
+smart-search-18-order-from-cover64-stitch
 ```
 
-Known caveat: search-17 outputs are unordered line-set scaffolds. They are not final trail candidates and not proofs until a separate ordered-trail reconstruction/check succeeds.
+Goal: take the best search-17 `64/64`, `22/22` line-set scaffolds and try to convert them into actual ordered 22-link polygonal trails.
+
+Known caveat: graph adjacency by shared covered grid points is not enough. A valid trail needs a sequence of actual consecutive segments with compatible trail vertices and final exact `check_trail` validation.
