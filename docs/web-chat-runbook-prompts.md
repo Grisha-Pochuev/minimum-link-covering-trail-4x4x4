@@ -31,7 +31,9 @@ Important correction from 2026-07-07: `smart-search-17-cover64-stitch-graph` out
 
 Result from 2026-07-07 run `28825060197`: full search-17 found `64/64` unordered 22-line scaffolds and 4 compact representatives with stitch path lower bound `22/22`. This changed the bottleneck from finding rich scaffolds to ordered reconstruction.
 
-Result from 2026-07-07 run `28875314204`: full search-18 tried contact-aware ordered reconstruction from search-17 scaffolds. It completed successfully, but the best checked ordered-chain reconstruction was only `44/64`, far below the standing ordered-trail frontier `60/64`. This means the current reconstruction engine is too weak; the next step should diagnose contact/coverage loss and design a stronger contact-state reconstruction model, not rerun search-18 unchanged.
+Result from 2026-07-07 run `28875314204`: full search-18 tried contact-aware ordered reconstruction from search-17 scaffolds. It completed successfully, but the best checked ordered-chain reconstruction was only `44/64`, far below the standing ordered-trail frontier `60/64`. This means the current reconstruction engine is too weak; the next step should use a stronger contact-state reconstruction model, not rerun search-18 unchanged.
+
+Launch package from 2026-07-07 chat: `smart-search-19-contact-state-dp` now exists as a real workflow, with engine, checker, summary builder, and plan doc. Initial run `28902841543` was red because of a technical checker-step shell/heredoc bug, not because the engine or hypothesis failed. Fix commit: `ed5c56c90bca2044d55cbab6f48c0fb8c3b4071f` (`Fix contact-state checker heredoc`). Do not press `Re-run failed jobs` on that old run; start a fresh manual `Run workflow` from branch `main`.
 
 ## Fast checklist before preparing or analyzing a launch
 
@@ -48,6 +50,14 @@ Use this checklist only as a technical guardrail. Do not turn it into a new rese
 8. Verify no push trigger.
 9. Verify artifact names, seed paths, engine/checker/summary paths, shard count, and exact inputs.
 10. Stop. Give smoke-test and full-run inputs. Do not run extra hypothesis checks unless the workflow cannot be made technically runnable.
+```
+
+If a smoke-test fails red, first distinguish:
+
+```text
+- engine/search step failed: inspect logs and fix the engine or inputs;
+- post-search checker/summary step failed: this may be a workflow plumbing bug, not a mathematical failure;
+- old failed run was before a fix commit: start a fresh Run workflow from main, do not Re-run failed jobs.
 ```
 
 ## Prompt 1 — record completed run
@@ -142,7 +152,7 @@ START_HERE.md уже был открыт в начале чата, не откр
 - где была путаница;
 - какие правила или файлы памяти могут сбить следующий чат.
 
-Особенно проверь prompt 3: он должен готовить запуск, а не заново исследовать гипотезу.
+Особенно проверь prompt 3: он должен готовить запуск, а не заново исследовать гипотезу. Если был красный smoke-test, проверь, не является ли он технической ошибкой workflow/checker и не нужно ли зафиксировать "fresh Run workflow from main, not Re-run failed jobs".
 
 В конце коротко скажи:
 1. что изменил;
@@ -151,30 +161,47 @@ START_HERE.md уже был открыт в начале чата, не откр
 4. какие промпты лучше использовать дальше.
 ```
 
-## Current state after search-18
-
-As of the completed result-taking step for run `28875314204`, there is no prepared next launch package yet.
+## Current state after search-19 launch preparation
 
 Current frontier:
 
 ```text
 best ordered-trail candidate: 60/64, run 28674416173
 best unordered cover64 scaffold: 64/64 line-set, run 28825060197
-latest full run: 28875314204, smart-search-18-order-from-cover64-stitch
-latest full run best ordered reconstruction: 44/64
+latest recorded full run: 28875314204, smart-search-18-order-from-cover64-stitch
+latest recorded full run best ordered reconstruction: 44/64
 ordinary candidate-bank additions from search-18: 0
 diagnostic ordered-chain rows from search-18: 17
 ```
 
-Saved files:
+Prepared workflow:
 
 ```text
-runs/2026-07-07-smart-search-18-order-from-cover64-stitch-full/summary.md
-runs/2026-07-07-smart-search-18-order-from-cover64-stitch-full/best_ordered_candidate.json
-runs/2026-07-07-smart-search-18-order-from-cover64-stitch-full/mode_breakdown.json
-runs/2026-07-07-smart-search-18-order-from-cover64-stitch-full/order-cover64-stitch-run-summary.zip
-candidates/diagnostic-order-from-cover64-run28875314204.jsonl
-candidates/originals/run28875314204-order-from-cover64-index.jsonl
+smart-search-19-contact-state-dp
 ```
 
-Next prompt should be Prompt 2: choose a new hypothesis. A likely direction is stronger contact-state reconstruction from search-17 scaffolds, using actual covered-mask preservation during ordering, not only abstract line-set graph pathability.
+Prepared files:
+
+```text
+.github/workflows/smart-search-19-contact-state-dp.yml
+scripts/contact_state_dp_from_scaffolds.py
+scripts/build_contact_state_dp_summary.py
+scripts/check_ordered_trail_scaled.py
+docs/smart-search-19-contact-state-dp-plan.md
+```
+
+Important launch note:
+
+```text
+run 28902841543 was a failed technical launch attempt;
+failure was in Check ordered-chain JSON geometry, not in the search engine;
+fix commit is ed5c56c90bca2044d55cbab6f48c0fb8c3b4071f;
+do not Re-run failed jobs on that old run;
+start a fresh Run workflow from main.
+```
+
+Next prompt depends on what the user does:
+
+- if the user launches and completes a full run, use Prompt 1 to record that completed run;
+- if smoke-test is green and the user launches the long run, do not waste a separate step recording smoke unless asked;
+- if another smoke-test is red, inspect jobs/logs as a technical failure first.
