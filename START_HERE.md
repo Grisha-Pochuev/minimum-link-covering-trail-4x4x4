@@ -94,40 +94,85 @@ Use the user's four-step rhythm:
 
 Smoke-test is only a technical green-light before the long run. If the user sees a green check and launches the 5h+ full run, the next result-taking chat records the full run, not the smoke-test. Inspect smoke separately only if it failed, looked suspicious, or the user explicitly asks.
 
-## 5. Current next step
+## 5. Current prepared launch package
 
-Prepare a new reconstruction launch package, tentatively:
+Prepared next workflow:
 
 ```text
 workflow: smart-search-18-order-from-cover64-stitch
+workflow file: .github/workflows/smart-search-18-order-from-cover64-stitch.yml
+proposed workflow backup: docs/proposed-smart-search-18-order-from-cover64-stitch.yml
+plan file: docs/smart-search-18-order-from-cover64-stitch-plan.md
+interactive explainer: docs/smart-search-18-order-from-cover64-stitch-interactive.html
+engine: scripts/order_from_cover64_stitch.py
+checker: scripts/check_ordered_trail_scaled.py
+summary builder: scripts/build_order_from_cover64_stitch_summary.py
 input scaffolds:
   runs/2026-07-07-smart-search-17-cover64-stitch-graph-full/best_line_set.json
   candidates/line-set-additions-run28825060197-cover64-stitch.jsonl  # 4 strongest stitch-22 full scaffolds
 ```
 
-Hypothesis: `order/reconstruct from 64/64 stitch scaffolds`.
+Hypothesis: `contact-aware ordered reconstruction from cover64 scaffolds`.
 
-Simple meaning: search-17 found 22-line unordered scaffolds that already cover all grid points and whose stitch graph can contain a 22-line path. The remaining question is whether at least one such scaffold can be turned into a real ordered polygonal trail with 22 consecutive segments.
+Simple meaning: search-17 found 22-line unordered scaffolds that already cover all grid points and whose stitch graph can contain a 22-line path. Search-18 tries to choose concrete contact vertices and actual segment endpoints, scoring real ordered-chain coverage rather than graph stitchability.
 
-The next checker/engine must separate:
+Launch status:
 
-1. graph adjacency by shared covered grid point;
-2. actual consecutive trail vertex feasibility;
-3. whether shortening/splitting a line to use a contact point preserves coverage;
-4. final exact `check_trail` validation as a 22-link polygonal trail.
+- real workflow exists in `.github/workflows/`;
+- workflow starts with `name:`;
+- trigger is `workflow_dispatch` only, no `push`;
+- full search uses 20 shards/jobs with `max-parallel: 20`;
+- shard artifacts: `order-cover64-stitch-22-shard-*`;
+- summary artifact: `order-cover64-stitch-run-summary`.
 
-## 6. Launch discipline for prompt 3
-
-Prompt 3 should prepare the already chosen launch package only. Do not use prompt 3 to restart broad hypothesis work.
-
-For the next package, likely files are:
+Smoke-test inputs:
 
 ```text
-workflow: .github/workflows/smart-search-18-order-from-cover64-stitch.yml
-engine/checker: scripts/order_from_cover64_stitch.py or equivalent
-summary builder: scripts/build_order_from_cover64_stitch_summary.py
-plan file: docs/smart-search-18-order-from-cover64-stitch-plan.md
-input bank: candidates/line-set-additions-run28825060197-cover64-stitch.jsonl  # 4 strongest stitch-22 full scaffolds
+workflow: smart-search-18-order-from-cover64-stitch
+seconds: 180
+workers: 4
+seed: 20260718
+min_actual_covered_to_save: 38
+beam_width: 512
+branch_limit: 5
+start_limit: 22
+max_mutations: 2
+box_min: -1
+box_max: 4
+candidate_lines: 3000
+min_line_cover: 2
 ```
 
-Expected useful result means a checked ordered 22-link trail candidate, or a precise obstruction explaining why the `22/22` line-set stitch graph does not translate into a real polygonal chain.
+Full-run inputs after green smoke:
+
+```text
+workflow: smart-search-18-order-from-cover64-stitch
+seconds: 21000
+workers: 4
+seed: 20260718
+min_actual_covered_to_save: 38
+beam_width: 512
+branch_limit: 5
+start_limit: 22
+max_mutations: 2
+box_min: -1
+box_max: 4
+candidate_lines: 3000
+min_line_cover: 2
+```
+
+Expected useful result means a checked ordered 22-link trail candidate improving the `60/64` frontier, or a precise obstruction explaining why the `22/22` line-set stitch graph does not translate into a real polygonal chain.
+
+## 6. Wrap-up caution from launch preparation
+
+What worked well in this chat:
+
+- Prompt 2 and prompt 3 were separated correctly: research hypothesis first, technical launch package second.
+- The search-18 package implements the chosen idea rather than repeating search-17.
+- The interactive HTML explainer is now saved in `docs/`, not only as a transient chat download.
+
+Potential confusion for the next chat:
+
+- `64/64` in search-17 means unordered scaffold coverage, not solved 22-link trail.
+- A green smoke-test is not a mathematical result; it is only a technical check.
+- If the full run is already launched after smoke, the next ordinary step is to record the full run results, not to spend a separate cycle on smoke unless it failed or looked suspicious.
