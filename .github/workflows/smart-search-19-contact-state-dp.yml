@@ -158,18 +158,14 @@ jobs:
       - name: Check ordered-chain JSON geometry
         if: always()
         run: |
-          if [ -f "results/contact_state_dp/contact_state_dp_best_shard_${{ matrix.shard }}.json" ]; then
-            python - <<'PY'
-            import json
-            import subprocess
-            from pathlib import Path
-            p = Path("results/contact_state_dp/contact_state_dp_best_shard_${{ matrix.shard }}.json")
-            d = json.loads(p.read_text())
-            if d.get("vertices2"):
-                subprocess.check_call(["python", "scripts/check_ordered_trail_scaled.py", str(p), "--min-covered", "1"])
-            else:
-                print("no vertices2 in shard output; checker skipped")
-            PY
+          p="results/contact_state_dp/contact_state_dp_best_shard_${{ matrix.shard }}.json"
+          if [ -f "$p" ]; then
+            has_vertices=$(python -c 'import json,sys; d=json.load(open(sys.argv[1])); print("1" if d.get("vertices2") else "0")' "$p")
+            if [ "$has_vertices" = "1" ]; then
+              python scripts/check_ordered_trail_scaled.py "$p" --min-covered 1
+            else
+              echo "no vertices2 in shard output; checker skipped"
+            fi
           fi
 
       - name: Apply save_min_covered gate to preferred JSONL
