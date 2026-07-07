@@ -1,6 +1,6 @@
 # Current search frontier
 
-Status: completed `smart-search-18-order-from-cover64-stitch` full run recorded. The normal ordered-trail frontier remains `60/64`; the scaffold frontier from search-17 remains unordered `64/64` with stitch path lower bound `22/22`. Search-18 was a diagnostic ordered-reconstruction attempt and did not improve the ordered-trail frontier.
+Status: completed `smart-search-18-order-from-cover64-stitch` full run recorded. The normal ordered-trail frontier remains `60/64`; the scaffold frontier from search-17 remains unordered `64/64` with stitch path lower bound `22/22`. Search-19 launch package is prepared and fixed after an initial technical red run.
 
 Latest recorded full run:
 
@@ -50,7 +50,7 @@ Best search-17 scaffold remains:
 
 Important caveat: this is an unordered 22-line scaffold. A line-set graph path is not yet the same as a valid ordered polygonal trail. Do not merge this into the ordinary ordered-trail candidate bank until a reconstruction/checker produces actual consecutive trail vertices.
 
-## Latest run lesson
+## Latest recorded run lesson
 
 Run `28875314204` tested contact-aware ordered reconstruction from the `64/64` line-set scaffolds. The result was much weaker than the existing ordered-trail frontier:
 
@@ -91,8 +91,68 @@ candidates/diagnostic-order-from-cover64-run28875314204.jsonl
 candidates/originals/run28875314204-order-from-cover64-index.jsonl
 ```
 
+## Prepared next launch
+
+Prepared workflow:
+
+```text
+smart-search-19-contact-state-dp
+```
+
+Files:
+
+```text
+.github/workflows/smart-search-19-contact-state-dp.yml
+scripts/contact_state_dp_from_scaffolds.py
+scripts/build_contact_state_dp_summary.py
+scripts/check_ordered_trail_scaled.py
+docs/smart-search-19-contact-state-dp-plan.md
+```
+
+This launch implements the selected hypothesis: stronger contact-state reconstruction from search-17 scaffolds. It uses actual contact points, covered masks, and a line-loss table instead of only abstract line-set graph pathability.
+
+Initial run `28902841543` was red because of a technical checker-step shell/heredoc bug, not because the contact-state engine failed. The workflow checker step was fixed in commit `ed5c56c90bca2044d55cbab6f48c0fb8c3b4071f` (`Fix contact-state checker heredoc`). Do not use `Re-run failed jobs` on `28902841543`; start a fresh `Run workflow` on branch `main`.
+
+The engine is currently Python. That is acceptable as a hypothesis/prototype launch. If search-19 gives a strong signal, port the heavy contact-state DP/beam loop to C++ and keep Python as JSON/workflow/summary glue.
+
 ## Current next step
 
-Do not rerun `smart-search-18-order-from-cover64-stitch` unchanged. It answered a diagnostic question: the current ordering engine is too weak.
+Run a fresh manual `smart-search-19-contact-state-dp` from `main`.
 
-Next useful step should be a research/hypothesis step, not immediate relaunch. Diagnose the collapse from unordered `64/64` line-set coverage to actual ordered-chain `44/64` coverage. The likely next launch package should use a stronger contact-state reconstruction model, for example dynamic programming/beam search over `(line, contact point, covered mask)` states for the strongest search-17 scaffolds, with explicit accounting for which grid points are preserved or lost at each transition.
+Smoke-test inputs:
+
+```text
+seconds: 180
+workers: 4
+seed: 20260719
+beam_width: 2048
+state_cap: 200000
+candidate_scaffolds: 4
+max_mutations: 1
+box_min: -1
+box_max: 4
+min_piece_cover: 1
+save_min_covered: 38
+branch_limit: 6
+start_limit: 22
+candidate_lines: 3000
+```
+
+Full-run inputs:
+
+```text
+seconds: 21000
+workers: 4
+seed: 20260719
+beam_width: 8192
+state_cap: 2000000
+candidate_scaffolds: 4
+max_mutations: 2
+box_min: -1
+box_max: 4
+min_piece_cover: 1
+save_min_covered: 44
+branch_limit: 6
+start_limit: 22
+candidate_lines: 3000
+```
