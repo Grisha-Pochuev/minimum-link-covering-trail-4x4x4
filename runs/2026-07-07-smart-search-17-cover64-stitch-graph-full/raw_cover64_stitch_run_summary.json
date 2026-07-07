@@ -1,0 +1,53 @@
+{
+  "best": {
+    "_file": "collected/cover64_stitch_best_shard_12.json",
+    "attempts": 3275806,
+    "candidate_id": "mlct22-lineset-9772981a21b2a88a",
+    "compact_key_sha256": "9772981a21b2a88abe319b33467a7e29d6ce8655e1169810df7ad0c9de61e536",
+    "coordinate_scale": 2,
+    "covered_count": 64,
+    "interpretation": "Unordered 22-line cover/stitch scaffold. This is not yet a certified polygonal trail.",
+    "line_count": 22,
+    "line_set2": [[[0,0,0],[6,6,0]],[[0,0,2],[6,0,2]],[[0,0,2],[6,6,2]],[[0,0,4],[6,6,4]],[[0,0,6],[0,6,0]],[[0,2,0],[0,2,6]],[[0,2,6],[6,2,6]],[[0,4,0],[0,4,6]],[[0,4,6],[6,4,6]],[[0,6,2],[6,6,2]],[[0,6,4],[6,0,4]],[[0,6,6],[6,6,6]],[[2,0,0],[2,6,0]],[[2,0,4],[6,0,4]],[[2,0,6],[2,6,0]],[[2,6,4],[6,2,4]],[[4,0,0],[4,0,6]],[[4,2,0],[4,2,6]],[[4,6,0],[4,6,6]],[[6,0,0],[6,6,0]],[[6,0,0],[6,6,6]],[[6,0,6],[6,6,0]]],
+    "links_target": 22,
+    "max_component_size": 22,
+    "missing": [],
+    "missing_count": 0,
+    "mode": "old_wall_line_injection",
+    "parameters": {"box_max": 4, "box_min": -1, "max_lines": 22, "max_universe": 9000, "min_line_cover": 2, "seconds": 21000, "seed": 20260717, "shard": 12, "shards": 20, "worker_id": 1},
+    "schema": "cover64-stitch-line-set-v1",
+    "score": 6497650,
+    "source_artifact": "cover64-stitch-22-shard-12",
+    "source_shard": 12,
+    "source_workflow": "smart-search-17-cover64-stitch-graph",
+    "status": "line_set_seed_not_a_trail",
+    "stitch_components": 1,
+    "stitch_graph_edges": 23,
+    "stitch_path_lower_bound": 22,
+    "worker_results": [
+      {"attempts": 3275806, "covered_count": 64, "max_component_size": 22, "mode": "old_wall_line_injection", "score": 6497650, "stitch_components": 1, "stitch_path_lower_bound": 22, "worker_id": 1},
+      {"attempts": 3244690, "covered_count": 64, "max_component_size": 22, "mode": "old_wall_line_injection", "score": 6494200, "stitch_components": 1, "stitch_path_lower_bound": 21, "worker_id": 0},
+      {"attempts": 3272036, "covered_count": 64, "max_component_size": 22, "mode": "old_wall_line_injection", "score": 6494150, "stitch_components": 1, "stitch_path_lower_bound": 21, "worker_id": 2},
+      {"attempts": 3284165, "covered_count": 64, "max_component_size": 22, "mode": "old_wall_line_injection", "score": 6490950, "stitch_components": 1, "stitch_path_lower_bound": 20, "worker_id": 3}
+    ]
+  },
+  "best_covered_count": 64,
+  "best_max_component_size": 22,
+  "best_stitch_components": 1,
+  "best_stitch_path_lower_bound": 22,
+  "component_histogram": [{"components": 1, "count": 40}],
+  "cover64_count": 40,
+  "interpretation": "unordered 22-line cover/stitch scaffolds; not certified polygonal trails",
+  "mode_breakdown": {
+    "component_bridge_pressure": {"best_covered": 64, "best_stitch_path_lower_bound": 22, "count": 8, "cover64": 8, "unique_compact": 4},
+    "cover64_from_seed_rewire": {"best_covered": 64, "best_stitch_path_lower_bound": 22, "count": 8, "cover64": 8, "unique_compact": 4},
+    "cover64_stitch_connectivity_pressure": {"best_covered": 64, "best_stitch_path_lower_bound": 21, "count": 8, "cover64": 8, "unique_compact": 4},
+    "old_wall_line_injection": {"best_covered": 64, "best_stitch_path_lower_bound": 22, "count": 8, "cover64": 8, "unique_compact": 4},
+    "random_greedy_cover64_scaffold": {"best_covered": 64, "best_stitch_path_lower_bound": 22, "count": 8, "cover64": 8, "unique_compact": 4}
+  },
+  "result_count": 40,
+  "schema": "cover64-stitch-summary-v1",
+  "stitch_path_histogram": [{"count": 8, "stitch_path": 22}, {"count": 26, "stitch_path": 21}, {"count": 6, "stitch_path": 20}],
+  "top_missing_points": [],
+  "unique_compact_line_sets": 20
+}
