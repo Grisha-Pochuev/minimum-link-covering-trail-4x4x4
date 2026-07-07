@@ -1,0 +1,37 @@
+{
+  "component_bridge_pressure": {
+    "best_covered": 64,
+    "best_stitch_path_lower_bound": 22,
+    "count": 8,
+    "cover64": 8,
+    "unique_compact": 4
+  },
+  "cover64_from_seed_rewire": {
+    "best_covered": 64,
+    "best_stitch_path_lower_bound": 22,
+    "count": 8,
+    "cover64": 8,
+    "unique_compact": 4
+  },
+  "cover64_stitch_connectivity_pressure": {
+    "best_covered": 64,
+    "best_stitch_path_lower_bound": 21,
+    "count": 8,
+    "cover64": 8,
+    "unique_compact": 4
+  },
+  "old_wall_line_injection": {
+    "best_covered": 64,
+    "best_stitch_path_lower_bound": 22,
+    "count": 8,
+    "cover64": 8,
+    "unique_compact": 4
+  },
+  "random_greedy_cover64_scaffold": {
+    "best_covered": 64,
+    "best_stitch_path_lower_bound": 22,
+    "count": 8,
+    "cover64": 8,
+    "unique_compact": 4
+  }
+}
