@@ -1,8 +1,8 @@
 {
   "schema": "mlct-frontier-v1",
   "repository": "Grisha-Pochuev/minimum-link-covering-trail-4x4x4",
-  "updated_utc": "2026-07-07T21:35:00Z",
-  "status": "smart_search_18_recorded_ordered_reconstruction_diagnostic_no_frontier_improvement",
+  "updated_utc": "2026-07-07T22:45:00Z",
+  "status": "smart_search_19_launch_package_ready_after_checker_fix_no_frontier_change",
   "best_recorded_ordered_trail_candidate": {
     "candidate_id": "mlct22-3cf45a2e21fe611c",
     "coverage_percent": 93.75,
@@ -73,15 +73,42 @@
     "candidate_diagnostic_bank": "candidates/diagnostic-order-from-cover64-run28875314204.jsonl",
     "originals_index": "candidates/originals/run28875314204-order-from-cover64-index.jsonl"
   },
+  "prepared_next_launch": {
+    "workflow_name": "smart-search-19-contact-state-dp",
+    "workflow_file": ".github/workflows/smart-search-19-contact-state-dp.yml",
+    "engine_file": "scripts/contact_state_dp_from_scaffolds.py",
+    "summary_builder_file": "scripts/build_contact_state_dp_summary.py",
+    "checker_file": "scripts/check_ordered_trail_scaled.py",
+    "plan_doc": "docs/smart-search-19-contact-state-dp-plan.md",
+    "hypothesis": "stronger contact-state reconstruction from search-17 cover64 scaffolds using concrete contact points, actual covered masks, and contact-loss accounting",
+    "technical_status": "ready_after_checker_heredoc_fix",
+    "fix_commit_sha": "ed5c56c90bca2044d55cbab6f48c0fb8c3b4071f",
+    "fix_commit_message": "Fix contact-state checker heredoc",
+    "prototype_language_note": "Engine is Python for this hypothesis launch. If it shows a strong signal, port the heavy contact-state DP/beam loop to C++ and keep Python for workflow/JSON/summary glue.",
+    "smoke_inputs": {"seconds": 180, "workers": 4, "seed": 20260719, "beam_width": 2048, "state_cap": 200000, "candidate_scaffolds": 4, "max_mutations": 1, "box_min": -1, "box_max": 4, "min_piece_cover": 1, "save_min_covered": 38, "branch_limit": 6, "start_limit": 22, "candidate_lines": 3000},
+    "full_inputs": {"seconds": 21000, "workers": 4, "seed": 20260719, "beam_width": 8192, "state_cap": 2000000, "candidate_scaffolds": 4, "max_mutations": 2, "box_min": -1, "box_max": 4, "min_piece_cover": 1, "save_min_covered": 44, "branch_limit": 6, "start_limit": 22, "candidate_lines": 3000}
+  },
+  "failed_technical_launch_attempt": {
+    "run_id": 28902841543,
+    "run_url": "https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/28902841543",
+    "workflow_name": "smart-search-19-contact-state-dp",
+    "head_commit_sha": "6d67cea76d77e9447fb9dec9b645dcf4a24c8b8a",
+    "status": "failure",
+    "failure_type": "technical_workflow_checker_step_failure",
+    "failed_step": "Check ordered-chain JSON geometry",
+    "important_note": "Do not treat this as a mathematical failure or as a completed full run. Do not use Re-run failed jobs because the run used the old broken commit. Start a fresh Run workflow from main after fix commit ed5c56c90bca2044d55cbab6f48c0fb8c3b4071f."
+  },
   "candidate_preservation_rule_for_future_runs": {
     "rule_type": "separate_ordered_trail_line_set_and_diagnostic_banks",
     "ordinary_ordered_trail_min_useful_frontier": 60,
-    "note": "Keep cover64 stitch scaffolds in line-set scaffold files until converted into checked ordered polygonal-trail candidates. Ordered reconstruction attempts that are far below the frontier should go into diagnostic JSONL, not the ordinary ordered-trail bank."
+    "note": "Keep cover64 stitch scaffolds in line-set scaffold files until converted into checked ordered polygonal-trail candidates. Ordered reconstruction attempts that are far below the frontier should go into diagnostic JSONL, not the ordinary ordered-trail bank. Failed technical launch attempts should not be recorded as completed full-run results unless explicitly inspected and archived."
   },
   "current_next_step": {
-    "step_type": "hypothesis_and_diagnostic_after_failed_order_reconstruction",
-    "workflow_to_avoid_as_repeat": "smart-search-18-order-from-cover64-stitch",
-    "instruction": "Do not rerun smart-search-18 unchanged. First analyze why contact-aware ordering collapses from 64/64 line-set coverage to only 44/64 actual ordered-chain coverage, then design a stronger contact-state reconstruction model, likely DP/beam search over (line, contact point, covered mask) states for the strongest search-17 scaffolds."
+    "step_type": "manual_launch_after_technical_fix",
+    "workflow_to_run": "smart-search-19-contact-state-dp",
+    "branch": "main",
+    "do_not_do": ["do not rerun smart-search-18 unchanged", "do not use Re-run failed jobs on run 28902841543"],
+    "instruction": "Start a fresh manual Run workflow for smart-search-19-contact-state-dp from main, using smoke inputs for a technical green check or full inputs for the 5h+ run."
   },
   "standard_web_chat_cycle": ["record completed full-run results", "make a new hypothesis and do local checks if useful", "prepare the next GitHub launch for the chosen hypothesis", "wrap up and update memory"]
 }
