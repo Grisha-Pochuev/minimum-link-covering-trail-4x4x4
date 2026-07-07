@@ -145,6 +145,29 @@ The workflow:
 - aggregates with `scripts/build_contact_state_dp_summary.py`;
 - uploads shard and summary artifacts with the expected names.
 
+## Known technical launch issue and fix
+
+Initial run:
+
+```text
+https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/28902841543
+```
+
+failed red because of a technical checker-step shell/heredoc bug in `Check ordered-chain JSON geometry`. The contact-state engine step itself completed in shard jobs; this was not evidence that the mathematical hypothesis failed.
+
+Fix commit:
+
+```text
+ed5c56c90bca2044d55cbab6f48c0fb8c3b4071f
+Fix contact-state checker heredoc
+```
+
+Do not use `Re-run failed jobs` on run `28902841543`; it used the old broken commit. Start a fresh manual `Run workflow` from branch `main`.
+
+## Implementation-language note
+
+The current engine is Python. That is acceptable for the first hypothesis/prototype launch because it is not meant to be a final high-performance brute-force engine. If search-19 shows a real signal, especially clear movement above the search-18 `44/64` ceiling, port the heavy contact-state DP/beam loop to C++ and keep Python for workflow, JSON, checker, and summary plumbing.
+
 ## Success criteria
 
 Strong success:
