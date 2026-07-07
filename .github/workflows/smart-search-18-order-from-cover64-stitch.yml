@@ -1,0 +1,204 @@
+name: smart-search-18-order-from-cover64-stitch
+run-name: smart-search-18-order-from-cover64-stitch
+
+permissions:
+  contents: read
+  actions: read
+
+on:
+  workflow_dispatch:
+    inputs:
+      seconds:
+        description: "Seconds per shard. Use 180 for smoke, 21000 for full."
+        required: false
+        default: "180"
+      workers:
+        description: "Python worker processes per shard. Use 4."
+        required: false
+        default: "4"
+      seed:
+        description: "Seed. Baseline for smoke/full is 20260718."
+        required: false
+        default: "20260718"
+      min_actual_covered_to_save:
+        description: "Minimum actual ordered-chain coverage for preferred JSONL rows. Use 38 for smoke/full diagnostics."
+        required: false
+        default: "38"
+      beam_width:
+        description: "Beam width for contact-aware ordering."
+        required: false
+        default: "512"
+      branch_limit:
+        description: "Branching limit for next contact/line expansions."
+        required: false
+        default: "5"
+      start_limit:
+        description: "How many possible start lines to try per reconstruction."
+        required: false
+        default: "22"
+      max_mutations:
+        description: "Maximum scaffold line replacements in mutation modes."
+        required: false
+        default: "2"
+      box_min:
+        description: "Minimum endpoint coordinate before scaling. Use -1."
+        required: false
+        default: "-1"
+      box_max:
+        description: "Maximum endpoint coordinate before scaling. Use 4."
+        required: false
+        default: "4"
+      candidate_lines:
+        description: "Maximum generated replacement lines kept."
+        required: false
+        default: "3000"
+      min_line_cover:
+        description: "Minimum grid points covered by replacement line candidates."
+        required: false
+        default: "2"
+
+jobs:
+  check-known-23:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python scripts/check_trail.py data/ripa_23_trail.json --expected-links 23 --require-full
+
+  check-search17-input-scaffolds:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Check best scaffold
+        run: python scripts/check_cover64_line_set.py runs/2026-07-07-smart-search-17-cover64-stitch-graph-full/best_line_set.json --expect-covered 64 --max-lines 22 --min-stitch-path 22
+      - name: Check strongest scaffold additions
+        run: |
+          python - <<'PY'
+          import json
+          import subprocess
+          import tempfile
+          from pathlib import Path
+
+          p = Path("candidates/line-set-additions-run28825060197-cover64-stitch.jsonl")
+          rows = [json.loads(x) for x in p.read_text().splitlines() if x.strip()]
+          if len(rows) < 4:
+              raise SystemExit(f"expected at least 4 strongest scaffolds, got {len(rows)}")
+          with tempfile.TemporaryDirectory() as td:
+              for i, row in enumerate(rows):
+                  q = Path(td) / f"scaffold_{i}.json"
+                  q.write_text(json.dumps(row))
+                  subprocess.check_call([
+                      "python",
+                      "scripts/check_cover64_line_set.py",
+                      str(q),
+                      "--expect-covered",
+                      "64",
+                      "--max-lines",
+                      "22",
+                      "--min-stitch-path",
+                      "22",
+                  ])
+          PY
+
+  order-from-cover64-stitch:
+    runs-on: ubuntu-latest
+    needs: [check-known-23, check-search17-input-scaffolds]
+    timeout-minutes: 359
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run contact-aware ordering shard
+        run: |
+          mkdir -p results/order_from_cover64
+          python scripts/order_from_cover64_stitch.py \
+            --input-json runs/2026-07-07-smart-search-17-cover64-stitch-graph-full/best_line_set.json \
+            --input-jsonl candidates/line-set-additions-run28825060197-cover64-stitch.jsonl \
+            --seconds "${{ github.event.inputs.seconds || '180' }}" \
+            --workers "${{ github.event.inputs.workers || '4' }}" \
+            --seed "${{ github.event.inputs.seed || '20260718' }}" \
+            --shard "${{ matrix.shard }}" \
+            --shards 20 \
+            --beam-width "${{ github.event.inputs.beam_width || '512' }}" \
+            --branch-limit "${{ github.event.inputs.branch_limit || '5' }}" \
+            --start-limit "${{ github.event.inputs.start_limit || '22' }}" \
+            --max-mutations "${{ github.event.inputs.max_mutations || '2' }}" \
+            --box-min "${{ github.event.inputs.box_min || '-1' }}" \
+            --box-max "${{ github.event.inputs.box_max || '4' }}" \
+            --candidate-lines "${{ github.event.inputs.candidate_lines || '3000' }}" \
+            --min-line-cover "${{ github.event.inputs.min_line_cover || '2' }}" \
+            --out "results/order_from_cover64/order_from_cover64_best_shard_${{ matrix.shard }}.json"
+
+      - name: Check ordered-chain JSON geometry
+        if: always()
+        run: |
+          if [ -f "results/order_from_cover64/order_from_cover64_best_shard_${{ matrix.shard }}.json" ]; then
+            python scripts/check_ordered_trail_scaled.py \
+              "results/order_from_cover64/order_from_cover64_best_shard_${{ matrix.shard }}.json" \
+              --min-covered 1
+          fi
+
+      - name: Preserve preferred ordered candidate row
+        if: always()
+        env:
+          SHARD: ${{ matrix.shard }}
+          MIN_COVERED: ${{ github.event.inputs.min_actual_covered_to_save || '38' }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+
+          shard = os.environ["SHARD"]
+          min_covered = int(os.environ.get("MIN_COVERED") or 38)
+          p = Path(f"results/order_from_cover64/order_from_cover64_best_shard_{shard}.json")
+          if p.exists():
+              d = json.loads(p.read_text())
+              d.setdefault("source_shard", int(shard))
+              d.setdefault("source_artifact", f"order-cover64-stitch-22-shard-{shard}")
+              d.setdefault("source_workflow", "smart-search-18-order-from-cover64-stitch")
+              p.write_text(json.dumps(d, indent=2, sort_keys=True))
+              if int(d.get("covered_count", 0)) >= min_covered or int(d.get("links", 0)) >= 22:
+                  out = Path(f"results/order_from_cover64/preferred_order_from_cover64_shard_{shard}.jsonl")
+                  out.write_text(json.dumps(d, sort_keys=True) + "\n")
+          PY
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: order-cover64-stitch-22-shard-${{ matrix.shard }}
+          path: results/order_from_cover64/
+          if-no-files-found: warn
+
+  aggregate-order-from-cover64-stitch:
+    runs-on: ubuntu-latest
+    needs: order-from-cover64-stitch
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: order-cover64-stitch-22-shard-*
+          path: collected
+          merge-multiple: true
+      - run: python scripts/build_order_from_cover64_stitch_summary.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: order-cover64-stitch-run-summary
+          path: |
+            collected/order_from_cover64_stitch_run_summary.json
+            collected/order_from_cover64_stitch_run_summary.md
+            collected/order-from-cover64-candidates.jsonl
+          if-no-files-found: warn
