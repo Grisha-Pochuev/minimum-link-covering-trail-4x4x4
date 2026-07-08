@@ -16,26 +16,44 @@ The project uses four web-chat steps:
 Important distinction:
 
 - Step 2 is the research/fantasy/checking step.
-- Step 3 is not a new research step. Step 3 must not re-test, re-argue, or replace the chosen hypothesis unless the requested launch is technically impossible. Step 3 is where the assistant implements the chosen hypothesis as runnable launch files. That may include writing a new engine/generator/checker/summary builder if the chosen hypothesis requires it.
+- Step 3 is not a new research step. Step 3 must not re-test, re-argue, or replace the chosen hypothesis unless the requested launch is technically impossible. Step 3 implements the chosen hypothesis as runnable launch files. Writing a new engine/generator/checker/summary builder is allowed if the chosen hypothesis requires it.
 - Step 4 is where retrospective memory cleanup belongs.
+
+## Naming rule for serious searches
+
+Serious numbered search workflows and run folders should keep this family format:
+
+```text
+smart-search-N-short-description
+```
+
+Examples already in the repository:
+
+```text
+smart-search-11-d2-bridge-repair
+smart-search-12-skeleton-diversity
+smart-search-19-contact-state-dp
+```
+
+The suffix should be short, ideally one or two descriptive words, but do **not** drop the `smart-search-N` prefix. The temporary name `fl-bridge-20` was a mistake caused by overinterpreting "make the name shorter". The corrected name is:
+
+```text
+smart-search-20-line-bridge
+```
 
 ## What the recent web-chat process showed
 
-The slow part was not only the math search itself. The slow part was repeatedly reconstructing project state from scattered files and occasionally confusing a planned workflow with a workflow that actually exists in GitHub.
-
-Best optimization: in a new chat, read `START_HERE.md` once at the very beginning, during prompt 1. After that, do not reopen it in prompts 2, 3, and 4 unless the user explicitly says this is a new chat, memory was lost, or the earlier context is clearly missing.
-
-Do not treat "all runs" as a request to blindly scan everything. First use the saved frontier and run summaries as the index. Then inspect only the exact run folders, workflow, bank additions, originals, and artifacts that are relevant to the current frontier.
+Do not treat "all runs" as a request to blindly scan everything. First use `START_HERE.md`, `frontier/latest.*`, and run summaries as the index. Then inspect only the exact run folders, workflow, bank additions, originals, and artifacts that are relevant to the current frontier.
 
 Important correction from 2026-07-07: `smart-search-17-cover64-stitch-graph` outputs are line-set scaffolds, not trail proofs. Do not merge them into the normal ordered-trail bank until they are converted into checked polygonal-trail candidates.
 
-Result from 2026-07-07 run `28825060197`: full search-17 found `64/64` unordered 22-line scaffolds and 4 compact representatives with stitch path lower bound `22/22`. This changed the bottleneck from finding rich scaffolds to ordered reconstruction.
+Result from run `28825060197`: full search-17 found `64/64` unordered 22-line scaffolds and 4 compact representatives with stitch path lower bound `22/22`. This changed the bottleneck from finding rich scaffolds to ordered reconstruction.
 
-Result from 2026-07-07 run `28875314204`: full search-18 tried contact-aware ordered reconstruction from search-17 scaffolds. It completed successfully, but the best checked ordered-chain reconstruction was only `44/64`, far below the standing ordered-trail frontier `60/64`. This means the current reconstruction engine is too weak; the next step should use a stronger contact-state reconstruction model, not rerun search-18 unchanged.
+Result from run `28875314204`: search-18 tried ordered reconstruction from search-17 scaffolds. It completed successfully, but the best checked ordered-chain reconstruction was only `44/64`, far below the standing ordered-trail frontier `60/64`.
 
-Result from 2026-07-08 run `28903545221`: full-duration search-19 completed successfully, but actual saved best-row parameters were smoke/default DP width (`beam_width=2048`, `state_cap=200000`, `max_mutations=1`). It improved the diagnostic ordered reconstruction only `44/64 -> 46/64`. Dominant failure: rich-line clipping, not the old four-hole `60/64` wall.
+Result from run `28903545221`: full-duration search-19 completed successfully, but actual saved best-row parameters were smoke/default DP width (`beam_width=2048`, `state_cap=200000`, `max_mutations=1`). It improved the diagnostic ordered reconstruction only `44/64 -> 46/64`. Dominant failure: rich-line clipping, not the old four-hole `60/64` wall.
 
-Launch package from 2026-07-08 chat: `fl-bridge-20` now exists on `main` as a real workflow. It implements the already-chosen full-line-preserving bridge hypothesis: preserve rich full scaffold lines and spend explicit bridge links between endpoint components instead of clipping rich lines at interior contacts. Merge commit: `f1b6c684aa5651a983827252177cac171dbd5b3a`.
+Prepared launch package after the 2026-07-08 chat: `smart-search-20-line-bridge`. It implements the full-line-preserving bridge hypothesis: preserve rich full scaffold lines and spend explicit bridge links between endpoint components instead of clipping rich lines at interior contacts.
 
 ## Fast checklist before preparing or analyzing a launch
 
@@ -44,15 +62,16 @@ Use this checklist only as a technical guardrail. Do not turn it into a new rese
 ```text
 1. Use the already-opened context from prompt 1 and prompt 2.
 2. Confirm the chosen hypothesis and workflow name from prompt 2 or frontier/latest.*.
-3. Create/update the launch implementation: workflow, proposed backup if needed, new or existing engine/generator, checker, summary builder, seed/input files, plan doc.
-4. Writing a new engine/script is allowed if it directly implements the already chosen hypothesis. Do not use that as permission to choose a different hypothesis.
-5. Update frontier/latest.* only if it is needed to store the exact prepared launch inputs/current workflow pointer.
-6. Do not update START_HERE.md during prompt 3 unless the user explicitly asks or the next chat would otherwise lose the launch package. Normal memory cleanup belongs in prompt 4.
-7. Verify real workflow YAML begins with name: and is workflow_dispatch-only.
-8. Verify no push trigger.
-9. Verify artifact names, seed paths, engine/checker/summary paths, shard count, and exact inputs.
-10. If asked to run automatically, use a real workflow_dispatch action only if the connector/tool exposes it. If no such tool exists, say that honestly and give the exact manual Run workflow inputs.
-11. Stop. Give smoke-test and full-run inputs. Do not run extra hypothesis checks unless the workflow cannot be made technically runnable.
+3. Confirm the workflow name follows smart-search-N-short-description.
+4. Create/update the launch implementation: workflow, proposed backup if needed, new or existing engine/generator, checker, summary builder, seed/input files, plan doc.
+5. Writing a new engine/script is allowed if it directly implements the already chosen hypothesis. Do not use that as permission to choose a different hypothesis.
+6. Update frontier/latest.* only if it is needed to store the exact prepared launch inputs/current workflow pointer.
+7. Do not update START_HERE.md during prompt 3 unless the user explicitly asks or the next chat would otherwise lose the launch package. Normal memory cleanup belongs in prompt 4.
+8. Verify real workflow YAML begins with name: and is workflow_dispatch-only.
+9. Verify no push trigger.
+10. Verify artifact names, seed paths, engine/checker/summary paths, shard count, and exact inputs.
+11. If asked to run automatically, use a real workflow_dispatch action only if the connector/tool exposes it. If no such tool exists, say that honestly and give the exact manual Run workflow inputs.
+12. Stop. Give smoke-test and full-run inputs. Do not run extra hypothesis checks unless the workflow cannot be made technically runnable.
 ```
 
 If a smoke-test fails red, first distinguish:
@@ -111,7 +130,7 @@ Use after prompt 2, when the hypothesis is already chosen. This prompt is intent
 
 START_HERE.md уже был открыт в этом чате, не открывай его заново. Не придумывай новую гипотезу и не запускай дополнительные исследовательские проверки. Сейчас задача техническая: реализовать выбранную гипотезу в файлах запуска, чтобы я мог нажать Run.
 
-Создай или обнови технические файлы запуска. Если для выбранной гипотезы нужен новый движок/скрипт, напиши новый движок/скрипт — это нормально. Но не меняй саму исследовательскую идею. Название для прогона делай коротким.
+Создай или обнови технические файлы запуска. Если для выбранной гипотезы нужен новый движок/скрипт, напиши новый движок/скрипт — это нормально. Но не меняй саму исследовательскую идею. Название прогона делай в формате smart-search-N-короткая-характеристика.
 
 Обычно нужны:
 - workflow в .github/workflows/ или точный proposed YAML в docs/;
@@ -164,7 +183,7 @@ START_HERE.md уже был открыт в начале чата, не откр
 4. какие промпты лучше использовать дальше.
 ```
 
-## Current state after `fl-bridge-20` launch preparation
+## Current state after `smart-search-20-line-bridge` launch preparation
 
 Current frontier:
 
@@ -180,16 +199,16 @@ diagnostic ordered-chain rows from search-19: 3
 Prepared workflow:
 
 ```text
-fl-bridge-20
+smart-search-20-line-bridge
 ```
 
 Prepared files:
 
 ```text
-.github/workflows/fl-bridge-20.yml
+.github/workflows/smart-search-20-line-bridge.yml
 scripts/full_line_bridge_search.py
 scripts/build_full_line_bridge_summary.py
-docs/fl-bridge-20-launch.md
+docs/smart-search-20-line-bridge-launch.md
 ```
 
 Smoke-test inputs:
@@ -238,7 +257,7 @@ save_min_covered=54
 
 Next prompt depends on what the user does:
 
-- if `fl-bridge-20` has not been run, launch smoke-test from Actions manually;
+- if `smart-search-20-line-bridge` has not been run, launch smoke-test from Actions manually;
 - if smoke-test is green and the user launches the long run, do not waste a separate step recording smoke unless asked;
 - if the full run completes, use Prompt 1 to record the completed full run;
 - if smoke-test is red, inspect jobs/logs as a technical failure first.
