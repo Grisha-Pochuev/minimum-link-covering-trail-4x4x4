@@ -1,6 +1,6 @@
 # START HERE — compact agent memory
 
-Last updated: 2026-07-07
+Last updated: 2026-07-08
 
 This file is the first thing to read in a new ChatGPT web chat. It is the boot memory, not the full diary. Read it once at the beginning of the working chat, normally in prompt 1. Do not reopen it in prompts 2-4 unless the user says this is a new chat, memory was lost, or critical context is missing. Detailed history belongs in `frontier/latest.*`, `runs/*/summary.md`, plans, runbooks, and candidate banks.
 
@@ -38,16 +38,16 @@ After this boot read, avoid reopening `START_HERE.md` during prompts 2-4 in the 
 
 ## 3. Current recorded frontier
 
-Latest recorded completed full run:
+Latest recorded completed run:
 
-- run id: `28875314204`
-- run URL: https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/28875314204
-- workflow: `smart-search-18-order-from-cover64-stitch`
+- run id: `28903545221`
+- run URL: https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/28903545221
+- workflow: `smart-search-19-contact-state-dp`
 - status: `success`
-- seconds: `21000` per shard
-- threads/workers: `4`
-- shards/jobs: `20`
-- result type: checked ordered-chain reconstruction diagnostics from search-17 cover64 scaffolds; not an ordered-trail improvement
+- head commit: `ed5c56c90bca2044d55cbab6f48c0fb8c3b4071f`
+- result type: contact-state DP ordered-chain reconstruction diagnostic from search-17 cover64 scaffolds; not an ordered-trail frontier improvement
+- actual parameters from best row: `seconds=21000`, `workers=4`, `seed=20260719`, `beam_width=2048`, `state_cap=200000`, `candidate_scaffolds=4`, `max_mutations=1`, `branch_limit=6`, `start_limit=22`, `candidate_lines=3000`
+- caution: this used full-duration seconds but smoke/default DP width, not the intended full-width profile `beam_width=8192`, `state_cap=2000000`, `max_mutations=2`
 
 Best recorded GitHub ordered-trail candidate remains:
 
@@ -90,9 +90,24 @@ Key lesson from run `28875314204`:
 - diagnostic bank saved: `candidates/diagnostic-order-from-cover64-run28875314204.jsonl`;
 - originals index saved: `candidates/originals/run28875314204-order-from-cover64-index.jsonl`.
 
-Counting caution: search-17 artifacts are `cover64-stitch-line-set-v1` scaffolds. They must not be merged into the normal ordered-trail candidate bank until a separate reconstruction/checker turns them into actual consecutive 22-link polygonal trails. Search-18 outputs are checked ordered-chain diagnostics, but they are far below the `60/64` ordered-trail frontier and also must not be treated as candidate-bank improvements.
+Key lesson from run `28903545221`:
 
-Do not rerun `smart-search-17-cover64-stitch-graph` with the same seed or `smart-search-18-order-from-cover64-stitch` unchanged as the next serious step. Search-17 found the scaffold breakthrough; search-18 showed the current reconstruction model is too weak. The bottleneck moved to stronger contact-state reconstruction.
+- search-19 fixed the red technical launch and completed successfully;
+- all 20 contact-state shard jobs and the aggregate job succeeded;
+- aggregate rows: `40`;
+- unique ordered candidates in summary: `3`;
+- best diagnostic ordered-chain reconstruction improved search-18 only slightly, `44/64 -> 46/64`;
+- best candidate: `mlct22-contactdp-2714c28ba62b5c26`, mode `official60_aware`, shard `14`, artifact `contact-state-dp-22-shard-14`;
+- best links: `22`, covered_count: `46/64`, missing_count: `18`;
+- ordinary ordered-trail additions saved: `0`;
+- line-set scaffold additions saved: `0`;
+- diagnostic rows saved: `3`;
+- originals index rows saved: `3`;
+- dominant failure is not the old four-hole `60/64` defect family. It is rich-line clipping during contact-state reconstruction: the best candidate preserved only `8` rich lines and clipped `12`, losing `17` grid points over pieces.
+
+Counting caution: search-17 artifacts are `cover64-stitch-line-set-v1` scaffolds. They must not be merged into the normal ordered-trail candidate bank until a separate reconstruction/checker turns them into actual consecutive 22-link polygonal trails. Search-18 and search-19 outputs are checked ordered-chain diagnostics, but they are far below the `60/64` ordered-trail frontier and must stay in diagnostic banks, not ordinary candidate additions.
+
+Do not rerun `smart-search-17-cover64-stitch-graph`, `smart-search-18-order-from-cover64-stitch`, or `smart-search-19-contact-state-dp` unchanged as the next serious step. Search-17 found the scaffold breakthrough; search-18 showed abstract stitchability is too weak; search-19 showed contact-state ordering still clips too many rich lines.
 
 ## 4. Standard four-prompt workflow
 
@@ -105,89 +120,31 @@ Use the user's four-step rhythm:
 
 Smoke-test is only a technical green-light before the long run. If the user sees a green check and launches the 5h+ full run, the next result-taking chat records the full run, not the smoke-test. Inspect smoke separately only if it failed, looked suspicious, or the user explicitly asks.
 
-## 5. Current prepared launch
+## 5. Latest saved run archive
 
-A launch package now exists for the chosen post-search-18 hypothesis:
+Search-19 result archive:
 
 ```text
-smart-search-19-contact-state-dp
+runs/2026-07-08-smart-search-19-contact-state-dp-full/summary.md
+runs/2026-07-08-smart-search-19-contact-state-dp-full/best_contact_state_candidate.json
+runs/2026-07-08-smart-search-19-contact-state-dp-full/mode_breakdown.json
+runs/2026-07-08-smart-search-19-contact-state-dp-full/contact_state_dp_run_summary_compact.json
+candidates/diagnostic-contact-state-dp-run28903545221.jsonl
+candidates/originals/run28903545221-contact-state-dp-index.jsonl
 ```
-
-Files:
-
-- workflow: `.github/workflows/smart-search-19-contact-state-dp.yml`
-- engine: `scripts/contact_state_dp_from_scaffolds.py`
-- summary builder: `scripts/build_contact_state_dp_summary.py`
-- checker: `scripts/check_ordered_trail_scaled.py`
-- plan: `docs/smart-search-19-contact-state-dp-plan.md`
-
-Hypothesis implemented: stronger contact-state reconstruction from search-17 scaffolds. It tracks concrete contact points, actual covered grid masks, and per-line contact loss (`full scaffold line mask -> chosen ordered piece mask -> lost grid points`) instead of relying only on the abstract stitch graph.
-
-The engine is currently Python. That is acceptable for this launch as a hypothesis/prototype run. If search-19 shows a real signal, the heavy contact-state DP/beam loop should be ported to C++ while Python remains the workflow/JSON/summary wrapper.
 
 ## 6. Current next step
 
-There was an initial red run:
+The next chat should normally be prompt 2: choose a new non-repeating hypothesis.
 
-- run id: `28902841543`
-- workflow: `smart-search-19-contact-state-dp`
-- status: red because the checker step had a technical heredoc/shell bug, not because the engine failed
-- observation: shard engine steps ran, but `Check ordered-chain JSON geometry` failed
-- fix commit: `ed5c56c90bca2044d55cbab6f48c0fb8c3b4071f` (`Fix contact-state checker heredoc`)
-
-Do **not** use `Re-run failed jobs` on run `28902841543`, because that run used the older broken commit. The next action is a fresh manual `Run workflow` on branch `main` for `smart-search-19-contact-state-dp`.
-
-Smoke-test inputs:
+Best next direction from the saved evidence:
 
 ```text
-seconds: 180
-workers: 4
-seed: 20260719
-beam_width: 2048
-state_cap: 200000
-candidate_scaffolds: 4
-max_mutations: 1
-box_min: -1
-box_max: 4
-min_piece_cover: 1
-save_min_covered: 38
-branch_limit: 6
-start_limit: 22
-candidate_lines: 3000
+smart-search-20-full-line-preserving-contact-bridge
 ```
 
-Full-run inputs:
+Goal: attack the exact failure exposed by search-19. Preserve complete 3/4-point rich line pieces as much as possible and pay explicit bridge/contact costs between whole pieces, instead of letting contact-state reconstruction choose short contact pieces that destroy coverage.
 
-```text
-seconds: 21000
-workers: 4
-seed: 20260719
-beam_width: 8192
-state_cap: 2000000
-candidate_scaffolds: 4
-max_mutations: 2
-box_min: -1
-box_max: 4
-min_piece_cover: 1
-save_min_covered: 44
-branch_limit: 6
-start_limit: 22
-candidate_lines: 3000
-```
+One technical caveat before abandoning search-19 entirely: run `28903545221` used full seconds but smoke/default DP-width parameters. If the user wants to close that loose end, run the intended true full-width profile once (`beam_width=8192`, `state_cap=2000000`, `max_mutations=2`). But as a research direction, do not rerun search-19 unchanged.
 
-Expected useful result means either a checked ordered 22-link trail candidate improving the `60/64` frontier, or a precise obstruction explaining why the search-17 `22/22` line-set stitch graph does not translate into a high-coverage polygonal chain.
-
-## 7. Wrap-up caution from latest chat
-
-What worked well:
-
-- The chat followed the four-step rhythm: record run, choose hypothesis, prepare launch, then clean up memory.
-- The search-19 launch package was created with real workflow, engine, checker, summary builder, plan doc, and exact inputs.
-- The red run was diagnosed correctly as a technical workflow/checker failure, not as a mathematical failure.
-
-Potential confusion for the next chat:
-
-- `64/64` in search-17 still means unordered scaffold coverage, not solved 22-link trail.
-- `44/64` in search-18 is a real ordered-chain reconstruction diagnostic, but it is not useful as a frontier candidate.
-- Run `28902841543` should not be recorded as a completed full result unless the user explicitly asks to inspect its artifacts; it was a failed technical launch attempt.
-- The next step is not “run search-18 longer” and not “rerun failed jobs”; it is a fresh `smart-search-19-contact-state-dp` run from fixed `main`.
+Expected useful next result means either a checked ordered 22-link trail candidate improving the `60/64` frontier, or a sharper obstruction explaining which rich full-line pieces cannot be preserved together in a continuous 22-link trail.
