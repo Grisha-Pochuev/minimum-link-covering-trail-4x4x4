@@ -1,8 +1,8 @@
 {
   "schema": "mlct-frontier-v1",
   "repository": "Grisha-Pochuev/minimum-link-covering-trail-4x4x4",
-  "updated_utc": "2026-07-08T14:45:00Z",
-  "status": "fl_bridge_20_launch_prepared_no_ordered_frontier_change",
+  "updated_utc": "2026-07-08T20:30:00Z",
+  "status": "smart_search_20_line_bridge_launch_prepared_no_ordered_frontier_change",
   "best_recorded_ordered_trail_candidate": {
     "candidate_id": "mlct22-3cf45a2e21fe611c",
     "coverage_percent": 93.75,
@@ -123,18 +123,18 @@
     "originals_index": "candidates/originals/run28903545221-contact-state-dp-index.jsonl"
   },
   "prepared_launch_package": {
-    "workflow_name": "fl-bridge-20",
+    "workflow_name": "smart-search-20-line-bridge",
     "hypothesis": "preserve rich full scaffold lines and spend explicit bridge links between endpoint components instead of clipping rich lines at interior contacts",
-    "merge_commit_sha": "f1b6c684aa5651a983827252177cac171dbd5b3a",
-    "workflow_file": ".github/workflows/fl-bridge-20.yml",
+    "workflow_file": ".github/workflows/smart-search-20-line-bridge.yml",
     "engine_file": "scripts/full_line_bridge_search.py",
     "summary_builder_file": "scripts/build_full_line_bridge_summary.py",
-    "launch_doc": "docs/fl-bridge-20-launch.md",
+    "launch_doc": "docs/smart-search-20-line-bridge-launch.md",
     "workflow_dispatch_only": true,
     "shards": 20,
     "max_parallel": 20,
-    "per_shard_artifact_pattern": "fl-bridge-22-shard-*",
-    "summary_artifact": "fl-bridge-run-summary",
+    "per_shard_artifact_pattern": "smart-search-20-line-bridge-22-shard-*",
+    "summary_artifact": "smart-search-20-line-bridge-run-summary",
+    "naming_correction": "Temporary name fl-bridge-20 was removed. Serious numbered launches must use smart-search-N-short-description.",
     "smoke_inputs": {
       "seconds": 180,
       "workers": 4,
@@ -180,11 +180,11 @@
     "note": "Keep cover64 stitch scaffolds in line-set scaffold files until converted into checked ordered polygonal-trail candidates. Ordered reconstruction attempts that are far below the frontier go into diagnostic JSONL, not the ordinary ordered-trail bank."
   },
   "current_next_step": {
-    "step_type": "run_or_record_prepared_fl_bridge_20",
+    "step_type": "run_or_record_prepared_smart_search_20_line_bridge",
     "branch": "main",
-    "workflow_name": "fl-bridge-20",
-    "instruction": "Do not choose a new hypothesis yet. If fl-bridge-20 has not been run, launch smoke-test manually; if smoke is green, launch the full run; if full run is complete, use prompt 1 to record the completed full run; if smoke is red, debug it as technical failure first.",
-    "do_not_do": ["do not rerun smart-search-17 unchanged", "do not rerun smart-search-18 unchanged", "do not rerun smart-search-19 unchanged", "do not run prompt 2 again before fl-bridge-20 is tried"]
+    "workflow_name": "smart-search-20-line-bridge",
+    "instruction": "Do not choose a new hypothesis yet. If smart-search-20-line-bridge has not been run, launch smoke-test manually; if smoke is green, launch the full run; if full run is complete, use prompt 1 to record the completed full run; if smoke is red, debug it as technical failure first.",
+    "do_not_do": ["do not rerun smart-search-17 unchanged", "do not rerun smart-search-18 unchanged", "do not rerun smart-search-19 unchanged", "do not run prompt 2 again before smart-search-20-line-bridge is tried", "do not use the removed fl-bridge-20 name"]
   },
   "standard_web_chat_cycle": ["record completed full-run results", "make a new hypothesis and do local checks if useful", "prepare the next GitHub launch for the chosen hypothesis", "wrap up and update memory"]
 }
