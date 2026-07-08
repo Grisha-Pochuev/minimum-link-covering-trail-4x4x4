@@ -1,0 +1,91 @@
+{
+  "schema": "contact-state-dp-run-summary-compact-v1",
+  "repository": "Grisha-Pochuev/minimum-link-covering-trail-4x4x4",
+  "run_id": 28903545221,
+  "run_url": "https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/28903545221",
+  "workflow_name": "smart-search-19-contact-state-dp",
+  "head_commit_sha": "ed5c56c90bca2044d55cbab6f48c0fb8c3b4071f",
+  "status": "success",
+  "result_type": "contact_state_dp_ordered_chain_reconstruction_diagnostic_below_frontier_not_proof",
+  "parameters": {
+    "seconds": 21000,
+    "workers": 4,
+    "seed": 20260719,
+    "shards": 20,
+    "beam_width": 2048,
+    "state_cap": 200000,
+    "candidate_scaffolds": 4,
+    "max_mutations": 1,
+    "box_min": -1,
+    "box_max": 4,
+    "min_piece_cover": 1,
+    "branch_limit": 6,
+    "start_limit": 22,
+    "candidate_lines": 3000
+  },
+  "parameter_caution": "The run used full-duration seconds but smoke/default DP width: beam_width=2048, state_cap=200000, max_mutations=1; not the intended full-width 8192/2000000/2 profile.",
+  "artifacts": {
+    "summary_artifact": "contact-state-dp-run-summary",
+    "shard_artifacts": 20,
+    "shard_pattern": "contact-state-dp-22-shard-*"
+  },
+  "best_result": {
+    "candidate_id": "mlct22-contactdp-2714c28ba62b5c26",
+    "source_artifact": "contact-state-dp-22-shard-14",
+    "source_shard": 14,
+    "source_scaffold_id": "mlct22-lineset-03bc99e72246b78c",
+    "mode": "official60_aware",
+    "links": 22,
+    "covered_count": 46,
+    "grid_points": 64,
+    "coverage_percent": 71.875,
+    "missing_count": 18,
+    "missing": [[0,0,3],[0,3,0],[0,3,1],[1,0,0],[1,0,1],[1,3,3],[2,0,0],[2,0,1],[2,0,2],[2,3,1],[2,3,2],[2,3,3],[3,0,1],[3,0,2],[3,2,3],[3,3,0],[3,3,1],[3,3,2]],
+    "weak_links": 0,
+    "contact_state_metrics": {
+      "total_lost_points_over_pieces": 17,
+      "clipped_rich_lines": 12,
+      "preserved_rich_lines": 8,
+      "official60_missing_hits": 3,
+      "integer_contact_points_seen": 24
+    }
+  },
+  "run_statistics": {
+    "raw_summary_result_rows": 40,
+    "unique_ordered_candidates": 3,
+    "compact_diagnostic_rows_saved": 3,
+    "ordinary_ordered_trail_candidates_added": 0,
+    "scaffold_additions_saved": 0,
+    "best_covered_count": 46,
+    "best_missing_count": 18,
+    "above_44": 2,
+    "above_50": 0,
+    "above_56": 0,
+    "above_60": 0,
+    "at_least_61": 0,
+    "full_64": 0
+  },
+  "mode_breakdown": {
+    "conservative_control": {"rows": 2, "unique": 1, "best_links": 22, "best_covered": 42, "best_lost": 23},
+    "controlled_bridge_replacement": {"rows": 4, "unique": 1, "best_links": 22, "best_covered": 46, "best_lost": 18},
+    "diagnostic_replay": {"rows": 2, "unique": 1, "best_links": 22, "best_covered": 42, "best_lost": 23},
+    "exact_top4_dp": {"rows": 8, "unique": 1, "best_links": 22, "best_covered": 42, "best_lost": 23},
+    "loss_minimizing": {"rows": 8, "unique": 2, "best_links": 22, "best_covered": 46, "best_lost": 17},
+    "official60_aware": {"rows": 8, "unique": 2, "best_links": 22, "best_covered": 46, "best_lost": 17},
+    "wide_beam_contact_state": {"rows": 8, "unique": 1, "best_links": 22, "best_covered": 46, "best_lost": 17}
+  },
+  "comparison_with_previous_frontier": {
+    "ordered_trail_numeric_frontier_changed": false,
+    "previous_best_ordered_trail_covered_count": 60,
+    "new_best_ordered_trail_covered_count": 60,
+    "search18_best_ordered_reconstruction_covered_count": 44,
+    "search19_best_ordered_reconstruction_covered_count": 46,
+    "scaffold_frontier_changed": false,
+    "important_observation": "Contact-state reconstruction improved diagnostics slightly over search-18 but still clips many rich lines and collapses the cover64 scaffold to 46/64."
+  },
+  "next_non_repeating_step": {
+    "do_not_do": "Do not rerun smart-search-19-contact-state-dp unchanged.",
+    "suggested_workflow_name": "smart-search-20-full-line-preserving-contact-bridge",
+    "reason": "Preserve complete 3/4-point rich pieces first and pay bridge/contact costs explicitly instead of clipping rich lines into short contact pieces."
+  }
+}
