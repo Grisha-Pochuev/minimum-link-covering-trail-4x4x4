@@ -1,6 +1,6 @@
 # Current search frontier
 
-Status: launch package `fl-bridge-20` is prepared on `main`. The normal ordered-trail frontier remains `60/64`; the scaffold frontier from search-17 remains unordered `64/64` with stitch path lower bound `22/22`. Search-19 improved the ordered-reconstruction diagnostic ceiling from `44/64` to `46/64`, but did not improve the actual ordered-trail frontier.
+Status: launch package `smart-search-20-line-bridge` is prepared on `main`. The normal ordered-trail frontier remains `60/64`; the scaffold frontier from search-17 remains unordered `64/64` with stitch path lower bound `22/22`. Search-19 improved the ordered-reconstruction diagnostic ceiling from `44/64` to `46/64`, but did not improve the actual ordered-trail frontier.
 
 Latest recorded completed full run:
 
@@ -103,33 +103,29 @@ candidates/originals/run28903545221-contact-state-dp-index.jsonl
 A new launch package is now prepared and merged on `main`:
 
 ```text
-fl-bridge-20
+smart-search-20-line-bridge
 ```
 
-Merge commit:
-
-```text
-f1b6c684aa5651a983827252177cac171dbd5b3a
-```
+This corrects the temporary bad name `fl-bridge-20`. Serious numbered searches should keep the `smart-search-N-short-description` pattern.
 
 Prepared files:
 
 ```text
-.github/workflows/fl-bridge-20.yml
+.github/workflows/smart-search-20-line-bridge.yml
 scripts/full_line_bridge_search.py
 scripts/build_full_line_bridge_summary.py
-docs/fl-bridge-20-launch.md
+docs/smart-search-20-line-bridge-launch.md
 ```
 
 Hypothesis: preserve rich full scaffold lines and spend explicit bridge links between endpoint components instead of clipping rich lines at interior contacts.
 
 Workflow facts:
 
-- starts with `name: fl-bridge-20`;
+- starts with `name: smart-search-20-line-bridge`;
 - `workflow_dispatch` only;
 - 20 shard matrix, `max-parallel: 20`;
-- per-shard artifact: `fl-bridge-22-shard-<shard>`;
-- aggregate artifact: `fl-bridge-run-summary`.
+- per-shard artifact: `smart-search-20-line-bridge-22-shard-<shard>`;
+- aggregate artifact: `smart-search-20-line-bridge-run-summary`.
 
 Smoke-test inputs:
 
@@ -187,11 +183,11 @@ Search-17 artifacts are `cover64-stitch-line-set-v1` scaffolds, not solved trail
 
 ## Current next step
 
-Do not choose another new hypothesis yet. The chosen hypothesis has already been implemented as `fl-bridge-20`.
+Do not choose another new hypothesis yet. The chosen hypothesis has already been implemented as `smart-search-20-line-bridge`.
 
 Next action:
 
-1. If `fl-bridge-20` has not been run yet, launch the smoke-test manually from GitHub Actions with the smoke inputs above.
+1. If `smart-search-20-line-bridge` has not been run yet, launch the smoke-test manually from GitHub Actions with the smoke inputs above.
 2. If smoke-test is green, launch the full run with the full inputs above.
 3. If the full run is complete, use prompt 1 to record the completed full run.
 4. If smoke-test is red, inspect it as a technical failure first.
