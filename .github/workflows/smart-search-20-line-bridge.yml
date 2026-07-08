@@ -1,5 +1,5 @@
 name: smart-search-20-line-bridge
-run-name: smart-search-20-line-bridge
+run-name: smart-search-20-line-bridge-${{ github.event.inputs.profile || 'smoke' }}
 
 permissions:
   contents: read
@@ -8,74 +8,83 @@ permissions:
 on:
   workflow_dispatch:
     inputs:
+      profile:
+        description: "Choose smoke first; choose full after green smoke; custom is for debugging only."
+        required: true
+        default: "smoke"
+        type: choice
+        options:
+          - smoke
+          - full
+          - custom
       seconds:
-        description: "Seconds per shard. Smoke 180, full 21000."
+        description: "CUSTOM only. Leave blank for smoke/full profile."
         required: false
-        default: "180"
+        default: ""
       workers:
-        description: "Python worker processes per shard. Use 4."
+        description: "CUSTOM only. Leave blank for smoke/full profile."
         required: false
-        default: "4"
+        default: ""
       seed:
-        description: "Seed for this search. Baseline 20260720."
+        description: "CUSTOM only. Leave blank for smoke/full profile."
         required: false
-        default: "20260720"
+        default: ""
       beam_width:
-        description: "Beam width. Smoke 2048, full 12000."
+        description: "CUSTOM only. Leave blank for smoke/full profile."
         required: false
-        default: "2048"
+        default: ""
       state_cap:
-        description: "Maximum states kept/generated per layer. Smoke 200000, full 2000000."
+        description: "CUSTOM only. Leave blank for smoke/full profile."
         required: false
-        default: "200000"
+        default: ""
       candidate_scaffolds:
-        description: "Number of strongest cover64 scaffolds to try. Smoke 4, full 6."
+        description: "CUSTOM only. Leave blank for smoke/full profile."
         required: false
-        default: "4"
+        default: ""
       max_mutations:
-        description: "Controlled line replacements in mutation shards. Smoke 0, full 1."
+        description: "CUSTOM only. Leave blank for smoke/full profile."
         required: false
-        default: "0"
+        default: ""
       box_min:
-        description: "Minimum endpoint coordinate before scaling. Use -1."
+        description: "CUSTOM only. Leave blank for smoke/full profile."
         required: false
-        default: "-1"
+        default: ""
       box_max:
-        description: "Maximum endpoint coordinate before scaling. Use 4."
+        description: "CUSTOM only. Leave blank for smoke/full profile."
         required: false
-        default: "4"
+        default: ""
       candidate_lines:
-        description: "Maximum generated replacement/bridge-support lines. Smoke 3000, full 6000."
+        description: "CUSTOM only. Leave blank for smoke/full profile."
         required: false
-        default: "3000"
+        default: ""
       start_limit:
-        description: "How many starting full-line orientations to try. Smoke 22, full 44."
+        description: "CUSTOM only. Leave blank for smoke/full profile."
         required: false
-        default: "22"
+        default: ""
       line_branch_limit:
-        description: "Direct endpoint full-line continuation branch limit. Smoke 12, full 24."
+        description: "CUSTOM only. Leave blank for smoke/full profile."
         required: false
-        default: "12"
+        default: ""
       bridge_branch_limit:
-        description: "Bridge-to-next-full-line branch limit. Smoke 8, full 16."
+        description: "CUSTOM only. Leave blank for smoke/full profile."
         required: false
-        default: "8"
+        default: ""
       min_full_lines:
-        description: "Do not spend repair bridges aggressively before this many full lines. Smoke 10, full 14."
+        description: "CUSTOM only. Leave blank for smoke/full profile."
         required: false
-        default: "10"
+        default: ""
       max_full_lines:
-        description: "Maximum full scaffold/replacement lines to preserve. Use 18."
+        description: "CUSTOM only. Leave blank for smoke/full profile."
         required: false
-        default: "18"
+        default: ""
       max_bridge_links:
-        description: "Maximum explicit bridge/repair links. Smoke/full 8."
+        description: "CUSTOM only. Leave blank for smoke/full profile."
         required: false
-        default: "8"
+        default: ""
       save_min_covered:
-        description: "Minimum coverage for preferred JSONL rows. Smoke 38, full 54."
+        description: "CUSTOM only. Leave blank for smoke/full profile."
         required: false
-        default: "38"
+        default: ""
 
 jobs:
   check-known-23:
@@ -142,29 +151,107 @@ jobs:
 
       - name: Run full-line bridge shard
         run: |
+          set -euo pipefail
           mkdir -p results/fl_bridge
+
+          profile="${{ github.event.inputs.profile || 'smoke' }}"
+          case "$profile" in
+            smoke)
+              seconds=180
+              workers=4
+              seed=20260720
+              beam_width=2048
+              state_cap=200000
+              candidate_scaffolds=4
+              max_mutations=0
+              box_min=-1
+              box_max=4
+              candidate_lines=3000
+              start_limit=22
+              line_branch_limit=12
+              bridge_branch_limit=8
+              min_full_lines=10
+              max_full_lines=18
+              max_bridge_links=8
+              save_min_covered=38
+              ;;
+            full)
+              seconds=21000
+              workers=4
+              seed=20260720
+              beam_width=12000
+              state_cap=2000000
+              candidate_scaffolds=6
+              max_mutations=1
+              box_min=-1
+              box_max=4
+              candidate_lines=6000
+              start_limit=44
+              line_branch_limit=24
+              bridge_branch_limit=16
+              min_full_lines=14
+              max_full_lines=18
+              max_bridge_links=8
+              save_min_covered=54
+              ;;
+            custom)
+              seconds="${{ github.event.inputs.seconds }}"
+              workers="${{ github.event.inputs.workers }}"
+              seed="${{ github.event.inputs.seed }}"
+              beam_width="${{ github.event.inputs.beam_width }}"
+              state_cap="${{ github.event.inputs.state_cap }}"
+              candidate_scaffolds="${{ github.event.inputs.candidate_scaffolds }}"
+              max_mutations="${{ github.event.inputs.max_mutations }}"
+              box_min="${{ github.event.inputs.box_min }}"
+              box_max="${{ github.event.inputs.box_max }}"
+              candidate_lines="${{ github.event.inputs.candidate_lines }}"
+              start_limit="${{ github.event.inputs.start_limit }}"
+              line_branch_limit="${{ github.event.inputs.line_branch_limit }}"
+              bridge_branch_limit="${{ github.event.inputs.bridge_branch_limit }}"
+              min_full_lines="${{ github.event.inputs.min_full_lines }}"
+              max_full_lines="${{ github.event.inputs.max_full_lines }}"
+              max_bridge_links="${{ github.event.inputs.max_bridge_links }}"
+              save_min_covered="${{ github.event.inputs.save_min_covered }}"
+              for v in seconds workers seed beam_width state_cap candidate_scaffolds max_mutations box_min box_max candidate_lines start_limit line_branch_limit bridge_branch_limit min_full_lines max_full_lines max_bridge_links save_min_covered; do
+                if [ -z "${!v}" ]; then
+                  echo "custom profile requires input $v" >&2
+                  exit 2
+                fi
+              done
+              ;;
+            *)
+              echo "unknown profile: $profile" >&2
+              exit 2
+              ;;
+          esac
+
+          cat > results/fl_bridge/effective_profile_${{ matrix.shard }}.json <<EOF
+          {"profile":"$profile","seconds":$seconds,"workers":$workers,"seed":$seed,"beam_width":$beam_width,"state_cap":$state_cap,"candidate_scaffolds":$candidate_scaffolds,"max_mutations":$max_mutations,"box_min":$box_min,"box_max":$box_max,"candidate_lines":$candidate_lines,"start_limit":$start_limit,"line_branch_limit":$line_branch_limit,"bridge_branch_limit":$bridge_branch_limit,"min_full_lines":$min_full_lines,"max_full_lines":$max_full_lines,"max_bridge_links":$max_bridge_links,"save_min_covered":$save_min_covered}
+          EOF
+          echo "Resolved smart-search-20-line-bridge profile=$profile seconds=$seconds beam_width=$beam_width state_cap=$state_cap save_min_covered=$save_min_covered"
+
           python scripts/full_line_bridge_search.py \
             --input-json runs/2026-07-07-smart-search-17-cover64-stitch-graph-full/best_line_set.json \
             --input-jsonl candidates/line-set-additions-run28825060197-cover64-stitch.jsonl \
             --diagnostic-jsonl candidates/diagnostic-contact-state-dp-run28903545221.jsonl \
-            --seconds "${{ github.event.inputs.seconds || '180' }}" \
-            --workers "${{ github.event.inputs.workers || '4' }}" \
-            --seed "${{ github.event.inputs.seed || '20260720' }}" \
+            --seconds "$seconds" \
+            --workers "$workers" \
+            --seed "$seed" \
             --shard "${{ matrix.shard }}" \
             --shards 20 \
-            --beam-width "${{ github.event.inputs.beam_width || '2048' }}" \
-            --state-cap "${{ github.event.inputs.state_cap || '200000' }}" \
-            --candidate-scaffolds "${{ github.event.inputs.candidate_scaffolds || '4' }}" \
-            --max-mutations "${{ github.event.inputs.max_mutations || '0' }}" \
-            --box-min "${{ github.event.inputs.box_min || '-1' }}" \
-            --box-max "${{ github.event.inputs.box_max || '4' }}" \
-            --candidate-lines "${{ github.event.inputs.candidate_lines || '3000' }}" \
-            --start-limit "${{ github.event.inputs.start_limit || '22' }}" \
-            --line-branch-limit "${{ github.event.inputs.line_branch_limit || '12' }}" \
-            --bridge-branch-limit "${{ github.event.inputs.bridge_branch_limit || '8' }}" \
-            --min-full-lines "${{ github.event.inputs.min_full_lines || '10' }}" \
-            --max-full-lines "${{ github.event.inputs.max_full_lines || '18' }}" \
-            --max-bridge-links "${{ github.event.inputs.max_bridge_links || '8' }}" \
+            --beam-width "$beam_width" \
+            --state-cap "$state_cap" \
+            --candidate-scaffolds "$candidate_scaffolds" \
+            --max-mutations "$max_mutations" \
+            --box-min "$box_min" \
+            --box-max "$box_max" \
+            --candidate-lines "$candidate_lines" \
+            --start-limit "$start_limit" \
+            --line-branch-limit "$line_branch_limit" \
+            --bridge-branch-limit "$bridge_branch_limit" \
+            --min-full-lines "$min_full_lines" \
+            --max-full-lines "$max_full_lines" \
+            --max-bridge-links "$max_bridge_links" \
             --out "results/fl_bridge/fl_bridge_best_shard_${{ matrix.shard }}.json" \
             --preferred-out "results/fl_bridge/preferred_fl_bridge_shard_${{ matrix.shard }}.jsonl" \
             --bridge-report-out "results/fl_bridge/fl_bridge_report_shard_${{ matrix.shard }}.json"
@@ -186,14 +273,21 @@ jobs:
         if: always()
         env:
           SHARD: ${{ matrix.shard }}
-          MIN_COVERED: ${{ github.event.inputs.save_min_covered || '38' }}
+          PROFILE: ${{ github.event.inputs.profile || 'smoke' }}
+          CUSTOM_SAVE_MIN_COVERED: ${{ github.event.inputs.save_min_covered }}
         run: |
           python - <<'PY'
           import json, os
           from pathlib import Path
 
           shard = os.environ["SHARD"]
-          min_covered = int(os.environ.get("MIN_COVERED") or 38)
+          profile = os.environ.get("PROFILE") or "smoke"
+          if profile == "full":
+              min_covered = 54
+          elif profile == "custom":
+              min_covered = int(os.environ.get("CUSTOM_SAVE_MIN_COVERED") or 38)
+          else:
+              min_covered = 38
           p = Path(f"results/fl_bridge/fl_bridge_best_shard_{shard}.json")
           out = Path(f"results/fl_bridge/preferred_fl_bridge_shard_{shard}.jsonl")
           if p.exists():
@@ -201,6 +295,7 @@ jobs:
               d["source_shard"] = int(shard)
               d["source_artifact"] = f"smart-search-20-line-bridge-22-shard-{shard}"
               d["source_workflow"] = "smart-search-20-line-bridge"
+              d["source_profile"] = profile
               p.write_text(json.dumps(d, indent=2, sort_keys=True))
               if int(d.get("covered_count", 0) or 0) >= min_covered or int(d.get("links", 0) or 0) >= 22:
                   out.write_text(json.dumps(d, sort_keys=True) + "\n")
