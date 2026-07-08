@@ -1,21 +1,22 @@
 # Current search frontier
 
-Status: completed `smart-search-18-order-from-cover64-stitch` full run recorded. The normal ordered-trail frontier remains `60/64`; the scaffold frontier from search-17 remains unordered `64/64` with stitch path lower bound `22/22`. Search-19 launch package is prepared and fixed after an initial technical red run.
+Status: completed `smart-search-19-contact-state-dp` run recorded. The normal ordered-trail frontier remains `60/64`; the scaffold frontier from search-17 remains unordered `64/64` with stitch path lower bound `22/22`. Search-19 improved the ordered-reconstruction diagnostic ceiling from `44/64` to `46/64`, but did not improve the actual ordered-trail frontier.
 
-Latest recorded full run:
+Latest recorded completed run:
 
 - Repository: `Grisha-Pochuev/minimum-link-covering-trail-4x4x4`
-- Final run id: `28875314204`
-- Run URL: https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/28875314204
-- Workflow: `smart-search-18-order-from-cover64-stitch`
-- Commit SHA of the run: `13699553f63bd8a96c33a5c05752ff44590e8240`
+- Final run id: `28903545221`
+- Run URL: https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/28903545221
+- Workflow: `smart-search-19-contact-state-dp`
+- Commit SHA of the run: `ed5c56c90bca2044d55cbab6f48c0fb8c3b4071f`
 - Status: `success`
-- Duration: full run, `21000` seconds per shard
-- Threads/workers per shard: `4`
+- Duration: long run, `21000` seconds per shard
+- Workers per shard: `4`
 - Shards/jobs: `20`
-- Seed: `20260718`
-- Result type: checked ordered-chain reconstruction diagnostics from search-17 cover64 scaffolds; not a proof and not an ordered-trail improvement
-- Artifacts: `order-cover64-stitch-run-summary`, `order-cover64-stitch-22-shard-*`
+- Seed: `20260719`
+- Result type: contact-state DP ordered-chain reconstruction diagnostics from search-17 cover64 scaffolds; not a proof and not an ordered-trail improvement
+- Important parameter caution: actual saved best row has `beam_width=2048`, `state_cap=200000`, `max_mutations=1`; this is full-duration but smoke/default DP width, not the intended full-width profile `8192/2000000/2`.
+- Artifacts: `contact-state-dp-run-summary`, `contact-state-dp-22-shard-*`
 
 ## Best recorded GitHub Actions ordered-trail result
 
@@ -52,107 +53,83 @@ Important caveat: this is an unordered 22-line scaffold. A line-set graph path i
 
 ## Latest recorded run lesson
 
-Run `28875314204` tested contact-aware ordered reconstruction from the `64/64` line-set scaffolds. The result was much weaker than the existing ordered-trail frontier:
+Run `28903545221` completed the fresh search-19 contact-state DP reconstruction after the previous red checker bug was fixed. All precheck, shard, and aggregate jobs succeeded.
 
-- best ordered reconstruction candidate: `mlct22-order-5c31614d2aeaa2aa`
-- best covered_count: `44/64`
+Best diagnostic ordered-chain candidate:
+
+- candidate id: `mlct22-contactdp-2714c28ba62b5c26`
+- best covered_count: `46/64`
 - links: `22`
-- missing_count: `20`
-- best mode: `one_two_line_mutation`
-- best source shard/artifact: shard `7`, `order-cover64-stitch-22-shard-7`
+- missing_count: `18`
+- best mode: `official60_aware`
+- best source shard/artifact: shard `14`, `contact-state-dp-22-shard-14`
 - source scaffold: `mlct22-lineset-03bc99e72246b78c`
 - result rows in summary: `40`
-- compact unique ordered diagnostic candidates saved: `17`
+- unique ordered candidates in summary: `3`
+- compact diagnostic candidates saved: `3`
 - ordinary ordered-trail additions saved: `0`
 - line-set scaffold additions saved: `0`
-- diagnostic ordered-chain rows saved: `17`
+- diagnostic ordered-chain rows saved: `3`
 
-Interpretation: search-17 showed that rich unordered `64/64` scaffolds exist, but search-18 showed that the current reconstruction model loses a lot of actual grid coverage when it converts those scaffolds into one ordered 22-link chain. Graph stitchability is much weaker than real polygonal-chain reconstruction.
+Interpretation: search-19 is a real diagnostic improvement over search-18 (`44/64 -> 46/64`), but still far below the standing ordered-trail frontier `60/64`. It confirms that the hard part is preserving rich scaffold lines while forcing one continuous ordered 22-link chain.
 
-Search-18 mode breakdown:
+The dominant failure is rich-line clipping:
 
-| mode | rows | unique | best links | best covered |
-|---|---:|---:|---:|---:|
-| `bridge_contact_repair` | 8 | 4 | 22 | 42 |
-| `contact_extreme_search` | 8 | 4 | 22 | 42 |
-| `control_fixed_best` | 2 | 1 | 22 | 40 |
-| `large_neighborhood_ordering` | 6 | 3 | 22 | 43 |
-| `one_two_line_mutation` | 8 | 4 | 22 | 44 |
-| `strict_reconstruct_top4` | 8 | 1 | 22 | 42 |
+- best total lost points over pieces: `17`
+- clipped rich lines in best candidate: `12`
+- preserved rich lines in best candidate: `8`
+- official60 old-missing hits: `3`
 
-Saved run-18 memory:
+Most repeated missing/lost points are concentrated in the reconstruction-loss family, not in the old four-hole `60/64` wall:
 
 ```text
-runs/2026-07-07-smart-search-18-order-from-cover64-stitch-full/summary.md
-runs/2026-07-07-smart-search-18-order-from-cover64-stitch-full/best_ordered_candidate.json
-runs/2026-07-07-smart-search-18-order-from-cover64-stitch-full/mode_breakdown.json
-runs/2026-07-07-smart-search-18-order-from-cover64-stitch-full/order-cover64-stitch-run-summary.zip
-candidates/diagnostic-order-from-cover64-run28875314204.jsonl
-candidates/originals/run28875314204-order-from-cover64-index.jsonl
+(0,0,3), (0,3,0), (0,3,1), (1,3,3), (2,0,0), (2,3,1),
+(2,3,2), (2,3,3), (3,0,1), (3,2,3), (3,3,0), (3,3,2)
 ```
 
-## Prepared next launch
+Search-19 mode breakdown:
 
-Prepared workflow:
+| mode | rows | unique | best links | best covered | best lost |
+|---|---:|---:|---:|---:|---:|
+| `conservative_control` | 2 | 1 | 22 | 42 | 23 |
+| `controlled_bridge_replacement` | 4 | 1 | 22 | 46 | 18 |
+| `diagnostic_replay` | 2 | 1 | 22 | 42 | 23 |
+| `exact_top4_dp` | 8 | 1 | 22 | 42 | 23 |
+| `loss_minimizing` | 8 | 2 | 22 | 46 | 17 |
+| `official60_aware` | 8 | 2 | 22 | 46 | 17 |
+| `wide_beam_contact_state` | 8 | 1 | 22 | 46 | 17 |
+
+Saved run-19 memory:
 
 ```text
-smart-search-19-contact-state-dp
+runs/2026-07-08-smart-search-19-contact-state-dp-full/summary.md
+runs/2026-07-08-smart-search-19-contact-state-dp-full/best_contact_state_candidate.json
+runs/2026-07-08-smart-search-19-contact-state-dp-full/mode_breakdown.json
+runs/2026-07-08-smart-search-19-contact-state-dp-full/contact_state_dp_run_summary_compact.json
+candidates/diagnostic-contact-state-dp-run28903545221.jsonl
+candidates/originals/run28903545221-contact-state-dp-index.jsonl
 ```
 
-Files:
+## Prepared / suggested next launch
+
+No new workflow is prepared yet after search-19. The next normal web-chat step is prompt 2: choose a non-repeating hypothesis.
+
+Suggested next direction from the recorded evidence:
 
 ```text
-.github/workflows/smart-search-19-contact-state-dp.yml
-scripts/contact_state_dp_from_scaffolds.py
-scripts/build_contact_state_dp_summary.py
-scripts/check_ordered_trail_scaled.py
-docs/smart-search-19-contact-state-dp-plan.md
+smart-search-20-full-line-preserving-contact-bridge
 ```
 
-This launch implements the selected hypothesis: stronger contact-state reconstruction from search-17 scaffolds. It uses actual contact points, covered masks, and a line-loss table instead of only abstract line-set graph pathability.
+Reason: search-19 exposes that contact-state ordering destroys coverage by clipping rich 3/4-point lines. The next attempt should preserve full rich pieces first and pay explicit bridge/contact costs between whole pieces, rather than choosing short contact pieces that turn a `64/64` scaffold into a `46/64` chain.
 
-Initial run `28902841543` was red because of a technical checker-step shell/heredoc bug, not because the contact-state engine failed. The workflow checker step was fixed in commit `ed5c56c90bca2044d55cbab6f48c0fb8c3b4071f` (`Fix contact-state checker heredoc`). Do not use `Re-run failed jobs` on `28902841543`; start a fresh `Run workflow` on branch `main`.
+One caveat: run `28903545221` used full seconds but default/smoke DP width. If needed, one controlled follow-up can run the intended true full-width search-19 profile (`beam_width=8192`, `state_cap=2000000`, `max_mutations=2`) before fully abandoning this workflow. But do not rerun search-19 unchanged.
 
-The engine is currently Python. That is acceptable as a hypothesis/prototype launch. If search-19 gives a strong signal, port the heavy contact-state DP/beam loop to C++ and keep Python as JSON/workflow/summary glue.
+## Candidate preservation rule
 
-## Current next step
+Keep three banks separate:
 
-Run a fresh manual `smart-search-19-contact-state-dp` from `main`.
+1. ordinary ordered-trail candidates: only checked polygonal trails that are near or above the current ordered frontier;
+2. line-set scaffolds: unordered cover64 line sets from search-17 and related runs;
+3. ordered-chain diagnostics: search-18/search-19 reconstruction attempts far below the frontier.
 
-Smoke-test inputs:
-
-```text
-seconds: 180
-workers: 4
-seed: 20260719
-beam_width: 2048
-state_cap: 200000
-candidate_scaffolds: 4
-max_mutations: 1
-box_min: -1
-box_max: 4
-min_piece_cover: 1
-save_min_covered: 38
-branch_limit: 6
-start_limit: 22
-candidate_lines: 3000
-```
-
-Full-run inputs:
-
-```text
-seconds: 21000
-workers: 4
-seed: 20260719
-beam_width: 8192
-state_cap: 2000000
-candidate_scaffolds: 4
-max_mutations: 2
-box_min: -1
-box_max: 4
-min_piece_cover: 1
-save_min_covered: 44
-branch_limit: 6
-start_limit: 22
-candidate_lines: 3000
-```
+Search-17 artifacts are `cover64-stitch-line-set-v1` scaffolds, not solved trails. Search-18 and search-19 outputs are checked ordered-chain diagnostics, but they are below the `60/64` ordered-trail frontier and should not be treated as ordinary candidate-bank improvements.
