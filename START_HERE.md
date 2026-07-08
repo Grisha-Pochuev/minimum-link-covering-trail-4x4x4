@@ -122,6 +122,8 @@ Naming rule for serious numbered searches: keep the workflow/run family as `smar
 
 Prompt 3 caution from 2026-07-08: do not spend time repeatedly trying to open a PR before there are commits. First write the launch files, then open/merge the PR if needed. If the user asks to run automatically but the connector has no workflow_dispatch action, say so honestly and give exact manual Run inputs.
 
+Workflow rename/delete safety rule: before deleting, renaming, or replacing any `.github/workflows/*.yml`, first check whether a long manual GitHub Actions run is queued or running under that workflow. Do **not** remove the old workflow file while a 5h+ run may be active. If the name is wrong after launch, keep the old workflow until the active run completes, add the corrected workflow separately, and record both names. A run started under the old workflow name is still valid evidence and should be analyzed by direct `/actions/runs/<RUN_ID>` URL or from Actions → All workflows; its artifacts keep the old names. For the 2026-07-08 mistake, any already-started old `fl-bridge-20` run, if it exists, is valid and uses artifacts `fl-bridge-22-shard-*` and `fl-bridge-run-summary`.
+
 Smoke-test is only a technical green-light before the long run. If the user sees a green check and launches the 5h+ full run, the next result-taking chat records the full run, not the smoke-test. Inspect smoke separately only if it failed, looked suspicious, or the user explicitly asks.
 
 ## 5. Latest saved run archive
@@ -156,7 +158,7 @@ scripts/build_full_line_bridge_summary.py
 docs/smart-search-20-line-bridge-launch.md
 ```
 
-Do not use the old temporary name `fl-bridge-20`; it violated the repository naming convention and was removed.
+Do not use the old temporary name `fl-bridge-20`; it violated the repository naming convention and was removed. Exception: if the user already launched a manual `fl-bridge-20` run before removal, that run remains valid and must be analyzed by direct run URL with its old artifact names.
 
 Hypothesis: preserve rich full scaffold lines and spend explicit bridge links between endpoint components instead of clipping rich lines at interior contacts.
 
@@ -212,7 +214,8 @@ Next action depends on GitHub Actions state:
 
 1. If `smart-search-20-line-bridge` has not been run yet: run smoke-test manually from Actions using the smoke inputs above.
 2. If smoke-test is green and the user has not launched full run yet: run the full `smart-search-20-line-bridge` with the full inputs above.
-3. If the full run is running or completed: use prompt 1 to record the full run results, artifacts, candidates, and frontier.
-4. If smoke-test is red: inspect it as a technical launch failure first, not as mathematical evidence.
+3. If an old `fl-bridge-20` full run was already started before the rename/delete, do not discard it: find it by direct run URL or Actions history and record its artifacts/results under the old artifact names.
+4. If the full run is running or completed: use prompt 1 to record the full run results, artifacts, candidates, and frontier.
+5. If smoke-test is red: inspect it as a technical launch failure first, not as mathematical evidence.
 
 Expected useful next result means either a checked ordered 22-link trail candidate improving the `60/64` frontier, or a sharper obstruction explaining which rich full-line pieces cannot be preserved together in a continuous 22-link trail.
