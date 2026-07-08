@@ -33,7 +33,9 @@ Result from 2026-07-07 run `28825060197`: full search-17 found `64/64` unordered
 
 Result from 2026-07-07 run `28875314204`: full search-18 tried contact-aware ordered reconstruction from search-17 scaffolds. It completed successfully, but the best checked ordered-chain reconstruction was only `44/64`, far below the standing ordered-trail frontier `60/64`. This means the current reconstruction engine is too weak; the next step should use a stronger contact-state reconstruction model, not rerun search-18 unchanged.
 
-Launch package from 2026-07-07 chat: `smart-search-19-contact-state-dp` now exists as a real workflow, with engine, checker, summary builder, and plan doc. Initial run `28902841543` was red because of a technical checker-step shell/heredoc bug, not because the engine or hypothesis failed. Fix commit: `ed5c56c90bca2044d55cbab6f48c0fb8c3b4071f` (`Fix contact-state checker heredoc`). Do not press `Re-run failed jobs` on that old run; start a fresh manual `Run workflow` from branch `main`.
+Result from 2026-07-08 run `28903545221`: full-duration search-19 completed successfully, but actual saved best-row parameters were smoke/default DP width (`beam_width=2048`, `state_cap=200000`, `max_mutations=1`). It improved the diagnostic ordered reconstruction only `44/64 -> 46/64`. Dominant failure: rich-line clipping, not the old four-hole `60/64` wall.
+
+Launch package from 2026-07-08 chat: `fl-bridge-20` now exists on `main` as a real workflow. It implements the already-chosen full-line-preserving bridge hypothesis: preserve rich full scaffold lines and spend explicit bridge links between endpoint components instead of clipping rich lines at interior contacts. Merge commit: `f1b6c684aa5651a983827252177cac171dbd5b3a`.
 
 ## Fast checklist before preparing or analyzing a launch
 
@@ -49,7 +51,8 @@ Use this checklist only as a technical guardrail. Do not turn it into a new rese
 7. Verify real workflow YAML begins with name: and is workflow_dispatch-only.
 8. Verify no push trigger.
 9. Verify artifact names, seed paths, engine/checker/summary paths, shard count, and exact inputs.
-10. Stop. Give smoke-test and full-run inputs. Do not run extra hypothesis checks unless the workflow cannot be made technically runnable.
+10. If asked to run automatically, use a real workflow_dispatch action only if the connector/tool exposes it. If no such tool exists, say that honestly and give the exact manual Run workflow inputs.
+11. Stop. Give smoke-test and full-run inputs. Do not run extra hypothesis checks unless the workflow cannot be made technically runnable.
 ```
 
 If a smoke-test fails red, first distinguish:
@@ -85,7 +88,7 @@ Use when a main/full GitHub run has completed and needs to be recorded. This is 
 
 ## Prompt 2 — choose next hypothesis
 
-This is the only step where broad thinking, fantasy, and local exploratory checks are expected.
+Use this only when the previous prepared launch has already been tried or intentionally abandoned. This is the only step where broad thinking, fantasy, and local exploratory checks are expected.
 
 ```text
 Теперь сделай следующий исследовательский шаг: подумай, куда нам идти дальше.
@@ -108,7 +111,7 @@ Use after prompt 2, when the hypothesis is already chosen. This prompt is intent
 
 START_HERE.md уже был открыт в этом чате, не открывай его заново. Не придумывай новую гипотезу и не запускай дополнительные исследовательские проверки. Сейчас задача техническая: реализовать выбранную гипотезу в файлах запуска, чтобы я мог нажать Run.
 
-Создай или обнови технические файлы запуска. Если для выбранной гипотезы нужен новый движок/скрипт, напиши новый движок/скрипт — это нормально. Но не меняй саму исследовательскую идею.
+Создай или обнови технические файлы запуска. Если для выбранной гипотезы нужен новый движок/скрипт, напиши новый движок/скрипт — это нормально. Но не меняй саму исследовательскую идею. Название для прогона делай коротким.
 
 Обычно нужны:
 - workflow в .github/workflows/ или точный proposed YAML в docs/;
@@ -134,7 +137,7 @@ START_HERE.md уже был открыт в этом чате, не открыв
 3. exact inputs для smoke-test;
 4. exact inputs для full run.
 
-Ничего не запускай автоматически, если я явно не попросил.
+Если я прошу запустить автоматически, запускай только если доступен настоящий workflow_dispatch-инструмент. Если такого инструмента нет, не притворяйся, что запустил: скажи, что запуск вручную через Actions → workflow → Run workflow, и дай exact inputs.
 ```
 
 ## Prompt 4 — whole-chat wrap-up
@@ -161,47 +164,81 @@ START_HERE.md уже был открыт в начале чата, не откр
 4. какие промпты лучше использовать дальше.
 ```
 
-## Current state after search-19 launch preparation
+## Current state after `fl-bridge-20` launch preparation
 
 Current frontier:
 
 ```text
 best ordered-trail candidate: 60/64, run 28674416173
 best unordered cover64 scaffold: 64/64 line-set, run 28825060197
-latest recorded full run: 28875314204, smart-search-18-order-from-cover64-stitch
-latest recorded full run best ordered reconstruction: 44/64
-ordinary candidate-bank additions from search-18: 0
-diagnostic ordered-chain rows from search-18: 17
+latest recorded completed full run: 28903545221, smart-search-19-contact-state-dp
+latest recorded full-run best ordered reconstruction: 46/64
+ordinary candidate-bank additions from search-19: 0
+diagnostic ordered-chain rows from search-19: 3
 ```
 
 Prepared workflow:
 
 ```text
-smart-search-19-contact-state-dp
+fl-bridge-20
 ```
 
 Prepared files:
 
 ```text
-.github/workflows/smart-search-19-contact-state-dp.yml
-scripts/contact_state_dp_from_scaffolds.py
-scripts/build_contact_state_dp_summary.py
-scripts/check_ordered_trail_scaled.py
-docs/smart-search-19-contact-state-dp-plan.md
+.github/workflows/fl-bridge-20.yml
+scripts/full_line_bridge_search.py
+scripts/build_full_line_bridge_summary.py
+docs/fl-bridge-20-launch.md
 ```
 
-Important launch note:
+Smoke-test inputs:
 
 ```text
-run 28902841543 was a failed technical launch attempt;
-failure was in Check ordered-chain JSON geometry, not in the search engine;
-fix commit is ed5c56c90bca2044d55cbab6f48c0fb8c3b4071f;
-do not Re-run failed jobs on that old run;
-start a fresh Run workflow from main.
+seconds=180
+workers=4
+seed=20260720
+beam_width=2048
+state_cap=200000
+candidate_scaffolds=4
+max_mutations=0
+box_min=-1
+box_max=4
+candidate_lines=3000
+start_limit=22
+line_branch_limit=12
+bridge_branch_limit=8
+min_full_lines=10
+max_full_lines=18
+max_bridge_links=8
+save_min_covered=38
+```
+
+Full-run inputs:
+
+```text
+seconds=21000
+workers=4
+seed=20260720
+beam_width=12000
+state_cap=2000000
+candidate_scaffolds=6
+max_mutations=1
+box_min=-1
+box_max=4
+candidate_lines=6000
+start_limit=44
+line_branch_limit=24
+bridge_branch_limit=16
+min_full_lines=14
+max_full_lines=18
+max_bridge_links=8
+save_min_covered=54
 ```
 
 Next prompt depends on what the user does:
 
-- if the user launches and completes a full run, use Prompt 1 to record that completed run;
+- if `fl-bridge-20` has not been run, launch smoke-test from Actions manually;
 - if smoke-test is green and the user launches the long run, do not waste a separate step recording smoke unless asked;
-- if another smoke-test is red, inspect jobs/logs as a technical failure first.
+- if the full run completes, use Prompt 1 to record the completed full run;
+- if smoke-test is red, inspect jobs/logs as a technical failure first.
