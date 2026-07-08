@@ -1,8 +1,8 @@
 # Current search frontier
 
-Status: completed `smart-search-19-contact-state-dp` run recorded. The normal ordered-trail frontier remains `60/64`; the scaffold frontier from search-17 remains unordered `64/64` with stitch path lower bound `22/22`. Search-19 improved the ordered-reconstruction diagnostic ceiling from `44/64` to `46/64`, but did not improve the actual ordered-trail frontier.
+Status: launch package `fl-bridge-20` is prepared on `main`. The normal ordered-trail frontier remains `60/64`; the scaffold frontier from search-17 remains unordered `64/64` with stitch path lower bound `22/22`. Search-19 improved the ordered-reconstruction diagnostic ceiling from `44/64` to `46/64`, but did not improve the actual ordered-trail frontier.
 
-Latest recorded completed run:
+Latest recorded completed full run:
 
 - Repository: `Grisha-Pochuev/minimum-link-covering-trail-4x4x4`
 - Final run id: `28903545221`
@@ -87,18 +87,6 @@ Most repeated missing/lost points are concentrated in the reconstruction-loss fa
 (2,3,2), (2,3,3), (3,0,1), (3,2,3), (3,3,0), (3,3,2)
 ```
 
-Search-19 mode breakdown:
-
-| mode | rows | unique | best links | best covered | best lost |
-|---|---:|---:|---:|---:|---:|
-| `conservative_control` | 2 | 1 | 22 | 42 | 23 |
-| `controlled_bridge_replacement` | 4 | 1 | 22 | 46 | 18 |
-| `diagnostic_replay` | 2 | 1 | 22 | 42 | 23 |
-| `exact_top4_dp` | 8 | 1 | 22 | 42 | 23 |
-| `loss_minimizing` | 8 | 2 | 22 | 46 | 17 |
-| `official60_aware` | 8 | 2 | 22 | 46 | 17 |
-| `wide_beam_contact_state` | 8 | 1 | 22 | 46 | 17 |
-
 Saved run-19 memory:
 
 ```text
@@ -110,19 +98,82 @@ candidates/diagnostic-contact-state-dp-run28903545221.jsonl
 candidates/originals/run28903545221-contact-state-dp-index.jsonl
 ```
 
-## Prepared / suggested next launch
+## Prepared launch package
 
-No new workflow is prepared yet after search-19. The next normal web-chat step is prompt 2: choose a non-repeating hypothesis.
-
-Suggested next direction from the recorded evidence:
+A new launch package is now prepared and merged on `main`:
 
 ```text
-smart-search-20-full-line-preserving-contact-bridge
+fl-bridge-20
 ```
 
-Reason: search-19 exposes that contact-state ordering destroys coverage by clipping rich 3/4-point lines. The next attempt should preserve full rich pieces first and pay explicit bridge/contact costs between whole pieces, rather than choosing short contact pieces that turn a `64/64` scaffold into a `46/64` chain.
+Merge commit:
 
-One caveat: run `28903545221` used full seconds but default/smoke DP width. If needed, one controlled follow-up can run the intended true full-width search-19 profile (`beam_width=8192`, `state_cap=2000000`, `max_mutations=2`) before fully abandoning this workflow. But do not rerun search-19 unchanged.
+```text
+f1b6c684aa5651a983827252177cac171dbd5b3a
+```
+
+Prepared files:
+
+```text
+.github/workflows/fl-bridge-20.yml
+scripts/full_line_bridge_search.py
+scripts/build_full_line_bridge_summary.py
+docs/fl-bridge-20-launch.md
+```
+
+Hypothesis: preserve rich full scaffold lines and spend explicit bridge links between endpoint components instead of clipping rich lines at interior contacts.
+
+Workflow facts:
+
+- starts with `name: fl-bridge-20`;
+- `workflow_dispatch` only;
+- 20 shard matrix, `max-parallel: 20`;
+- per-shard artifact: `fl-bridge-22-shard-<shard>`;
+- aggregate artifact: `fl-bridge-run-summary`.
+
+Smoke-test inputs:
+
+```text
+seconds=180
+workers=4
+seed=20260720
+beam_width=2048
+state_cap=200000
+candidate_scaffolds=4
+max_mutations=0
+box_min=-1
+box_max=4
+candidate_lines=3000
+start_limit=22
+line_branch_limit=12
+bridge_branch_limit=8
+min_full_lines=10
+max_full_lines=18
+max_bridge_links=8
+save_min_covered=38
+```
+
+Full-run inputs:
+
+```text
+seconds=21000
+workers=4
+seed=20260720
+beam_width=12000
+state_cap=2000000
+candidate_scaffolds=6
+max_mutations=1
+box_min=-1
+box_max=4
+candidate_lines=6000
+start_limit=44
+line_branch_limit=24
+bridge_branch_limit=16
+min_full_lines=14
+max_full_lines=18
+max_bridge_links=8
+save_min_covered=54
+```
 
 ## Candidate preservation rule
 
@@ -133,3 +184,14 @@ Keep three banks separate:
 3. ordered-chain diagnostics: search-18/search-19 reconstruction attempts far below the frontier.
 
 Search-17 artifacts are `cover64-stitch-line-set-v1` scaffolds, not solved trails. Search-18 and search-19 outputs are checked ordered-chain diagnostics, but they are below the `60/64` ordered-trail frontier and should not be treated as ordinary candidate-bank improvements.
+
+## Current next step
+
+Do not choose another new hypothesis yet. The chosen hypothesis has already been implemented as `fl-bridge-20`.
+
+Next action:
+
+1. If `fl-bridge-20` has not been run yet, launch the smoke-test manually from GitHub Actions with the smoke inputs above.
+2. If smoke-test is green, launch the full run with the full inputs above.
+3. If the full run is complete, use prompt 1 to record the completed full run.
+4. If smoke-test is red, inspect it as a technical failure first.

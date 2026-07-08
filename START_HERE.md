@@ -38,7 +38,7 @@ After this boot read, avoid reopening `START_HERE.md` during prompts 2-4 in the 
 
 ## 3. Current recorded frontier
 
-Latest recorded completed run:
+Latest recorded completed full run is still search-19:
 
 - run id: `28903545221`
 - run URL: https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/28903545221
@@ -118,6 +118,8 @@ Use the user's four-step rhythm:
 3. launch-preparation prompt: **technical implementation only**. Take the already chosen hypothesis from prompt 2 and prepare runnable GitHub launch files so the user can press Run. This may include writing a new engine/generator/checker/summary builder if the chosen hypothesis requires it. Do not invent a new hypothesis, do not re-test the idea, and do not open a different research branch unless the requested launch is technically impossible;
 4. wrap-up prompt: review the whole chat, identify confusion/time loss, and update memory files if needed.
 
+Prompt 3 caution from 2026-07-08: do not spend time repeatedly trying to open a PR before there are commits. First write the launch files, then open/merge the PR if needed. If the user asks to run automatically but the connector has no workflow_dispatch action, say so honestly and give exact manual Run inputs.
+
 Smoke-test is only a technical green-light before the long run. If the user sees a green check and launches the 5h+ full run, the next result-taking chat records the full run, not the smoke-test. Inspect smoke separately only if it failed, looked suspicious, or the user explicitly asks.
 
 ## 5. Latest saved run archive
@@ -133,18 +135,86 @@ candidates/diagnostic-contact-state-dp-run28903545221.jsonl
 candidates/originals/run28903545221-contact-state-dp-index.jsonl
 ```
 
-## 6. Current next step
+## 6. Prepared launch package
 
-The next chat should normally be prompt 2: choose a new non-repeating hypothesis.
+The prompt-2 hypothesis from this chat was implemented as a real launch package on `main`.
 
-Best next direction from the saved evidence:
+Prepared workflow:
 
 ```text
-smart-search-20-full-line-preserving-contact-bridge
+fl-bridge-20
 ```
 
-Goal: attack the exact failure exposed by search-19. Preserve complete 3/4-point rich line pieces as much as possible and pay explicit bridge/contact costs between whole pieces, instead of letting contact-state reconstruction choose short contact pieces that destroy coverage.
+Merge commit:
 
-One technical caveat before abandoning search-19 entirely: run `28903545221` used full seconds but smoke/default DP-width parameters. If the user wants to close that loose end, run the intended true full-width profile once (`beam_width=8192`, `state_cap=2000000`, `max_mutations=2`). But as a research direction, do not rerun search-19 unchanged.
+```text
+f1b6c684aa5651a983827252177cac171dbd5b3a
+```
+
+Prepared files:
+
+```text
+.github/workflows/fl-bridge-20.yml
+scripts/full_line_bridge_search.py
+scripts/build_full_line_bridge_summary.py
+docs/fl-bridge-20-launch.md
+```
+
+Hypothesis: preserve rich full scaffold lines and spend explicit bridge links between endpoint components instead of clipping rich lines at interior contacts.
+
+Smoke-test inputs:
+
+```text
+seconds=180
+workers=4
+seed=20260720
+beam_width=2048
+state_cap=200000
+candidate_scaffolds=4
+max_mutations=0
+box_min=-1
+box_max=4
+candidate_lines=3000
+start_limit=22
+line_branch_limit=12
+bridge_branch_limit=8
+min_full_lines=10
+max_full_lines=18
+max_bridge_links=8
+save_min_covered=38
+```
+
+Full-run inputs:
+
+```text
+seconds=21000
+workers=4
+seed=20260720
+beam_width=12000
+state_cap=2000000
+candidate_scaffolds=6
+max_mutations=1
+box_min=-1
+box_max=4
+candidate_lines=6000
+start_limit=44
+line_branch_limit=24
+bridge_branch_limit=16
+min_full_lines=14
+max_full_lines=18
+max_bridge_links=8
+save_min_covered=54
+```
+
+## 7. Current next step
+
+The next chat should **not** choose a new hypothesis again. The hypothesis is already chosen and launch package is already merged.
+
+Next action depends on GitHub Actions state:
+
+1. If `fl-bridge-20` has not been run yet: run smoke-test manually from Actions using the smoke inputs above.
+2. If smoke-test is green and the user has not launched full run yet: run the full `fl-bridge-20` with the full inputs above.
+3. If the full run is running or completed: use prompt 1 to record the full run results, artifacts, candidates, and frontier.
+4. If smoke-test is red: inspect it as a technical launch failure first, not as mathematical evidence.
 
 Expected useful next result means either a checked ordered 22-link trail candidate improving the `60/64` frontier, or a sharper obstruction explaining which rich full-line pieces cannot be preserved together in a continuous 22-link trail.
