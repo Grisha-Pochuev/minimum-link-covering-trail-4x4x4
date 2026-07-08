@@ -1,12 +1,14 @@
-# fl-bridge-20 launch package
+# smart-search-20-line-bridge launch package
 
-Short workflow name: `fl-bridge-20`.
+Workflow name: `smart-search-20-line-bridge`.
+
+Naming rule: serious numbered search workflows should keep the family prefix `smart-search-N-...`, followed by a short one/two-word characteristic. This launch corrects the earlier temporary short name `fl-bridge-20`.
 
 Hypothesis: preserve rich full scaffold lines and spend explicit bridge links between endpoint components instead of clipping rich lines at interior contacts.
 
 ## Files
 
-- Workflow: `.github/workflows/fl-bridge-20.yml`
+- Workflow: `.github/workflows/smart-search-20-line-bridge.yml`
 - Engine: `scripts/full_line_bridge_search.py`
 - Summary builder: `scripts/build_full_line_bridge_summary.py`
 - Existing checker: `scripts/check_ordered_trail_scaled.py`
@@ -79,14 +81,14 @@ save_min_covered=54
 
 Per shard:
 
-- `fl-bridge-22-shard-<shard>`
+- `smart-search-20-line-bridge-22-shard-<shard>`
   - `fl_bridge_best_shard_<shard>.json`
   - `preferred_fl_bridge_shard_<shard>.jsonl`
   - `fl_bridge_report_shard_<shard>.json`
 
 Aggregate:
 
-- `fl-bridge-run-summary`
+- `smart-search-20-line-bridge-run-summary`
   - `fl_bridge_run_summary.json`
   - `fl_bridge_run_summary.md`
   - `fl-bridge-candidates.jsonl`

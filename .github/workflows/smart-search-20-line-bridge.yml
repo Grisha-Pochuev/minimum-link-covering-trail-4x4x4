@@ -1,5 +1,5 @@
-name: fl-bridge-20
-run-name: fl-bridge-20
+name: smart-search-20-line-bridge
+run-name: smart-search-20-line-bridge
 
 permissions:
   contents: read
@@ -125,7 +125,7 @@ jobs:
                   ])
           PY
 
-  fl-bridge:
+  line-bridge:
     runs-on: ubuntu-latest
     needs: [check-known-23, check-input-scaffolds]
     timeout-minutes: 359
@@ -198,9 +198,9 @@ jobs:
           out = Path(f"results/fl_bridge/preferred_fl_bridge_shard_{shard}.jsonl")
           if p.exists():
               d = json.loads(p.read_text())
-              d.setdefault("source_shard", int(shard))
-              d.setdefault("source_artifact", f"fl-bridge-22-shard-{shard}")
-              d.setdefault("source_workflow", "fl-bridge-20")
+              d["source_shard"] = int(shard)
+              d["source_artifact"] = f"smart-search-20-line-bridge-22-shard-{shard}"
+              d["source_workflow"] = "smart-search-20-line-bridge"
               p.write_text(json.dumps(d, indent=2, sort_keys=True))
               if int(d.get("covered_count", 0) or 0) >= min_covered or int(d.get("links", 0) or 0) >= 22:
                   out.write_text(json.dumps(d, sort_keys=True) + "\n")
@@ -211,26 +211,26 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: fl-bridge-22-shard-${{ matrix.shard }}
+          name: smart-search-20-line-bridge-22-shard-${{ matrix.shard }}
           path: results/fl_bridge/
           if-no-files-found: warn
 
-  aggregate-fl-bridge:
+  aggregate-line-bridge:
     runs-on: ubuntu-latest
-    needs: fl-bridge
+    needs: line-bridge
     if: always()
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
-          pattern: fl-bridge-22-shard-*
+          pattern: smart-search-20-line-bridge-22-shard-*
           path: collected
           merge-multiple: true
       - run: python scripts/build_full_line_bridge_summary.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: fl-bridge-run-summary
+          name: smart-search-20-line-bridge-run-summary
           path: |
             collected/fl_bridge_run_summary.json
             collected/fl_bridge_run_summary.md
