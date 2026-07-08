@@ -124,6 +124,8 @@ Prompt 3 caution from 2026-07-08: do not spend time repeatedly trying to open a 
 
 Workflow rename/delete safety rule: before deleting, renaming, or replacing any `.github/workflows/*.yml`, first check whether a long manual GitHub Actions run is queued or running under that workflow. Do **not** remove the old workflow file while a 5h+ run may be active. If the name is wrong after launch, keep the old workflow until the active run completes, add the corrected workflow separately, and record both names. A run started under the old workflow name is still valid evidence and should be analyzed by direct `/actions/runs/<RUN_ID>` URL or from Actions → All workflows; its artifacts keep the old names. For the 2026-07-08 mistake, any already-started old `fl-bridge-20` run, if it exists, is valid and uses artifacts `fl-bridge-22-shard-*` and `fl-bridge-run-summary`.
 
+Manual-run profile safety rule: for any serious GitHub Actions search that has smoke/full parameter sets, prefer a single `profile` input with choices `smoke`, `full`, and optionally `custom`. The user should normally change only `profile`, not many numeric fields. If `profile=full` is selected, GitHub's form may still show all custom numeric boxes as blank; that is expected. The workflow must resolve the full numeric set internally and, ideally, write an `effective_profile*.json` artifact. Do not tell the user to run a full search by changing only `seconds`; full mode usually also changes beam width, state cap, branch limits, mutation count, candidate count, and save thresholds. This rule exists because search-19 accidentally ran full-duration with smoke/default width, and search-20 initially risked the same human error.
+
 Smoke-test is only a technical green-light before the long run. If the user sees a green check and launches the 5h+ full run, the next result-taking chat records the full run, not the smoke-test. Inspect smoke separately only if it failed, looked suspicious, or the user explicitly asks.
 
 ## 5. Latest saved run archive
@@ -160,9 +162,15 @@ docs/smart-search-20-line-bridge-launch.md
 
 Do not use the old temporary name `fl-bridge-20`; it violated the repository naming convention and was removed. Exception: if the user already launched a manual `fl-bridge-20` run before removal, that run remains valid and must be analyzed by direct run URL with its old artifact names.
 
+Human-safe launch for this workflow:
+
+- `profile=smoke`: short technical green-light. Leave custom numeric fields blank.
+- `profile=full`: full 5h+ search. Leave custom numeric fields blank. Blank custom boxes are expected; the workflow resolves full numbers internally.
+- `profile=custom`: debugging only. Use only when deliberately overriding every numeric parameter.
+
 Hypothesis: preserve rich full scaffold lines and spend explicit bridge links between endpoint components instead of clipping rich lines at interior contacts.
 
-Smoke-test inputs:
+Smoke-test effective inputs:
 
 ```text
 seconds=180
@@ -184,7 +192,7 @@ max_bridge_links=8
 save_min_covered=38
 ```
 
-Full-run inputs:
+Full-run effective inputs:
 
 ```text
 seconds=21000
@@ -212,8 +220,8 @@ The next chat should **not** choose a new hypothesis again. The hypothesis is al
 
 Next action depends on GitHub Actions state:
 
-1. If `smart-search-20-line-bridge` has not been run yet: run smoke-test manually from Actions using the smoke inputs above.
-2. If smoke-test is green and the user has not launched full run yet: run the full `smart-search-20-line-bridge` with the full inputs above.
+1. If `smart-search-20-line-bridge` has not been run yet: run smoke-test manually from Actions using `profile=smoke`; leave custom numeric fields blank.
+2. If smoke-test is green and the user has not launched full run yet: run the full `smart-search-20-line-bridge` using `profile=full`; leave custom numeric fields blank.
 3. If an old `fl-bridge-20` full run was already started before the rename/delete, do not discard it: find it by direct run URL or Actions history and record its artifacts/results under the old artifact names.
 4. If the full run is running or completed: use prompt 1 to record the full run results, artifacts, candidates, and frontier.
 5. If smoke-test is red: inspect it as a technical launch failure first, not as mathematical evidence.
