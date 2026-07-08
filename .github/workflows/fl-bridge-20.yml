@@ -1,0 +1,238 @@
+name: fl-bridge-20
+run-name: fl-bridge-20
+
+permissions:
+  contents: read
+  actions: read
+
+on:
+  workflow_dispatch:
+    inputs:
+      seconds:
+        description: "Seconds per shard. Smoke 180, full 21000."
+        required: false
+        default: "180"
+      workers:
+        description: "Python worker processes per shard. Use 4."
+        required: false
+        default: "4"
+      seed:
+        description: "Seed for this search. Baseline 20260720."
+        required: false
+        default: "20260720"
+      beam_width:
+        description: "Beam width. Smoke 2048, full 12000."
+        required: false
+        default: "2048"
+      state_cap:
+        description: "Maximum states kept/generated per layer. Smoke 200000, full 2000000."
+        required: false
+        default: "200000"
+      candidate_scaffolds:
+        description: "Number of strongest cover64 scaffolds to try. Smoke 4, full 6."
+        required: false
+        default: "4"
+      max_mutations:
+        description: "Controlled line replacements in mutation shards. Smoke 0, full 1."
+        required: false
+        default: "0"
+      box_min:
+        description: "Minimum endpoint coordinate before scaling. Use -1."
+        required: false
+        default: "-1"
+      box_max:
+        description: "Maximum endpoint coordinate before scaling. Use 4."
+        required: false
+        default: "4"
+      candidate_lines:
+        description: "Maximum generated replacement/bridge-support lines. Smoke 3000, full 6000."
+        required: false
+        default: "3000"
+      start_limit:
+        description: "How many starting full-line orientations to try. Smoke 22, full 44."
+        required: false
+        default: "22"
+      line_branch_limit:
+        description: "Direct endpoint full-line continuation branch limit. Smoke 12, full 24."
+        required: false
+        default: "12"
+      bridge_branch_limit:
+        description: "Bridge-to-next-full-line branch limit. Smoke 8, full 16."
+        required: false
+        default: "8"
+      min_full_lines:
+        description: "Do not spend repair bridges aggressively before this many full lines. Smoke 10, full 14."
+        required: false
+        default: "10"
+      max_full_lines:
+        description: "Maximum full scaffold/replacement lines to preserve. Use 18."
+        required: false
+        default: "18"
+      max_bridge_links:
+        description: "Maximum explicit bridge/repair links. Smoke/full 8."
+        required: false
+        default: "8"
+      save_min_covered:
+        description: "Minimum coverage for preferred JSONL rows. Smoke 38, full 54."
+        required: false
+        default: "38"
+
+jobs:
+  check-known-23:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python scripts/check_trail.py data/ripa_23_trail.json --expected-links 23 --require-full
+
+  check-input-scaffolds:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Check best search-17 scaffold
+        run: python scripts/check_cover64_line_set.py runs/2026-07-07-smart-search-17-cover64-stitch-graph-full/best_line_set.json --expect-covered 64 --max-lines 22 --min-stitch-path 22
+      - name: Check strongest scaffold additions
+        run: |
+          python - <<'PY'
+          import json
+          import subprocess
+          import tempfile
+          from pathlib import Path
+
+          p = Path("candidates/line-set-additions-run28825060197-cover64-stitch.jsonl")
+          rows = [json.loads(x) for x in p.read_text().splitlines() if x.strip()]
+          if len(rows) < 4:
+              raise SystemExit(f"expected at least 4 strongest scaffolds, got {len(rows)}")
+          with tempfile.TemporaryDirectory() as td:
+              for i, row in enumerate(rows[:4]):
+                  q = Path(td) / f"scaffold_{i}.json"
+                  q.write_text(json.dumps(row))
+                  subprocess.check_call([
+                      "python",
+                      "scripts/check_cover64_line_set.py",
+                      str(q),
+                      "--expect-covered",
+                      "64",
+                      "--max-lines",
+                      "22",
+                      "--min-stitch-path",
+                      "22",
+                  ])
+          PY
+
+  fl-bridge:
+    runs-on: ubuntu-latest
+    needs: [check-known-23, check-input-scaffolds]
+    timeout-minutes: 359
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run full-line bridge shard
+        run: |
+          mkdir -p results/fl_bridge
+          python scripts/full_line_bridge_search.py \
+            --input-json runs/2026-07-07-smart-search-17-cover64-stitch-graph-full/best_line_set.json \
+            --input-jsonl candidates/line-set-additions-run28825060197-cover64-stitch.jsonl \
+            --diagnostic-jsonl candidates/diagnostic-contact-state-dp-run28903545221.jsonl \
+            --seconds "${{ github.event.inputs.seconds || '180' }}" \
+            --workers "${{ github.event.inputs.workers || '4' }}" \
+            --seed "${{ github.event.inputs.seed || '20260720' }}" \
+            --shard "${{ matrix.shard }}" \
+            --shards 20 \
+            --beam-width "${{ github.event.inputs.beam_width || '2048' }}" \
+            --state-cap "${{ github.event.inputs.state_cap || '200000' }}" \
+            --candidate-scaffolds "${{ github.event.inputs.candidate_scaffolds || '4' }}" \
+            --max-mutations "${{ github.event.inputs.max_mutations || '0' }}" \
+            --box-min "${{ github.event.inputs.box_min || '-1' }}" \
+            --box-max "${{ github.event.inputs.box_max || '4' }}" \
+            --candidate-lines "${{ github.event.inputs.candidate_lines || '3000' }}" \
+            --start-limit "${{ github.event.inputs.start_limit || '22' }}" \
+            --line-branch-limit "${{ github.event.inputs.line_branch_limit || '12' }}" \
+            --bridge-branch-limit "${{ github.event.inputs.bridge_branch_limit || '8' }}" \
+            --min-full-lines "${{ github.event.inputs.min_full_lines || '10' }}" \
+            --max-full-lines "${{ github.event.inputs.max_full_lines || '18' }}" \
+            --max-bridge-links "${{ github.event.inputs.max_bridge_links || '8' }}" \
+            --out "results/fl_bridge/fl_bridge_best_shard_${{ matrix.shard }}.json" \
+            --preferred-out "results/fl_bridge/preferred_fl_bridge_shard_${{ matrix.shard }}.jsonl" \
+            --bridge-report-out "results/fl_bridge/fl_bridge_report_shard_${{ matrix.shard }}.json"
+
+      - name: Check ordered-chain JSON geometry
+        if: always()
+        run: |
+          p="results/fl_bridge/fl_bridge_best_shard_${{ matrix.shard }}.json"
+          if [ -f "$p" ]; then
+            links=$(python -c 'import json,sys; d=json.load(open(sys.argv[1])); print(int(d.get("links", 0) or 0))' "$p")
+            if [ "$links" = "22" ]; then
+              python scripts/check_ordered_trail_scaled.py "$p" --expected-links 22 --min-covered 1
+            else
+              python scripts/check_ordered_trail_scaled.py "$p" --min-covered 1
+            fi
+          fi
+
+      - name: Apply save_min_covered gate to preferred JSONL
+        if: always()
+        env:
+          SHARD: ${{ matrix.shard }}
+          MIN_COVERED: ${{ github.event.inputs.save_min_covered || '38' }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+
+          shard = os.environ["SHARD"]
+          min_covered = int(os.environ.get("MIN_COVERED") or 38)
+          p = Path(f"results/fl_bridge/fl_bridge_best_shard_{shard}.json")
+          out = Path(f"results/fl_bridge/preferred_fl_bridge_shard_{shard}.jsonl")
+          if p.exists():
+              d = json.loads(p.read_text())
+              d.setdefault("source_shard", int(shard))
+              d.setdefault("source_artifact", f"fl-bridge-22-shard-{shard}")
+              d.setdefault("source_workflow", "fl-bridge-20")
+              p.write_text(json.dumps(d, indent=2, sort_keys=True))
+              if int(d.get("covered_count", 0) or 0) >= min_covered or int(d.get("links", 0) or 0) >= 22:
+                  out.write_text(json.dumps(d, sort_keys=True) + "\n")
+              elif out.exists():
+                  out.unlink()
+          PY
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fl-bridge-22-shard-${{ matrix.shard }}
+          path: results/fl_bridge/
+          if-no-files-found: warn
+
+  aggregate-fl-bridge:
+    runs-on: ubuntu-latest
+    needs: fl-bridge
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: fl-bridge-22-shard-*
+          path: collected
+          merge-multiple: true
+      - run: python scripts/build_full_line_bridge_summary.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fl-bridge-run-summary
+          path: |
+            collected/fl_bridge_run_summary.json
+            collected/fl_bridge_run_summary.md
+            collected/fl-bridge-candidates.jsonl
+          if-no-files-found: warn
