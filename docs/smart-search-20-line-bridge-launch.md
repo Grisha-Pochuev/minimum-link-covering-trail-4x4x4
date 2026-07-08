@@ -6,6 +6,28 @@ Naming rule: serious numbered search workflows should keep the family prefix `sm
 
 Hypothesis: preserve rich full scaffold lines and spend explicit bridge links between endpoint components instead of clipping rich lines at interior contacts.
 
+## Human-safe launch rule
+
+The workflow now has a `profile` input so the user does not have to manually edit many numeric fields.
+
+Use:
+
+```text
+profile=smoke
+```
+
+for the short technical green-light run.
+
+After smoke is green, refresh the workflow page and launch again with:
+
+```text
+profile=full
+```
+
+Do **not** manually change only `seconds`; full mode changes `seconds`, `beam_width`, `state_cap`, branching limits, save threshold, and several other parameters together.
+
+Use `profile=custom` only for deliberate debugging. In normal web-chat operation, avoid custom because it invites copy/paste mistakes.
+
 ## Files
 
 - Workflow: `.github/workflows/smart-search-20-line-bridge.yml`
@@ -31,9 +53,11 @@ The workflow reads:
 - `16..18`: `one_line_replacement`
 - `19`: `conservative_control`
 
-## Smoke-test inputs
+## Smoke-test profile
 
-Use these only as a green-lamp technical check:
+Choose `profile=smoke`; leave all custom numeric fields blank.
+
+Effective smoke parameters:
 
 ```text
 seconds=180
@@ -55,7 +79,11 @@ max_bridge_links=8
 save_min_covered=38
 ```
 
-## Full-run inputs
+## Full-run profile
+
+Choose `profile=full`; leave all custom numeric fields blank.
+
+Effective full parameters:
 
 ```text
 seconds=21000
@@ -85,6 +113,7 @@ Per shard:
   - `fl_bridge_best_shard_<shard>.json`
   - `preferred_fl_bridge_shard_<shard>.jsonl`
   - `fl_bridge_report_shard_<shard>.json`
+  - `effective_profile_<shard>.json`
 
 Aggregate:
 
