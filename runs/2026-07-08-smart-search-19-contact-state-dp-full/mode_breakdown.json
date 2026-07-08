@@ -1,0 +1,51 @@
+{
+  "conservative_control": {
+    "best_covered": 42,
+    "best_links": 22,
+    "best_lost": 23,
+    "rows": 2,
+    "unique": 1
+  },
+  "controlled_bridge_replacement": {
+    "best_covered": 46,
+    "best_links": 22,
+    "best_lost": 18,
+    "rows": 4,
+    "unique": 1
+  },
+  "diagnostic_replay": {
+    "best_covered": 42,
+    "best_links": 22,
+    "best_lost": 23,
+    "rows": 2,
+    "unique": 1
+  },
+  "exact_top4_dp": {
+    "best_covered": 42,
+    "best_links": 22,
+    "best_lost": 23,
+    "rows": 8,
+    "unique": 1
+  },
+  "loss_minimizing": {
+    "best_covered": 46,
+    "best_links": 22,
+    "best_lost": 17,
+    "rows": 8,
+    "unique": 2
+  },
+  "official60_aware": {
+    "best_covered": 46,
+    "best_links": 22,
+    "best_lost": 17,
+    "rows": 8,
+    "unique": 2
+  },
+  "wide_beam_contact_state": {
+    "best_covered": 46,
+    "best_links": 22,
+    "best_lost": 17,
+    "rows": 8,
+    "unique": 1
+  }
+}
