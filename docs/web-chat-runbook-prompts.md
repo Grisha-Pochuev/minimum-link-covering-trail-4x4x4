@@ -33,13 +33,10 @@ Examples already in the repository:
 smart-search-11-d2-bridge-repair
 smart-search-12-skeleton-diversity
 smart-search-19-contact-state-dp
-```
-
-The suffix should be short, ideally one or two descriptive words, but do **not** drop the `smart-search-N` prefix. The temporary name `fl-bridge-20` was a mistake caused by overinterpreting "make the name shorter". The corrected name is:
-
-```text
 smart-search-20-line-bridge
 ```
+
+The suffix should be short, ideally one or two descriptive words, but do **not** drop the `smart-search-N` prefix.
 
 ## What the recent web-chat process showed
 
@@ -51,9 +48,11 @@ Result from run `28825060197`: full search-17 found `64/64` unordered 22-line sc
 
 Result from run `28875314204`: search-18 tried ordered reconstruction from search-17 scaffolds. It completed successfully, but the best checked ordered-chain reconstruction was only `44/64`, far below the standing ordered-trail frontier `60/64`.
 
-Result from run `28903545221`: full-duration search-19 completed successfully, but actual saved best-row parameters were smoke/default DP width (`beam_width=2048`, `state_cap=200000`, `max_mutations=1`). It improved the diagnostic ordered reconstruction only `44/64 -> 46/64`. Dominant failure: rich-line clipping, not the old four-hole `60/64` wall.
+Result from run `28903545221`: full-duration search-19 completed successfully and improved the diagnostic ordered reconstruction only `44/64 -> 46/64`. Dominant failure: rich-line clipping, not the old four-hole `60/64` wall.
 
-Prepared launch package after the 2026-07-08 chat: `smart-search-20-line-bridge`. It implements the full-line-preserving bridge hypothesis: preserve rich full scaffold lines and spend explicit bridge links between endpoint components instead of clipping rich lines at interior contacts.
+Result from run `28973760924`: full `smart-search-20-line-bridge` completed successfully. It preserved rich full lines much better and improved the diagnostic ceiling `46/64 -> 58/64`, but did not improve the ordered-trail frontier `60/64`. Best candidate `mlct22-flbridge-8da0e01c34bb9c88` has `22` links, covers `58/64`, preserves `14` rich lines, uses `8` bridge links, and hits all 4 old missing points from the official `60/64` candidate. New best missing set: `(0,2,0)`, `(0,2,2)`, `(2,1,0)`, `(2,1,2)`, `(2,3,0)`, `(3,2,0)`.
+
+Search-20 lesson: preserving full rich lines helps, but the explicit bridge budget is still too expensive. Do not rerun search-20 unchanged.
 
 ## Fast checklist before preparing or analyzing a launch
 
@@ -79,7 +78,7 @@ If a smoke-test fails red, first distinguish:
 ```text
 - engine/search step failed: inspect logs and fix the engine or inputs;
 - post-search checker/summary step failed: this may be a workflow plumbing bug, not a mathematical failure;
-- old failed run was before a fix commit: start a fresh Run workflow from main, do not Re-run failed jobs.
+- old failed run was before a fix commit: start a fresh Run workflow from main, not Re-run failed jobs.
 ```
 
 ## Prompt 1 — record completed run
@@ -183,81 +182,34 @@ START_HERE.md уже был открыт в начале чата, не откр
 4. какие промпты лучше использовать дальше.
 ```
 
-## Current state after `smart-search-20-line-bridge` launch preparation
+## Current state after `smart-search-20-line-bridge`
 
 Current frontier:
 
 ```text
 best ordered-trail candidate: 60/64, run 28674416173
 best unordered cover64 scaffold: 64/64 line-set, run 28825060197
-latest recorded completed full run: 28903545221, smart-search-19-contact-state-dp
-latest recorded full-run best ordered reconstruction: 46/64
-ordinary candidate-bank additions from search-19: 0
-diagnostic ordered-chain rows from search-19: 3
+latest recorded completed full run: 28973760924, smart-search-20-line-bridge
+latest recorded full-run best line-bridge diagnostic: 58/64
+ordinary candidate-bank additions from search-20: 0
+diagnostic line-bridge rows from search-20: 6
+originals index rows from search-20: 6
 ```
 
-Prepared workflow:
+Saved search-20 files:
 
 ```text
-smart-search-20-line-bridge
+runs/2026-07-09-smart-search-20-line-bridge-full/summary.md
+runs/2026-07-09-smart-search-20-line-bridge-full/best_line_bridge_candidate.json
+runs/2026-07-09-smart-search-20-line-bridge-full/line_bridge_run_summary_compact.json
+runs/2026-07-09-smart-search-20-line-bridge-full/mode_breakdown.json
+candidates/diagnostic-line-bridge-run28973760924.jsonl
+candidates/originals/run28973760924-line-bridge-index.jsonl
 ```
 
-Prepared files:
+Next prompt:
 
-```text
-.github/workflows/smart-search-20-line-bridge.yml
-scripts/full_line_bridge_search.py
-scripts/build_full_line_bridge_summary.py
-docs/smart-search-20-line-bridge-launch.md
-```
-
-Smoke-test inputs:
-
-```text
-seconds=180
-workers=4
-seed=20260720
-beam_width=2048
-state_cap=200000
-candidate_scaffolds=4
-max_mutations=0
-box_min=-1
-box_max=4
-candidate_lines=3000
-start_limit=22
-line_branch_limit=12
-bridge_branch_limit=8
-min_full_lines=10
-max_full_lines=18
-max_bridge_links=8
-save_min_covered=38
-```
-
-Full-run inputs:
-
-```text
-seconds=21000
-workers=4
-seed=20260720
-beam_width=12000
-state_cap=2000000
-candidate_scaffolds=6
-max_mutations=1
-box_min=-1
-box_max=4
-candidate_lines=6000
-start_limit=44
-line_branch_limit=24
-bridge_branch_limit=16
-min_full_lines=14
-max_full_lines=18
-max_bridge_links=8
-save_min_covered=54
-```
-
-Next prompt depends on what the user does:
-
-- if `smart-search-20-line-bridge` has not been run, launch smoke-test from Actions manually;
-- if smoke-test is green and the user launches the long run, do not waste a separate step recording smoke unless asked;
-- if the full run completes, use Prompt 1 to record the completed full run;
-- if smoke-test is red, inspect jobs/logs as a technical failure first.
+- use Prompt 2;
+- choose a new non-repeating hypothesis;
+- do not rerun search-20 unchanged;
+- key lesson to use: full-line preservation repairs the old four-hole wall, but explicit bridge cost creates a new six-hole bridge-defect family.
