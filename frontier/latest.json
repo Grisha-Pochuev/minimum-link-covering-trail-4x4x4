@@ -1,8 +1,8 @@
 {
   "schema": "mlct-frontier-v1",
   "repository": "Grisha-Pochuev/minimum-link-covering-trail-4x4x4",
-  "updated_utc": "2026-07-08T20:30:00Z",
-  "status": "smart_search_20_line_bridge_launch_prepared_no_ordered_frontier_change",
+  "updated_utc": "2026-07-09T03:20:00Z",
+  "status": "smart_search_20_line_bridge_recorded_no_ordered_frontier_change",
   "best_recorded_ordered_trail_candidate": {
     "candidate_id": "mlct22-3cf45a2e21fe611c",
     "coverage_percent": 93.75,
@@ -38,126 +38,18 @@
     "stitch_path_lower_bound": 22
   },
   "latest_recorded_completed_run": {
-    "run_id": 28903545221,
-    "run_url": "https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/28903545221",
-    "workflow_name": "smart-search-19-contact-state-dp",
-    "head_commit_sha": "ed5c56c90bca2044d55cbab6f48c0fb8c3b4071f",
+    "run_id": 28973760924,
+    "run_url": "https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/28973760924",
+    "workflow_name": "smart-search-20-line-bridge",
+    "head_commit_sha": "772596df3d9fd796d2a5bf5ee0ea48697ca17031",
     "status": "success",
-    "result_type": "contact_state_dp_ordered_chain_reconstruction_diagnostic_below_frontier_not_proof",
+    "result_type": "full_line_preserving_bridge_ordered_chain_diagnostic_below_frontier_not_proof",
+    "profile": "full",
     "parameters": {
       "seconds": 21000,
       "workers": 4,
-      "seed": 20260719,
+      "seed": 20260720,
       "shards": 20,
-      "beam_width": 2048,
-      "state_cap": 200000,
-      "candidate_scaffolds": 4,
-      "max_mutations": 1,
-      "box_min": -1,
-      "box_max": 4,
-      "min_piece_cover": 1,
-      "branch_limit": 6,
-      "start_limit": 22,
-      "candidate_lines": 3000
-    },
-    "parameter_caution": "Full-duration seconds, but smoke/default DP width: beam_width=2048, state_cap=200000, max_mutations=1; not the intended full-width 8192/2000000/2 profile.",
-    "best_result": {
-      "candidate_id": "mlct22-contactdp-2714c28ba62b5c26",
-      "coverage_percent": 71.875,
-      "covered_count": 46,
-      "grid_points": 64,
-      "links": 22,
-      "missing_count": 18,
-      "missing": [[0,0,3],[0,3,0],[0,3,1],[1,0,0],[1,0,1],[1,3,3],[2,0,0],[2,0,1],[2,0,2],[2,3,1],[2,3,2],[2,3,3],[3,0,1],[3,0,2],[3,2,3],[3,3,0],[3,3,1],[3,3,2]],
-      "mode": "official60_aware",
-      "source_artifact": "contact-state-dp-22-shard-14",
-      "source_file": "runs/2026-07-08-smart-search-19-contact-state-dp-full/best_contact_state_candidate.json",
-      "source_scaffold_id": "mlct22-lineset-03bc99e72246b78c",
-      "source_shard": 14,
-      "status": "full_length_ordered_chain",
-      "weak_links": 0,
-      "contact_state_metrics": {
-        "total_lost_points_over_pieces": 17,
-        "clipped_rich_lines": 12,
-        "preserved_rich_lines": 8,
-        "official60_missing_hits": 3,
-        "integer_contact_points_seen": 24
-      },
-      "interpretation": "checked ordered-chain reconstruction diagnostic below existing ordered-trail frontier"
-    },
-    "run_statistics": {
-      "raw_summary_result_rows": 40,
-      "unique_ordered_candidates": 3,
-      "compact_diagnostic_rows_saved": 3,
-      "ordinary_ordered_trail_candidates_added": 0,
-      "scaffold_additions_saved": 0,
-      "best_covered_count": 46,
-      "best_missing_count": 18,
-      "shard_artifacts": 20,
-      "summary_artifacts": 1
-    },
-    "comparison_with_previous_frontier": {
-      "ordered_trail_numeric_frontier_changed": false,
-      "previous_best_ordered_trail_covered_count": 60,
-      "new_best_ordered_trail_covered_count": 60,
-      "search18_best_ordered_reconstruction_covered_count": 44,
-      "search19_best_ordered_reconstruction_covered_count": 46,
-      "scaffold_frontier_changed": false,
-      "important_observation": "Contact-state reconstruction improved diagnostics slightly over search-18 but still clips many rich lines and collapses the cover64 scaffold to 46/64."
-    }
-  },
-  "previous_recorded_run": {
-    "run_id": 28875314204,
-    "workflow_name": "smart-search-18-order-from-cover64-stitch",
-    "best_ordered_reconstruction_covered_count": 44,
-    "ordinary_ordered_trail_candidates_added": 0,
-    "diagnostic_ordered_chain_rows_saved": 17
-  },
-  "latest_recorded_run_archive": {
-    "run_folder": "runs/2026-07-08-smart-search-19-contact-state-dp-full/",
-    "summary_file": "runs/2026-07-08-smart-search-19-contact-state-dp-full/summary.md",
-    "best_candidate_file": "runs/2026-07-08-smart-search-19-contact-state-dp-full/best_contact_state_candidate.json",
-    "mode_breakdown_file": "runs/2026-07-08-smart-search-19-contact-state-dp-full/mode_breakdown.json",
-    "compact_run_summary_file": "runs/2026-07-08-smart-search-19-contact-state-dp-full/contact_state_dp_run_summary_compact.json",
-    "candidate_diagnostic_bank": "candidates/diagnostic-contact-state-dp-run28903545221.jsonl",
-    "originals_index": "candidates/originals/run28903545221-contact-state-dp-index.jsonl"
-  },
-  "prepared_launch_package": {
-    "workflow_name": "smart-search-20-line-bridge",
-    "hypothesis": "preserve rich full scaffold lines and spend explicit bridge links between endpoint components instead of clipping rich lines at interior contacts",
-    "workflow_file": ".github/workflows/smart-search-20-line-bridge.yml",
-    "engine_file": "scripts/full_line_bridge_search.py",
-    "summary_builder_file": "scripts/build_full_line_bridge_summary.py",
-    "launch_doc": "docs/smart-search-20-line-bridge-launch.md",
-    "workflow_dispatch_only": true,
-    "shards": 20,
-    "max_parallel": 20,
-    "per_shard_artifact_pattern": "smart-search-20-line-bridge-22-shard-*",
-    "summary_artifact": "smart-search-20-line-bridge-run-summary",
-    "naming_correction": "Temporary name fl-bridge-20 was removed. Serious numbered launches must use smart-search-N-short-description.",
-    "smoke_inputs": {
-      "seconds": 180,
-      "workers": 4,
-      "seed": 20260720,
-      "beam_width": 2048,
-      "state_cap": 200000,
-      "candidate_scaffolds": 4,
-      "max_mutations": 0,
-      "box_min": -1,
-      "box_max": 4,
-      "candidate_lines": 3000,
-      "start_limit": 22,
-      "line_branch_limit": 12,
-      "bridge_branch_limit": 8,
-      "min_full_lines": 10,
-      "max_full_lines": 18,
-      "max_bridge_links": 8,
-      "save_min_covered": 38
-    },
-    "full_inputs": {
-      "seconds": 21000,
-      "workers": 4,
-      "seed": 20260720,
       "beam_width": 12000,
       "state_cap": 2000000,
       "candidate_scaffolds": 6,
@@ -172,19 +64,105 @@
       "max_full_lines": 18,
       "max_bridge_links": 8,
       "save_min_covered": 54
-    }
+    },
+    "best_result": {
+      "candidate_id": "mlct22-flbridge-8da0e01c34bb9c88",
+      "coverage_percent": 90.625,
+      "covered_count": 58,
+      "grid_points": 64,
+      "links": 22,
+      "missing_count": 6,
+      "missing": [[0,2,0],[0,2,2],[2,1,0],[2,1,2],[2,3,0],[3,2,0]],
+      "mode": "one_line_replacement",
+      "source_artifact": "smart-search-20-line-bridge-22-shard-16",
+      "source_file": "runs/2026-07-09-smart-search-20-line-bridge-full/best_line_bridge_candidate.json",
+      "source_scaffold_id": "mlct22-lineset-faadfe124b120444",
+      "source_shard": 16,
+      "status": "full_length_ordered_chain",
+      "full_line_bridge_metrics": {
+        "full_line_links": 14,
+        "bridge_links": 8,
+        "preserved_rich_lines": 14,
+        "unused_scaffold_lines": 8,
+        "bridge_only_points": 10,
+        "bridge_points_total": 27,
+        "official60_missing_hits": 4
+      },
+      "endpoint_component_summary": {
+        "endpoint_component_count": 14,
+        "endpoint_component_sizes": [6,3,2,1,1,1,1,1,1,1,1,1,1,1],
+        "endpoint_contact_count": 8
+      },
+      "interpretation": "checked full-line-preserving ordered-chain diagnostic below existing ordered-trail frontier"
+    },
+    "run_statistics": {
+      "raw_summary_result_rows": 40,
+      "shard_best_outputs": 20,
+      "unique_ordered_candidates": 6,
+      "compact_diagnostic_rows_saved": 6,
+      "ordinary_ordered_trail_candidates_added": 0,
+      "scaffold_additions_saved": 0,
+      "best_covered_count": 58,
+      "best_missing_count": 6,
+      "shard_artifacts": 20,
+      "summary_artifacts": 1,
+      "threshold_counts": {
+        "above_46": 6,
+        "above_50": 6,
+        "above_56": 3,
+        "above_60": 0,
+        "at_least_61": 0,
+        "full_64": 0
+      },
+      "coverage_histogram": [
+        {"covered_count": 58, "count": 2},
+        {"covered_count": 57, "count": 8},
+        {"covered_count": 56, "count": 30}
+      ]
+    },
+    "comparison_with_previous_frontier": {
+      "ordered_trail_numeric_frontier_changed": false,
+      "previous_best_ordered_trail_covered_count": 60,
+      "new_best_ordered_trail_covered_count": 60,
+      "search19_best_ordered_reconstruction_covered_count": 46,
+      "search20_best_line_bridge_diagnostic_covered_count": 58,
+      "scaffold_frontier_changed": false,
+      "important_observation": "Full-line preservation improved diagnostics greatly versus contact-state clipping and hit all four official60 old missing points, but eight explicit bridges still leave a new six-hole bridge-defect family."
+    },
+    "top_missing_points": [[3,2,2],[2,3,2],[0,0,3],[2,0,1],[2,3,1],[2,3,3],[3,0,1],[0,0,1]],
+    "best_new_defect_family": [[0,2,0],[0,2,2],[2,1,0],[2,1,2],[2,3,0],[3,2,0]]
+  },
+  "previous_recorded_run": {
+    "run_id": 28903545221,
+    "workflow_name": "smart-search-19-contact-state-dp",
+    "best_ordered_reconstruction_covered_count": 46,
+    "ordinary_ordered_trail_candidates_added": 0,
+    "diagnostic_ordered_chain_rows_saved": 3
+  },
+  "latest_recorded_run_archive": {
+    "run_folder": "runs/2026-07-09-smart-search-20-line-bridge-full/",
+    "summary_file": "runs/2026-07-09-smart-search-20-line-bridge-full/summary.md",
+    "best_candidate_file": "runs/2026-07-09-smart-search-20-line-bridge-full/best_line_bridge_candidate.json",
+    "mode_breakdown_file": "runs/2026-07-09-smart-search-20-line-bridge-full/mode_breakdown.json",
+    "compact_run_summary_file": "runs/2026-07-09-smart-search-20-line-bridge-full/line_bridge_run_summary_compact.json",
+    "candidate_diagnostic_bank": "candidates/diagnostic-line-bridge-run28973760924.jsonl",
+    "originals_index": "candidates/originals/run28973760924-line-bridge-index.jsonl"
   },
   "candidate_preservation_rule_for_future_runs": {
     "rule_type": "separate_ordered_trail_line_set_and_diagnostic_banks",
     "ordinary_ordered_trail_min_useful_frontier": 60,
-    "note": "Keep cover64 stitch scaffolds in line-set scaffold files until converted into checked ordered polygonal-trail candidates. Ordered reconstruction attempts that are far below the frontier go into diagnostic JSONL, not the ordinary ordered-trail bank."
+    "note": "Keep cover64 stitch scaffolds in line-set scaffold files until converted into checked ordered polygonal-trail candidates. Ordered reconstruction attempts below the 60/64 frontier go into diagnostic JSONL, not the ordinary ordered-trail bank."
   },
   "current_next_step": {
-    "step_type": "run_or_record_prepared_smart_search_20_line_bridge",
-    "branch": "main",
-    "workflow_name": "smart-search-20-line-bridge",
-    "instruction": "Do not choose a new hypothesis yet. If smart-search-20-line-bridge has not been run, launch smoke-test manually; if smoke is green, launch the full run; if full run is complete, use prompt 1 to record the completed full run; if smoke is red, debug it as technical failure first.",
-    "do_not_do": ["do not rerun smart-search-17 unchanged", "do not rerun smart-search-18 unchanged", "do not rerun smart-search-19 unchanged", "do not run prompt 2 again before smart-search-20-line-bridge is tried", "do not use the removed fl-bridge-20 name"]
+    "step_type": "choose_new_non_repeating_hypothesis_after_line_bridge_diagnostic",
+    "instruction": "Use Prompt 2 next. The smart-search-20 line-bridge hypothesis has been tried; do not rerun it unchanged. Use its lesson: preserving rich full lines helped, but explicit bridge cost still creates a new six-hole defect family.",
+    "do_not_do": [
+      "do not rerun smart-search-17 unchanged",
+      "do not rerun smart-search-18 unchanged",
+      "do not rerun smart-search-19 unchanged",
+      "do not rerun smart-search-20 unchanged",
+      "do not put search-20 diagnostic candidates into the ordinary ordered-trail bank"
+    ]
   },
   "standard_web_chat_cycle": ["record completed full-run results", "make a new hypothesis and do local checks if useful", "prepare the next GitHub launch for the chosen hypothesis", "wrap up and update memory"]
 }
