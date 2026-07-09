@@ -1,22 +1,22 @@
 # Current search frontier
 
-Status: launch package `smart-search-20-line-bridge` is prepared on `main`. The normal ordered-trail frontier remains `60/64`; the scaffold frontier from search-17 remains unordered `64/64` with stitch path lower bound `22/22`. Search-19 improved the ordered-reconstruction diagnostic ceiling from `44/64` to `46/64`, but did not improve the actual ordered-trail frontier.
+Status: completed full run `smart-search-20-line-bridge` on 2026-07-09. The normal ordered-trail frontier remains `60/64`; the scaffold frontier from search-17 remains unordered `64/64` with stitch path lower bound `22/22`. Search-20 improved the ordered reconstruction / bridge diagnostic ceiling from `46/64` to `58/64`, but did not improve the actual ordered-trail frontier.
 
 Latest recorded completed full run:
 
 - Repository: `Grisha-Pochuev/minimum-link-covering-trail-4x4x4`
-- Final run id: `28903545221`
-- Run URL: https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/28903545221
-- Workflow: `smart-search-19-contact-state-dp`
-- Commit SHA of the run: `ed5c56c90bca2044d55cbab6f48c0fb8c3b4071f`
+- Final run id: `28973760924`
+- Run URL: https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/28973760924
+- Workflow: `smart-search-20-line-bridge`
+- Commit SHA of the run: `772596df3d9fd796d2a5bf5ee0ea48697ca17031`
 - Status: `success`
+- Profile: `full`
 - Duration: long run, `21000` seconds per shard
 - Workers per shard: `4`
 - Shards/jobs: `20`
-- Seed: `20260719`
-- Result type: contact-state DP ordered-chain reconstruction diagnostics from search-17 cover64 scaffolds; not a proof and not an ordered-trail improvement
-- Important parameter caution: actual saved best row has `beam_width=2048`, `state_cap=200000`, `max_mutations=1`; this is full-duration but smoke/default DP width, not the intended full-width profile `8192/2000000/2`.
-- Artifacts: `contact-state-dp-run-summary`, `contact-state-dp-22-shard-*`
+- Seed: `20260720`
+- Result type: full-line-preserving bridge ordered-chain diagnostic from search-17 cover64 scaffolds; below the ordered-trail frontier, not a proof and not an ordered-trail improvement
+- Artifacts: `smart-search-20-line-bridge-run-summary`, `smart-search-20-line-bridge-22-shard-*`
 
 ## Best recorded GitHub Actions ordered-trail result
 
@@ -53,122 +53,51 @@ Important caveat: this is an unordered 22-line scaffold. A line-set graph path i
 
 ## Latest recorded run lesson
 
-Run `28903545221` completed the fresh search-19 contact-state DP reconstruction after the previous red checker bug was fixed. All precheck, shard, and aggregate jobs succeeded.
+Run `28973760924` completed `smart-search-20-line-bridge` successfully. All prechecks, 20 line-bridge shard jobs, and the aggregate job succeeded.
 
-Best diagnostic ordered-chain candidate:
+Best line-bridge ordered-chain diagnostic:
 
-- candidate id: `mlct22-contactdp-2714c28ba62b5c26`
-- best covered_count: `46/64`
+- candidate id: `mlct22-flbridge-8da0e01c34bb9c88`
+- best covered_count: `58/64`
 - links: `22`
-- missing_count: `18`
-- best mode: `official60_aware`
-- best source shard/artifact: shard `14`, `contact-state-dp-22-shard-14`
-- source scaffold: `mlct22-lineset-03bc99e72246b78c`
+- missing_count: `6`
+- missing: `(0,2,0)`, `(0,2,2)`, `(2,1,0)`, `(2,1,2)`, `(2,3,0)`, `(3,2,0)`
+- best mode: `one_line_replacement`
+- best source shard/artifact: shard `16`, `smart-search-20-line-bridge-22-shard-16`
+- full-line links: `14`
+- bridge links: `8`
+- preserved rich lines: `14`
+- official60 old-missing hits: `4`
 - result rows in summary: `40`
-- unique ordered candidates in summary: `3`
-- compact diagnostic candidates saved: `3`
+- shard-best outputs: `20`
+- unique compact ordered candidates in summary: `6`
+- compact diagnostic candidates saved: `6`
 - ordinary ordered-trail additions saved: `0`
 - line-set scaffold additions saved: `0`
-- diagnostic ordered-chain rows saved: `3`
 
-Interpretation: search-19 is a real diagnostic improvement over search-18 (`44/64 -> 46/64`), but still far below the standing ordered-trail frontier `60/64`. It confirms that the hard part is preserving rich scaffold lines while forcing one continuous ordered 22-link chain.
+Interpretation: search-20 is a major diagnostic improvement over search-19 (`46/64 -> 58/64`), but still below the standing ordered-trail frontier `60/64`. It confirms that preserving rich scaffold lines is much better than contact-state clipping, but eight explicit bridge links are still too expensive.
 
-The dominant failure is rich-line clipping:
-
-- best total lost points over pieces: `17`
-- clipped rich lines in best candidate: `12`
-- preserved rich lines in best candidate: `8`
-- official60 old-missing hits: `3`
-
-Most repeated missing/lost points are concentrated in the reconstruction-loss family, not in the old four-hole `60/64` wall:
+The important new failure mode is not the old official four-hole wall. The best search-20 candidate hits all four old missing points from the `60/64` candidate, then opens a new six-hole bridge-defect family:
 
 ```text
-(0,0,3), (0,3,0), (0,3,1), (1,3,3), (2,0,0), (2,3,1),
-(2,3,2), (2,3,3), (3,0,1), (3,2,3), (3,3,0), (3,3,2)
+(0,2,0), (0,2,2), (2,1,0), (2,1,2), (2,3,0), (3,2,0)
 ```
 
-Saved run-19 memory:
+Most repeated aggregate missing points:
 
 ```text
-runs/2026-07-08-smart-search-19-contact-state-dp-full/summary.md
-runs/2026-07-08-smart-search-19-contact-state-dp-full/best_contact_state_candidate.json
-runs/2026-07-08-smart-search-19-contact-state-dp-full/mode_breakdown.json
-runs/2026-07-08-smart-search-19-contact-state-dp-full/contact_state_dp_run_summary_compact.json
-candidates/diagnostic-contact-state-dp-run28903545221.jsonl
-candidates/originals/run28903545221-contact-state-dp-index.jsonl
+(3,2,2), (2,3,2), (0,0,3), (2,0,1), (2,3,1), (2,3,3), (3,0,1), (0,0,1)
 ```
 
-## Prepared launch package
-
-A new launch package is now prepared and merged on `main`:
+Saved run-20 memory:
 
 ```text
-smart-search-20-line-bridge
-```
-
-This corrects the temporary bad name `fl-bridge-20`. Serious numbered searches should keep the `smart-search-N-short-description` pattern.
-
-Prepared files:
-
-```text
-.github/workflows/smart-search-20-line-bridge.yml
-scripts/full_line_bridge_search.py
-scripts/build_full_line_bridge_summary.py
-docs/smart-search-20-line-bridge-launch.md
-```
-
-Hypothesis: preserve rich full scaffold lines and spend explicit bridge links between endpoint components instead of clipping rich lines at interior contacts.
-
-Workflow facts:
-
-- starts with `name: smart-search-20-line-bridge`;
-- `workflow_dispatch` only;
-- 20 shard matrix, `max-parallel: 20`;
-- per-shard artifact: `smart-search-20-line-bridge-22-shard-<shard>`;
-- aggregate artifact: `smart-search-20-line-bridge-run-summary`.
-
-Smoke-test inputs:
-
-```text
-seconds=180
-workers=4
-seed=20260720
-beam_width=2048
-state_cap=200000
-candidate_scaffolds=4
-max_mutations=0
-box_min=-1
-box_max=4
-candidate_lines=3000
-start_limit=22
-line_branch_limit=12
-bridge_branch_limit=8
-min_full_lines=10
-max_full_lines=18
-max_bridge_links=8
-save_min_covered=38
-```
-
-Full-run inputs:
-
-```text
-seconds=21000
-workers=4
-seed=20260720
-beam_width=12000
-state_cap=2000000
-candidate_scaffolds=6
-max_mutations=1
-box_min=-1
-box_max=4
-candidate_lines=6000
-start_limit=44
-line_branch_limit=24
-bridge_branch_limit=16
-min_full_lines=14
-max_full_lines=18
-max_bridge_links=8
-save_min_covered=54
+runs/2026-07-09-smart-search-20-line-bridge-full/summary.md
+runs/2026-07-09-smart-search-20-line-bridge-full/best_line_bridge_candidate.json
+runs/2026-07-09-smart-search-20-line-bridge-full/line_bridge_run_summary_compact.json
+runs/2026-07-09-smart-search-20-line-bridge-full/mode_breakdown.json
+candidates/diagnostic-line-bridge-run28973760924.jsonl
+candidates/originals/run28973760924-line-bridge-index.jsonl
 ```
 
 ## Candidate preservation rule
@@ -177,17 +106,12 @@ Keep three banks separate:
 
 1. ordinary ordered-trail candidates: only checked polygonal trails that are near or above the current ordered frontier;
 2. line-set scaffolds: unordered cover64 line sets from search-17 and related runs;
-3. ordered-chain diagnostics: search-18/search-19 reconstruction attempts far below the frontier.
+3. ordered-chain diagnostics: search-18/search-19/search-20 reconstruction attempts below the frontier.
 
-Search-17 artifacts are `cover64-stitch-line-set-v1` scaffolds, not solved trails. Search-18 and search-19 outputs are checked ordered-chain diagnostics, but they are below the `60/64` ordered-trail frontier and should not be treated as ordinary candidate-bank improvements.
+Search-20 outputs are checked full-length ordered-chain diagnostics, but their best is `58/64`, below the current `60/64` ordered-trail frontier. They should not be treated as ordinary candidate-bank improvements.
 
 ## Current next step
 
-Do not choose another new hypothesis yet. The chosen hypothesis has already been implemented as `smart-search-20-line-bridge`.
+The prepared `smart-search-20-line-bridge` hypothesis has now been tried. Do not rerun search-17, search-18, search-19, or search-20 unchanged as the next serious step.
 
-Next action:
-
-1. If `smart-search-20-line-bridge` has not been run yet, launch the smoke-test manually from GitHub Actions with the smoke inputs above.
-2. If smoke-test is green, launch the full run with the full inputs above.
-3. If the full run is complete, use prompt 1 to record the completed full run.
-4. If smoke-test is red, inspect it as a technical failure first.
+Next prompt should be Prompt 2: choose a new non-repeating hypothesis using the search-20 lesson. The useful lesson is: full-line preservation helped a lot, but spending 8 bridge links still leaves a new six-hole bridge-defect family. The next idea should reduce bridge cost, change the scaffold ordering principle, or construct richer endpoint-compatible scaffolds rather than repeating the same line-bridge workflow.
