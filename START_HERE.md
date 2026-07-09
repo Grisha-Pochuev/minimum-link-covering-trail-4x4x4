@@ -1,6 +1,6 @@
 # START HERE — compact agent memory
 
-Last updated: 2026-07-08
+Last updated: 2026-07-09
 
 This file is the first thing to read in a new ChatGPT web chat. It is the boot memory, not the full diary. Read it once at the beginning of the working chat, normally in prompt 1. Do not reopen it in prompts 2-4 unless the user says this is a new chat, memory was lost, or critical context is missing. Detailed history belongs in `frontier/latest.*`, `runs/*/summary.md`, plans, runbooks, and candidate banks.
 
@@ -38,16 +38,16 @@ After this boot read, avoid reopening `START_HERE.md` during prompts 2-4 in the 
 
 ## 3. Current recorded frontier
 
-Latest recorded completed full run is still search-19:
+Latest recorded completed full run is now search-20:
 
-- run id: `28903545221`
-- run URL: https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/28903545221
-- workflow: `smart-search-19-contact-state-dp`
+- run id: `28973760924`
+- run URL: https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/28973760924
+- workflow: `smart-search-20-line-bridge`
 - status: `success`
-- head commit: `ed5c56c90bca2044d55cbab6f48c0fb8c3b4071f`
-- result type: contact-state DP ordered-chain reconstruction diagnostic from search-17 cover64 scaffolds; not an ordered-trail frontier improvement
-- actual parameters from best row: `seconds=21000`, `workers=4`, `seed=20260719`, `beam_width=2048`, `state_cap=200000`, `candidate_scaffolds=4`, `max_mutations=1`, `branch_limit=6`, `start_limit=22`, `candidate_lines=3000`
-- caution: this used full-duration seconds but smoke/default DP width, not the intended full-width profile `beam_width=8192`, `state_cap=2000000`, `max_mutations=2`
+- head commit: `772596df3d9fd796d2a5bf5ee0ea48697ca17031`
+- profile: `full`
+- actual parameters: `seconds=21000`, `workers=4`, `seed=20260720`, `beam_width=12000`, `state_cap=2000000`, `candidate_scaffolds=6`, `max_mutations=1`, `candidate_lines=6000`, `start_limit=44`, `line_branch_limit=24`, `bridge_branch_limit=16`, `min_full_lines=14`, `max_full_lines=18`, `max_bridge_links=8`, `save_min_covered=54`
+- result type: full-line-preserving bridge ordered-chain diagnostic from search-17 cover64 scaffolds; below the ordered-trail frontier, not a proof and not an ordered-trail improvement
 
 Best recorded GitHub ordered-trail candidate remains:
 
@@ -83,31 +83,42 @@ Key lesson from run `28875314204`:
 
 - search-18 tried to convert search-17 `64/64` scaffolds into real ordered 22-link chains;
 - best ordered-chain reconstruction was only `44/64`, candidate `mlct22-order-5c31614d2aeaa2aa`;
-- best mode: `one_two_line_mutation`, shard `7`;
-- unique compact diagnostic ordered candidates saved: `17`;
 - ordinary ordered-trail additions saved: `0`;
 - line-set scaffold additions saved: `0`;
-- diagnostic bank saved: `candidates/diagnostic-order-from-cover64-run28875314204.jsonl`;
-- originals index saved: `candidates/originals/run28875314204-order-from-cover64-index.jsonl`.
+- diagnostic bank saved: `candidates/diagnostic-order-from-cover64-run28875314204.jsonl`.
 
 Key lesson from run `28903545221`:
 
 - search-19 fixed the red technical launch and completed successfully;
-- all 20 contact-state shard jobs and the aggregate job succeeded;
-- aggregate rows: `40`;
-- unique ordered candidates in summary: `3`;
 - best diagnostic ordered-chain reconstruction improved search-18 only slightly, `44/64 -> 46/64`;
-- best candidate: `mlct22-contactdp-2714c28ba62b5c26`, mode `official60_aware`, shard `14`, artifact `contact-state-dp-22-shard-14`;
-- best links: `22`, covered_count: `46/64`, missing_count: `18`;
+- best candidate: `mlct22-contactdp-2714c28ba62b5c26`, mode `official60_aware`, shard `14`;
+- ordinary ordered-trail additions saved: `0`;
+- diagnostic rows saved: `3`;
+- dominant failure was rich-line clipping: best candidate preserved only `8` rich lines and clipped `12`, losing `17` grid points over pieces.
+
+Key lesson from run `28973760924`:
+
+- search-20 completed the `smart-search-20-line-bridge` full run successfully;
+- all prechecks, 20 line-bridge shard jobs, and aggregate job succeeded;
+- aggregate rows: `40`;
+- shard-best outputs: `20`;
+- unique compact ordered candidates in summary: `6`;
+- best line-bridge ordered-chain diagnostic improved search-19 strongly, `46/64 -> 58/64`;
+- best candidate: `mlct22-flbridge-8da0e01c34bb9c88`, mode `one_line_replacement`, shard `16`, artifact `smart-search-20-line-bridge-22-shard-16`;
+- best links: `22`, covered_count: `58/64`, missing_count: `6`;
+- best missing: `(0,2,0)`, `(0,2,2)`, `(2,1,0)`, `(2,1,2)`, `(2,3,0)`, `(3,2,0)`;
+- best preserved rich lines: `14`, full-line links: `14`, bridge links: `8`;
+- official60 old-missing hits: `4`, meaning the four holes of the standing `60/64` candidate were all hit;
 - ordinary ordered-trail additions saved: `0`;
 - line-set scaffold additions saved: `0`;
-- diagnostic rows saved: `3`;
-- originals index rows saved: `3`;
-- dominant failure is not the old four-hole `60/64` defect family. It is rich-line clipping during contact-state reconstruction: the best candidate preserved only `8` rich lines and clipped `12`, losing `17` grid points over pieces.
+- diagnostic line-bridge rows saved: `6`;
+- originals index rows saved: `6`.
 
-Counting caution: search-17 artifacts are `cover64-stitch-line-set-v1` scaffolds. They must not be merged into the normal ordered-trail candidate bank until a separate reconstruction/checker turns them into actual consecutive 22-link polygonal trails. Search-18 and search-19 outputs are checked ordered-chain diagnostics, but they are far below the `60/64` ordered-trail frontier and must stay in diagnostic banks, not ordinary candidate additions.
+Search-20 interpretation: full-line preservation is much better than search-19 contact-state clipping, but spending 8 explicit bridge links is still too expensive. The run repaired the old four-hole wall but created a new six-hole bridge-defect family. It is diagnostic progress, not an ordered-frontier improvement.
 
-Do not rerun `smart-search-17-cover64-stitch-graph`, `smart-search-18-order-from-cover64-stitch`, or `smart-search-19-contact-state-dp` unchanged as the next serious step. Search-17 found the scaffold breakthrough; search-18 showed abstract stitchability is too weak; search-19 showed contact-state ordering still clips too many rich lines.
+Counting caution: search-17 artifacts are `cover64-stitch-line-set-v1` scaffolds. They must not be merged into the normal ordered-trail candidate bank until a separate reconstruction/checker turns them into actual consecutive 22-link polygonal trails. Search-18, search-19, and search-20 outputs are checked ordered-chain diagnostics, but search-20 best is still below the `60/64` ordered-trail frontier and must stay in diagnostic banks, not ordinary candidate additions.
+
+Do not rerun `smart-search-17-cover64-stitch-graph`, `smart-search-18-order-from-cover64-stitch`, `smart-search-19-contact-state-dp`, or `smart-search-20-line-bridge` unchanged as the next serious step.
 
 ## 4. Standard four-prompt workflow
 
@@ -118,112 +129,36 @@ Use the user's four-step rhythm:
 3. launch-preparation prompt: **technical implementation only**. Take the already chosen hypothesis from prompt 2 and prepare runnable GitHub launch files so the user can press Run. This may include writing a new engine/generator/checker/summary builder if the chosen hypothesis requires it. Do not invent a new hypothesis, do not re-test the idea, and do not open a different research branch unless the requested launch is technically impossible;
 4. wrap-up prompt: review the whole chat, identify confusion/time loss, and update memory files if needed.
 
-Naming rule for serious numbered searches: keep the workflow/run family as `smart-search-N-short-description`, for example `smart-search-11-d2-bridge-repair` or `smart-search-19-contact-state-dp`. The suffix should be short, ideally one or two descriptive words, but do not drop the `smart-search-N` prefix. The temporary name `fl-bridge-20` was a mistake caused by overinterpreting "make the name shorter".
+Naming rule for serious numbered searches: keep the workflow/run family as `smart-search-N-short-description`, for example `smart-search-11-d2-bridge-repair` or `smart-search-20-line-bridge`. The suffix should be short, ideally one or two descriptive words, but do not drop the `smart-search-N` prefix.
 
 Prompt 3 caution from 2026-07-08: do not spend time repeatedly trying to open a PR before there are commits. First write the launch files, then open/merge the PR if needed. If the user asks to run automatically but the connector has no workflow_dispatch action, say so honestly and give exact manual Run inputs.
 
-Workflow rename/delete safety rule: before deleting, renaming, or replacing any `.github/workflows/*.yml`, first check whether a long manual GitHub Actions run is queued or running under that workflow. Do **not** remove the old workflow file while a 5h+ run may be active. If the name is wrong after launch, keep the old workflow until the active run completes, add the corrected workflow separately, and record both names. A run started under the old workflow name is still valid evidence and should be analyzed by direct `/actions/runs/<RUN_ID>` URL or from Actions → All workflows; its artifacts keep the old names. For the 2026-07-08 mistake, any already-started old `fl-bridge-20` run, if it exists, is valid and uses artifacts `fl-bridge-22-shard-*` and `fl-bridge-run-summary`.
+Workflow rename/delete safety rule: before deleting, renaming, or replacing any `.github/workflows/*.yml`, first check whether a long manual GitHub Actions run is queued or running under that workflow. Do not remove the old workflow file while a 5h+ run may be active.
 
-Manual-run profile safety rule: for any serious GitHub Actions search that has smoke/full parameter sets, prefer a single `profile` input with choices `smoke`, `full`, and optionally `custom`. The user should normally change only `profile`, not many numeric fields. If `profile=full` is selected, GitHub's form may still show all custom numeric boxes as blank; that is expected. The workflow must resolve the full numeric set internally and, ideally, write an `effective_profile*.json` artifact. Do not tell the user to run a full search by changing only `seconds`; full mode usually also changes beam width, state cap, branch limits, mutation count, candidate count, and save thresholds. This rule exists because search-19 accidentally ran full-duration with smoke/default width, and search-20 initially risked the same human error.
+Manual-run profile safety rule: for any serious GitHub Actions search that has smoke/full parameter sets, prefer a single `profile` input with choices `smoke`, `full`, and optionally `custom`. If `profile=full` is selected, GitHub's form may still show all custom numeric boxes as blank; that is expected. The workflow must resolve the full numeric set internally and write an `effective_profile*.json` artifact if possible.
 
 Smoke-test is only a technical green-light before the long run. If the user sees a green check and launches the 5h+ full run, the next result-taking chat records the full run, not the smoke-test. Inspect smoke separately only if it failed, looked suspicious, or the user explicitly asks.
 
 ## 5. Latest saved run archive
 
-Search-19 result archive:
+Search-20 result archive:
 
 ```text
-runs/2026-07-08-smart-search-19-contact-state-dp-full/summary.md
-runs/2026-07-08-smart-search-19-contact-state-dp-full/best_contact_state_candidate.json
-runs/2026-07-08-smart-search-19-contact-state-dp-full/mode_breakdown.json
-runs/2026-07-08-smart-search-19-contact-state-dp-full/contact_state_dp_run_summary_compact.json
-candidates/diagnostic-contact-state-dp-run28903545221.jsonl
-candidates/originals/run28903545221-contact-state-dp-index.jsonl
+runs/2026-07-09-smart-search-20-line-bridge-full/summary.md
+runs/2026-07-09-smart-search-20-line-bridge-full/best_line_bridge_candidate.json
+runs/2026-07-09-smart-search-20-line-bridge-full/line_bridge_run_summary_compact.json
+runs/2026-07-09-smart-search-20-line-bridge-full/mode_breakdown.json
+candidates/diagnostic-line-bridge-run28973760924.jsonl
+candidates/originals/run28973760924-line-bridge-index.jsonl
 ```
 
-## 6. Prepared launch package
+## 6. Current next step
 
-The prompt-2 hypothesis from this chat was implemented as a real launch package on `main` and then renamed to the correct numbered format.
+The `smart-search-20-line-bridge` hypothesis has been tried and recorded. The next chat should use Prompt 2, not Prompt 1 or Prompt 3.
 
-Prepared workflow:
+Next non-repeating research direction should use the search-20 lesson:
 
-```text
-smart-search-20-line-bridge
-```
-
-Prepared files:
-
-```text
-.github/workflows/smart-search-20-line-bridge.yml
-scripts/full_line_bridge_search.py
-scripts/build_full_line_bridge_summary.py
-docs/smart-search-20-line-bridge-launch.md
-```
-
-Do not use the old temporary name `fl-bridge-20`; it violated the repository naming convention and was removed. Exception: if the user already launched a manual `fl-bridge-20` run before removal, that run remains valid and must be analyzed by direct run URL with its old artifact names.
-
-Human-safe launch for this workflow:
-
-- `profile=smoke`: short technical green-light. Leave custom numeric fields blank.
-- `profile=full`: full 5h+ search. Leave custom numeric fields blank. Blank custom boxes are expected; the workflow resolves full numbers internally.
-- `profile=custom`: debugging only. Use only when deliberately overriding every numeric parameter.
-
-Hypothesis: preserve rich full scaffold lines and spend explicit bridge links between endpoint components instead of clipping rich lines at interior contacts.
-
-Smoke-test effective inputs:
-
-```text
-seconds=180
-workers=4
-seed=20260720
-beam_width=2048
-state_cap=200000
-candidate_scaffolds=4
-max_mutations=0
-box_min=-1
-box_max=4
-candidate_lines=3000
-start_limit=22
-line_branch_limit=12
-bridge_branch_limit=8
-min_full_lines=10
-max_full_lines=18
-max_bridge_links=8
-save_min_covered=38
-```
-
-Full-run effective inputs:
-
-```text
-seconds=21000
-workers=4
-seed=20260720
-beam_width=12000
-state_cap=2000000
-candidate_scaffolds=6
-max_mutations=1
-box_min=-1
-box_max=4
-candidate_lines=6000
-start_limit=44
-line_branch_limit=24
-bridge_branch_limit=16
-min_full_lines=14
-max_full_lines=18
-max_bridge_links=8
-save_min_covered=54
-```
-
-## 7. Current next step
-
-The next chat should **not** choose a new hypothesis again. The hypothesis is already chosen and launch package is already merged.
-
-Next action depends on GitHub Actions state:
-
-1. If `smart-search-20-line-bridge` has not been run yet: run smoke-test manually from Actions using `profile=smoke`; leave custom numeric fields blank.
-2. If smoke-test is green and the user has not launched full run yet: run the full `smart-search-20-line-bridge` using `profile=full`; leave custom numeric fields blank.
-3. If an old `fl-bridge-20` full run was already started before the rename/delete, do not discard it: find it by direct run URL or Actions history and record its artifacts/results under the old artifact names.
-4. If the full run is running or completed: use prompt 1 to record the full run results, artifacts, candidates, and frontier.
-5. If smoke-test is red: inspect it as a technical launch failure first, not as mathematical evidence.
-
-Expected useful next result means either a checked ordered 22-link trail candidate improving the `60/64` frontier, or a sharper obstruction explaining which rich full-line pieces cannot be preserved together in a continuous 22-link trail.
+- preserving rich full lines helped a lot compared with contact-state clipping;
+- hitting all four old `60/64` missing points is possible;
+- but 8 explicit bridge links still leave a new six-hole bridge-defect family;
+- next hypothesis should reduce bridge cost, change the scaffold ordering principle, or construct endpoint-compatible rich scaffolds instead of repeating the same line-bridge workflow.
