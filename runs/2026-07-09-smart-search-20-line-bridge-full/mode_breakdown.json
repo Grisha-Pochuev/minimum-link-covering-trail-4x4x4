@@ -1,0 +1,62 @@
+{
+  "conservative_control": {
+    "best_bridge_links": 8,
+    "best_covered": 56,
+    "best_full_line_links": 14,
+    "best_links": 22,
+    "best_official60_hits": 3,
+    "best_preserved_rich_lines": 14,
+    "count": 2,
+    "unique_compact": 1
+  },
+  "diverse_endpoint_components": {
+    "best_bridge_links": 8,
+    "best_covered": 56,
+    "best_full_line_links": 14,
+    "best_links": 22,
+    "best_official60_hits": 3,
+    "best_preserved_rich_lines": 14,
+    "count": 8,
+    "unique_compact": 1
+  },
+  "integer_full_bridge": {
+    "best_bridge_links": 8,
+    "best_covered": 56,
+    "best_full_line_links": 14,
+    "best_links": 22,
+    "best_official60_hits": 3,
+    "best_preserved_rich_lines": 14,
+    "count": 8,
+    "unique_compact": 1
+  },
+  "official60_bridge": {
+    "best_bridge_links": 8,
+    "best_covered": 56,
+    "best_full_line_links": 14,
+    "best_links": 22,
+    "best_official60_hits": 3,
+    "best_preserved_rich_lines": 14,
+    "count": 8,
+    "unique_compact": 1
+  },
+  "one_line_replacement": {
+    "best_bridge_links": 8,
+    "best_covered": 58,
+    "best_full_line_links": 14,
+    "best_links": 22,
+    "best_official60_hits": 4,
+    "best_preserved_rich_lines": 14,
+    "count": 6,
+    "unique_compact": 3
+  },
+  "outside_bridge_expansion": {
+    "best_bridge_links": 8,
+    "best_covered": 57,
+    "best_full_line_links": 14,
+    "best_links": 22,
+    "best_official60_hits": 4,
+    "best_preserved_rich_lines": 14,
+    "count": 8,
+    "unique_compact": 3
+  }
+}
