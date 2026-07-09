@@ -1,0 +1,102 @@
+{
+  "schema": "mlct-line-bridge-run-summary-v1",
+  "repository": "Grisha-Pochuev/minimum-link-covering-trail-4x4x4",
+  "run_id": 28973760924,
+  "run_url": "https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/28973760924",
+  "workflow_name": "smart-search-20-line-bridge",
+  "head_commit_sha": "772596df3d9fd796d2a5bf5ee0ea48697ca17031",
+  "status": "success",
+  "profile": "full",
+  "result_type": "full_line_preserving_bridge_ordered_chain_diagnostic_below_ordered_frontier",
+  "parameters": {
+    "seconds": 21000,
+    "workers": 4,
+    "seed": 20260720,
+    "beam_width": 12000,
+    "state_cap": 2000000,
+    "candidate_scaffolds": 6,
+    "max_mutations": 1,
+    "box_min": -1,
+    "box_max": 4,
+    "candidate_lines": 6000,
+    "start_limit": 44,
+    "line_branch_limit": 24,
+    "bridge_branch_limit": 16,
+    "min_full_lines": 14,
+    "max_full_lines": 18,
+    "max_bridge_links": 8,
+    "save_min_covered": 54
+  },
+  "artifact_names": {
+    "summary": "smart-search-20-line-bridge-run-summary",
+    "shard_pattern": "smart-search-20-line-bridge-22-shard-*"
+  },
+  "result_count": 40,
+  "shard_best_outputs": 20,
+  "unique_ordered_candidates": 6,
+  "best": {
+    "candidate_id": "mlct22-flbridge-8da0e01c34bb9c88",
+    "covered_count": 58,
+    "grid_points": 64,
+    "coverage_percent": 90.625,
+    "links": 22,
+    "missing_count": 6,
+    "missing": [[0,2,0],[0,2,2],[2,1,0],[2,1,2],[2,3,0],[3,2,0]],
+    "mode": "one_line_replacement",
+    "source_shard": 16,
+    "source_artifact": "smart-search-20-line-bridge-22-shard-16",
+    "status": "full_length_ordered_chain",
+    "full_line_bridge_metrics": {
+      "full_line_links": 14,
+      "bridge_links": 8,
+      "preserved_rich_lines": 14,
+      "unused_scaffold_lines": 8,
+      "bridge_only_points": 10,
+      "bridge_points_total": 27,
+      "official60_missing_hits": 4
+    },
+    "endpoint_component_summary": {
+      "endpoint_component_count": 14,
+      "endpoint_component_sizes": [6,3,2,1,1,1,1,1,1,1,1,1,1,1],
+      "endpoint_contact_count": 8
+    }
+  },
+  "threshold_counts": {
+    "above_46": 6,
+    "above_50": 6,
+    "above_56": 3,
+    "above_60": 0,
+    "at_least_61": 0,
+    "full_64": 0
+  },
+  "coverage_histogram": [
+    {"covered_count": 58, "count": 2},
+    {"covered_count": 57, "count": 8},
+    {"covered_count": 56, "count": 30}
+  ],
+  "link_histogram": [
+    {"links": 22, "count": 40}
+  ],
+  "top_missing_points": [
+    {"point": [3,2,2], "count": 36},
+    {"point": [2,3,2], "count": 32},
+    {"point": [0,0,3], "count": 30},
+    {"point": [2,0,1], "count": 30},
+    {"point": [2,3,1], "count": 30},
+    {"point": [2,3,3], "count": 30},
+    {"point": [3,0,1], "count": 30},
+    {"point": [0,0,1], "count": 26}
+  ],
+  "comparison_with_previous_frontier": {
+    "ordered_trail_numeric_frontier_changed": false,
+    "previous_best_ordered_trail_covered_count": 60,
+    "new_best_ordered_trail_covered_count": 60,
+    "previous_ordered_reconstruction_diagnostic_best": 46,
+    "new_line_bridge_diagnostic_best": 58,
+    "scaffold_frontier_changed": false,
+    "ordinary_ordered_trail_candidates_added": 0,
+    "diagnostic_line_bridge_candidates_saved": 6,
+    "originals_index_rows_saved": 6,
+    "important_observation": "Line-bridge preserved 14 rich full lines and hit all 4 official60 old-missing points, but still produced only 58/64; new losses moved to a six-hole line-bridge defect family."
+  }
+}
