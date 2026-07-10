@@ -1,168 +1,142 @@
 {
   "schema": "mlct-frontier-v1",
   "repository": "Grisha-Pochuev/minimum-link-covering-trail-4x4x4",
-  "updated_utc": "2026-07-09T03:20:00Z",
-  "status": "smart_search_20_line_bridge_recorded_no_ordered_frontier_change",
+  "updated_utc": "2026-07-10T21:05:00Z",
+  "status": "verified_61_of_64_frontier_full_search21_running",
   "best_recorded_ordered_trail_candidate": {
-    "candidate_id": "mlct22-3cf45a2e21fe611c",
-    "coverage_percent": 93.75,
-    "covered_count": 60,
+    "candidate_id": "mlct22-bc-889d7f8c45252068",
+    "canonical_key_sha256": "373cedc7eba48b04af8902899e7a8a2d43df558cff75ec54634b5cba8985ece3",
+    "coverage_percent": 95.3125,
+    "covered_count": 61,
     "grid_points": 64,
     "links": 22,
-    "missing": [[0,0,1],[0,2,3],[0,3,1],[2,1,1]],
-    "missing_count": 4,
-    "mode": "window3_relay_from_official60",
-    "source_file": "runs/2026-07-03-smart-search-16-defect-relay-60-full/best_candidate.json",
-    "source_run_id": 28674416173,
-    "status": "partial_candidate"
+    "missing": [[0,2,1],[1,3,1],[2,3,1]],
+    "missing_count": 3,
+    "mode": "ripa_6to5_slide",
+    "pure_bridge_count": 0,
+    "rich4_count": 14,
+    "rich3_count": 1,
+    "productive_connector_count": 7,
+    "source_file": "runs/2026-07-10-smart-search-21-bridge-compress-smoke/best_candidate.json",
+    "source_run_id": 29123090565,
+    "source_run_url": "https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/29123090565",
+    "source_profile": "smoke",
+    "source_workflow": "smart-search-21-bridge-compress",
+    "status": "verified_partial_candidate",
+    "verification": {
+      "github_exact_rational_checker": true,
+      "independent_artifact_recheck": true,
+      "vertices": 23,
+      "nonzero_links": 22
+    }
   },
+  "additional_verified_frontier_candidates": [
+    {
+      "candidate_id": "mlct22-bc-81b7ac625af94cf7",
+      "canonical_key_sha256": "c8c7e8f310a50218ce4e4f8acee4b391625baef8951843efced7618ee8be8144",
+      "covered_count": 61,
+      "links": 22,
+      "missing": [[3,0,3],[3,1,3],[3,2,3]],
+      "missing_count": 3,
+      "mode": "ripa_6to5_slide",
+      "status": "verified_partial_candidate"
+    }
+  ],
   "best_recorded_cover64_stitch_scaffold": {
     "candidate_id": "mlct22-lineset-9772981a21b2a88a",
-    "coverage_percent": 100.0,
     "covered_count": 64,
-    "grid_points": 64,
-    "interpretation": "unordered 22-line cover64 stitch scaffold; not a certified polygonal trail",
     "line_count": 22,
-    "links_target": 22,
-    "max_component_size": 22,
-    "missing": [],
-    "missing_count": 0,
-    "mode": "old_wall_line_injection",
-    "source_artifact": "cover64-stitch-22-shard-12",
+    "interpretation": "unordered 22-line cover64 scaffold; not an ordered trail",
     "source_file": "runs/2026-07-07-smart-search-17-cover64-stitch-graph-full/best_line_set.json",
     "source_run_id": 28825060197,
-    "source_shard": 12,
-    "status": "line_set_seed_not_a_trail",
-    "stitch_components": 1,
-    "stitch_graph_edges": 23,
-    "stitch_path_lower_bound": 22
+    "status": "line_set_seed_not_a_trail"
   },
-  "latest_recorded_completed_run": {
-    "run_id": 28973760924,
-    "run_url": "https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/28973760924",
-    "workflow_name": "smart-search-20-line-bridge",
-    "head_commit_sha": "772596df3d9fd796d2a5bf5ee0ea48697ca17031",
+  "latest_completed_run": {
+    "run_id": 29123090565,
+    "run_url": "https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/29123090565",
+    "workflow_name": "smart-search-21-bridge-compress",
+    "profile": "smoke",
     "status": "success",
-    "result_type": "full_line_preserving_bridge_ordered_chain_diagnostic_below_frontier_not_proof",
+    "head_commit_sha": "6a97f1310056cccf7ee72280319d61dde43aefc6",
+    "parameters": {
+      "seconds": 180,
+      "workers": 4,
+      "shards": 20,
+      "seed": 20260721,
+      "beam_width": 2048,
+      "state_cap": 200000,
+      "candidate_lines": 3000,
+      "start_limit": 24,
+      "window_min": 3,
+      "window_max": 5,
+      "max_mutations": 1,
+      "max_pure_bridges": 7,
+      "target_min_rich_or_productive": 14,
+      "save_min_covered": 48
+    },
+    "statistics": {
+      "shard_best_count": 20,
+      "compact_candidate_count": 598,
+      "total_attempts": 60554,
+      "compact_61_count": 2,
+      "compact_60_count": 9,
+      "full_64_count": 0,
+      "all_shards_succeeded": true,
+      "aggregate_succeeded": true
+    },
+    "comparison_with_previous_frontier": {
+      "previous_best_ordered_trail_covered_count": 60,
+      "new_best_ordered_trail_covered_count": 61,
+      "ordered_trail_numeric_frontier_changed": true
+    },
+    "archive": {
+      "run_folder": "runs/2026-07-10-smart-search-21-bridge-compress-smoke/",
+      "summary_file": "runs/2026-07-10-smart-search-21-bridge-compress-smoke/summary.md",
+      "best_candidate_file": "runs/2026-07-10-smart-search-21-bridge-compress-smoke/best_candidate.json",
+      "ordinary_candidate_additions": "candidates/ordered-trail-additions-run29123090565-bridge-compress-smoke.jsonl"
+    }
+  },
+  "active_full_run": {
+    "run_id": 29123493808,
+    "run_url": "https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/29123493808",
+    "workflow_name": "smart-search-21-bridge-compress",
     "profile": "full",
+    "head_commit_sha": "48a5c5a4a6afbbc81cba3fcb0ae5ebe3178261bd",
+    "status_when_recorded": "precheck_success_shards_started",
     "parameters": {
       "seconds": 21000,
       "workers": 4,
-      "seed": 20260720,
       "shards": 20,
-      "beam_width": 12000,
-      "state_cap": 2000000,
-      "candidate_scaffolds": 6,
-      "max_mutations": 1,
-      "box_min": -1,
-      "box_max": 4,
-      "candidate_lines": 6000,
-      "start_limit": 44,
-      "line_branch_limit": 24,
-      "bridge_branch_limit": 16,
-      "min_full_lines": 14,
-      "max_full_lines": 18,
-      "max_bridge_links": 8,
-      "save_min_covered": 54
-    },
-    "best_result": {
-      "candidate_id": "mlct22-flbridge-8da0e01c34bb9c88",
-      "coverage_percent": 90.625,
-      "covered_count": 58,
-      "grid_points": 64,
-      "links": 22,
-      "missing_count": 6,
-      "missing": [[0,2,0],[0,2,2],[2,1,0],[2,1,2],[2,3,0],[3,2,0]],
-      "mode": "one_line_replacement",
-      "source_artifact": "smart-search-20-line-bridge-22-shard-16",
-      "source_file": "runs/2026-07-09-smart-search-20-line-bridge-full/best_line_bridge_candidate.json",
-      "source_scaffold_id": "mlct22-lineset-faadfe124b120444",
-      "source_shard": 16,
-      "status": "full_length_ordered_chain",
-      "full_line_bridge_metrics": {
-        "full_line_links": 14,
-        "bridge_links": 8,
-        "preserved_rich_lines": 14,
-        "unused_scaffold_lines": 8,
-        "bridge_only_points": 10,
-        "bridge_points_total": 27,
-        "official60_missing_hits": 4
-      },
-      "endpoint_component_summary": {
-        "endpoint_component_count": 14,
-        "endpoint_component_sizes": [6,3,2,1,1,1,1,1,1,1,1,1,1,1],
-        "endpoint_contact_count": 8
-      },
-      "interpretation": "checked full-line-preserving ordered-chain diagnostic below existing ordered-trail frontier"
-    },
-    "run_statistics": {
-      "raw_summary_result_rows": 40,
-      "shard_best_outputs": 20,
-      "unique_ordered_candidates": 6,
-      "compact_diagnostic_rows_saved": 6,
-      "ordinary_ordered_trail_candidates_added": 0,
-      "scaffold_additions_saved": 0,
-      "best_covered_count": 58,
-      "best_missing_count": 6,
-      "shard_artifacts": 20,
-      "summary_artifacts": 1,
-      "threshold_counts": {
-        "above_46": 6,
-        "above_50": 6,
-        "above_56": 3,
-        "above_60": 0,
-        "at_least_61": 0,
-        "full_64": 0
-      },
-      "coverage_histogram": [
-        {"covered_count": 58, "count": 2},
-        {"covered_count": 57, "count": 8},
-        {"covered_count": 56, "count": 30}
-      ]
-    },
-    "comparison_with_previous_frontier": {
-      "ordered_trail_numeric_frontier_changed": false,
-      "previous_best_ordered_trail_covered_count": 60,
-      "new_best_ordered_trail_covered_count": 60,
-      "search19_best_ordered_reconstruction_covered_count": 46,
-      "search20_best_line_bridge_diagnostic_covered_count": 58,
-      "scaffold_frontier_changed": false,
-      "important_observation": "Full-line preservation improved diagnostics greatly versus contact-state clipping and hit all four official60 old missing points, but eight explicit bridges still leave a new six-hole bridge-defect family."
-    },
-    "top_missing_points": [[3,2,2],[2,3,2],[0,0,3],[2,0,1],[2,3,1],[2,3,3],[3,0,1],[0,0,1]],
-    "best_new_defect_family": [[0,2,0],[0,2,2],[2,1,0],[2,1,2],[2,3,0],[3,2,0]]
+      "seed": 20260721,
+      "beam_width": 16000,
+      "state_cap": 3000000,
+      "candidate_lines": 8000,
+      "start_limit": 64,
+      "window_min": 3,
+      "window_max": 6,
+      "max_mutations": 2,
+      "max_pure_bridges": 6,
+      "target_min_rich_or_productive": 16,
+      "save_min_covered": 56
+    }
   },
-  "previous_recorded_run": {
-    "run_id": 28903545221,
-    "workflow_name": "smart-search-19-contact-state-dp",
-    "best_ordered_reconstruction_covered_count": 46,
-    "ordinary_ordered_trail_candidates_added": 0,
-    "diagnostic_ordered_chain_rows_saved": 3
-  },
-  "latest_recorded_run_archive": {
-    "run_folder": "runs/2026-07-09-smart-search-20-line-bridge-full/",
-    "summary_file": "runs/2026-07-09-smart-search-20-line-bridge-full/summary.md",
-    "best_candidate_file": "runs/2026-07-09-smart-search-20-line-bridge-full/best_line_bridge_candidate.json",
-    "mode_breakdown_file": "runs/2026-07-09-smart-search-20-line-bridge-full/mode_breakdown.json",
-    "compact_run_summary_file": "runs/2026-07-09-smart-search-20-line-bridge-full/line_bridge_run_summary_compact.json",
-    "candidate_diagnostic_bank": "candidates/diagnostic-line-bridge-run28973760924.jsonl",
-    "originals_index": "candidates/originals/run28973760924-line-bridge-index.jsonl"
-  },
-  "candidate_preservation_rule_for_future_runs": {
-    "rule_type": "separate_ordered_trail_line_set_and_diagnostic_banks",
-    "ordinary_ordered_trail_min_useful_frontier": 60,
-    "note": "Keep cover64 stitch scaffolds in line-set scaffold files until converted into checked ordered polygonal-trail candidates. Ordered reconstruction attempts below the 60/64 frontier go into diagnostic JSONL, not the ordinary ordered-trail bank."
+  "prepared_launch_package": {
+    "workflow_file": ".github/workflows/smart-search-21-bridge-compress.yml",
+    "bootstrap_file": ".github/workflows/smart-search-21-bootstrap.yml",
+    "engine_file": "scripts/bridge_compress_search.py",
+    "geometry_file": "scripts/bridge_compress_common.py",
+    "primary_checker": "scripts/check_rational_trail.py",
+    "independent_checker": "scripts/verify_rational_trail_independent.py",
+    "summary_builder": "scripts/build_bridge_compress_summary.py",
+    "launch_doc": "docs/smart-search-21-bridge-compress-launch.md"
   },
   "current_next_step": {
-    "step_type": "choose_new_non_repeating_hypothesis_after_line_bridge_diagnostic",
-    "instruction": "Use Prompt 2 next. The smart-search-20 line-bridge hypothesis has been tried; do not rerun it unchanged. Use its lesson: preserving rich full lines helped, but explicit bridge cost still creates a new six-hole defect family.",
+    "step_type": "record_completed_full_search21",
+    "instruction": "Do not start a duplicate run. When run 29123493808 completes, use Prompt 1 to record its artifacts, 20 shard-best originals, compact candidates, bank additions, missing frequencies, and final checked frontier.",
     "do_not_do": [
-      "do not rerun smart-search-17 unchanged",
-      "do not rerun smart-search-18 unchanged",
-      "do not rerun smart-search-19 unchanged",
       "do not rerun smart-search-20 unchanged",
-      "do not put search-20 diagnostic candidates into the ordinary ordered-trail bank"
+      "do not start another smart-search-21 while run 29123493808 is active",
+      "do not treat unordered scaffolds as trails"
     ]
-  },
-  "standard_web_chat_cycle": ["record completed full-run results", "make a new hypothesis and do local checks if useful", "prepare the next GitHub launch for the chosen hypothesis", "wrap up and update memory"]
+  }
 }
