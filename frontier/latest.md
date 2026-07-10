@@ -1,117 +1,106 @@
 # Current search frontier
 
-Status: completed full run `smart-search-20-line-bridge` on 2026-07-09. The normal ordered-trail frontier remains `60/64`; the scaffold frontier from search-17 remains unordered `64/64` with stitch path lower bound `22/22`. Search-20 improved the ordered reconstruction / bridge diagnostic ceiling from `46/64` to `58/64`, but did not improve the actual ordered-trail frontier.
+Status: `smart-search-21-bridge-compress` smoke run `29123090565` completed successfully and advanced the checked ordered-trail frontier from `60/64` to `61/64`. The corresponding full 5h50m run `29123493808` is now running.
 
-Latest recorded completed full run:
+## Best recorded checked ordered-trail result
 
-- Repository: `Grisha-Pochuev/minimum-link-covering-trail-4x4x4`
-- Final run id: `28973760924`
-- Run URL: https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/28973760924
-- Workflow: `smart-search-20-line-bridge`
-- Commit SHA of the run: `772596df3d9fd796d2a5bf5ee0ea48697ca17031`
-- Status: `success`
-- Profile: `full`
-- Duration: long run, `21000` seconds per shard
-- Workers per shard: `4`
-- Shards/jobs: `20`
-- Seed: `20260720`
-- Result type: full-line-preserving bridge ordered-chain diagnostic from search-17 cover64 scaffolds; below the ordered-trail frontier, not a proof and not an ordered-trail improvement
-- Artifacts: `smart-search-20-line-bridge-run-summary`, `smart-search-20-line-bridge-22-shard-*`
-
-## Best recorded GitHub Actions ordered-trail result
-
-The best checked ordered-trail candidate remains unchanged from run `28674416173`:
-
-- candidate id: `mlct22-3cf45a2e21fe611c`
-- covered_count: `60 / 64`
-- coverage percent: `93.75%`
+- candidate id: `mlct22-bc-889d7f8c45252068`
+- covered_count: `61 / 64`
+- coverage percent: `95.3125%`
 - links: `22`
-- latest source mode: `window3_relay_from_official60`
-- latest source artifact: `defect-relay-22-shard-7`
-- source shard: `7`
-- status: `partial_candidate`
-- missing count: `4`
-- missing: `(0,0,1)`, `(0,2,3)`, `(0,3,1)`, `(2,1,1)`
+- missing count: `3`
+- missing: `(0,2,1)`, `(1,3,1)`, `(2,3,1)`
+- mode: `ripa_6to5_slide`
+- construction: exact local `6→5` compression of the known full 23-link Ripa trail
+- pure bridges: `0`
+- rich4 links: `14`
+- rich3 links: `1`
+- productive connectors: `7`
+- source run: `29123090565`
+- source file: `runs/2026-07-10-smart-search-21-bridge-compress-smoke/best_candidate.json`
+- status: `verified_partial_candidate`
 
-The ordered-trail candidate is still partial. It has exactly 22 links and covers 60 of the 64 grid points. This is not a complete covering trail and not a proof.
+The candidate has exactly 23 vertices and 22 nonzero links. GitHub Actions checked it with exact rational arithmetic, and the downloaded artifact was independently recomputed again outside the workflow. It is a genuine numerical frontier improvement, but it is not a complete covering trail and not a proof.
 
-## Best recorded cover64 stitch scaffold
+A second symmetry-inequivalent checked `61/64` candidate was also saved:
 
-Best search-17 scaffold remains:
+- candidate id: `mlct22-bc-81b7ac625af94cf7`
+- missing: `(3,0,3)`, `(3,1,3)`, `(3,2,3)`
+- mode: `ripa_6to5_slide`
+
+Both are stored in:
+
+```text
+candidates/ordered-trail-additions-run29123090565-bridge-compress-smoke.jsonl
+```
+
+## Smoke run
+
+- run id: `29123090565`
+- run URL: https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/29123090565
+- workflow: `smart-search-21-bridge-compress`, launched through the narrow bootstrap workflow
+- profile: `smoke`
+- status: `success`
+- precheck: success
+- shards: `20/20` succeeded
+- exact checker: succeeded for every shard-best
+- aggregate: success
+- shard-best rows: `20`
+- compact classes: `598`
+- total attempts: `60554`
+- compact `61/64`: `2`
+- compact `60/64`: `9`
+- full `64/64`: `0`
+
+Saved smoke archive:
+
+```text
+runs/2026-07-10-smart-search-21-bridge-compress-smoke/summary.md
+runs/2026-07-10-smart-search-21-bridge-compress-smoke/best_candidate.json
+candidates/ordered-trail-additions-run29123090565-bridge-compress-smoke.jsonl
+```
+
+## Active full run
+
+- run id: `29123493808`
+- run URL: https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/29123493808
+- workflow: `smart-search-21-bridge-compress`
+- profile: `full`
+- status when recorded: precheck succeeded; 20 full shards created and computation started
+- head commit: `48a5c5a4a6afbbc81cba3fcb0ae5ebe3178261bd`
+
+Effective full profile:
+
+```text
+seconds=21000
+workers=4
+shards=20
+beam_width=16000
+state_cap=3000000
+candidate_lines=8000
+start_limit=64
+window_min=3
+window_max=6
+max_mutations=2
+max_pure_bridges=6
+target_min_rich_or_productive=16
+save_min_covered=56
+```
+
+## Best cover64 line-set scaffold
+
+The unordered scaffold frontier remains `64/64` with 22 lines from search-17. It is not itself an ordered polygonal trail and must remain in the line-set scaffold bank.
 
 - candidate id: `mlct22-lineset-9772981a21b2a88a`
-- covered_count: `64 / 64`
-- line_count: `22`
-- stitch graph: components=`1`, max_component=`22/22`, path_lower_bound=`22/22`, edges=`23`
-- mode: `old_wall_line_injection`
-- source artifact: `cover64-stitch-22-shard-12`
-- source shard: `12`
-- source file: `runs/2026-07-07-smart-search-17-cover64-stitch-graph-full/best_line_set.json`
-- status: `line_set_seed_not_a_trail`
+- source run: `28825060197`
+- file: `runs/2026-07-07-smart-search-17-cover64-stitch-graph-full/best_line_set.json`
 
-Important caveat: this is an unordered 22-line scaffold. A line-set graph path is not yet the same as a valid ordered polygonal trail. Do not merge this into the ordinary ordered-trail candidate bank until a reconstruction/checker produces actual consecutive trail vertices.
+## Main structural lesson
 
-## Latest recorded run lesson
+Search-20 showed that preserving rich lines was better than clipping them but paid for eight explicit bridges and stopped at `58/64`. Search-21 changed the approach: it compressed the already complete 23-link construction directly. Even the three-minute smoke run found two exact `61/64` ordered trails with zero pure bridges.
 
-Run `28973760924` completed `smart-search-20-line-bridge` successfully. All prechecks, 20 line-bridge shard jobs, and the aggregate job succeeded.
-
-Best line-bridge ordered-chain diagnostic:
-
-- candidate id: `mlct22-flbridge-8da0e01c34bb9c88`
-- best covered_count: `58/64`
-- links: `22`
-- missing_count: `6`
-- missing: `(0,2,0)`, `(0,2,2)`, `(2,1,0)`, `(2,1,2)`, `(2,3,0)`, `(3,2,0)`
-- best mode: `one_line_replacement`
-- best source shard/artifact: shard `16`, `smart-search-20-line-bridge-22-shard-16`
-- full-line links: `14`
-- bridge links: `8`
-- preserved rich lines: `14`
-- official60 old-missing hits: `4`
-- result rows in summary: `40`
-- shard-best outputs: `20`
-- unique compact ordered candidates in summary: `6`
-- compact diagnostic candidates saved: `6`
-- ordinary ordered-trail additions saved: `0`
-- line-set scaffold additions saved: `0`
-
-Interpretation: search-20 is a major diagnostic improvement over search-19 (`46/64 -> 58/64`), but still below the standing ordered-trail frontier `60/64`. It confirms that preserving rich scaffold lines is much better than contact-state clipping, but eight explicit bridge links are still too expensive.
-
-The important new failure mode is not the old official four-hole wall. The best search-20 candidate hits all four old missing points from the `60/64` candidate, then opens a new six-hole bridge-defect family:
-
-```text
-(0,2,0), (0,2,2), (2,1,0), (2,1,2), (2,3,0), (3,2,0)
-```
-
-Most repeated aggregate missing points:
-
-```text
-(3,2,2), (2,3,2), (0,0,3), (2,0,1), (2,3,1), (2,3,3), (3,0,1), (0,0,1)
-```
-
-Saved run-20 memory:
-
-```text
-runs/2026-07-09-smart-search-20-line-bridge-full/summary.md
-runs/2026-07-09-smart-search-20-line-bridge-full/best_line_bridge_candidate.json
-runs/2026-07-09-smart-search-20-line-bridge-full/line_bridge_run_summary_compact.json
-runs/2026-07-09-smart-search-20-line-bridge-full/mode_breakdown.json
-candidates/diagnostic-line-bridge-run28973760924.jsonl
-candidates/originals/run28973760924-line-bridge-index.jsonl
-```
-
-## Candidate preservation rule
-
-Keep three banks separate:
-
-1. ordinary ordered-trail candidates: only checked polygonal trails that are near or above the current ordered frontier;
-2. line-set scaffolds: unordered cover64 line sets from search-17 and related runs;
-3. ordered-chain diagnostics: search-18/search-19/search-20 reconstruction attempts below the frontier.
-
-Search-20 outputs are checked full-length ordered-chain diagnostics, but their best is `58/64`, below the current `60/64` ordered-trail frontier. They should not be treated as ordinary candidate-bank improvements.
+This is the first numerical improvement beyond the old `60/64` wall. The most promising current family is therefore local `5→4` and `6→5` compression of the full 23-link trail, especially around the first several links.
 
 ## Current next step
 
-The prepared `smart-search-20-line-bridge` hypothesis has now been tried. Do not rerun search-17, search-18, search-19, or search-20 unchanged as the next serious step.
-
-Next prompt should be Prompt 2: choose a new non-repeating hypothesis using the search-20 lesson. The useful lesson is: full-line preservation helped a lot, but spending 8 bridge links still leaves a new six-hole bridge-defect family. The next idea should reduce bridge cost, change the scaffold ordering principle, or construct richer endpoint-compatible scaffolds rather than repeating the same line-bridge workflow.
+Do not launch another run while `29123493808` is active. When it completes, use Prompt 1 to record its artifacts, all 20 shard-best originals, compact classes, candidate additions, missing-point frequencies, and the final checked frontier.
