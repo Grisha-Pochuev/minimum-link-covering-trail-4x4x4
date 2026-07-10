@@ -1,0 +1,34 @@
+name: smart-search-21-bootstrap
+run-name: smart-search-21-bootstrap-${{ github.sha }}
+
+permissions:
+  contents: read
+  actions: read
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - launch/smart-search-21-smoke.trigger
+      - launch/smart-search-21-full.trigger
+
+jobs:
+  choose-profile:
+    runs-on: ubuntu-latest
+    outputs:
+      profile: ${{ steps.pick.outputs.profile }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: pick
+        shell: bash
+        run: |
+          if [ -f launch/smart-search-21-full.trigger ] && grep -qx full launch/smart-search-21-full.trigger; then
+            echo "profile=full" >> "$GITHUB_OUTPUT"
+          else
+            echo "profile=smoke" >> "$GITHUB_OUTPUT"
+          fi
+  launch:
+    needs: choose-profile
+    uses: ./.github/workflows/smart-search-21-bridge-compress.yml
+    with:
+      profile: ${{ needs.choose-profile.outputs.profile }}
