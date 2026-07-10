@@ -1,0 +1,193 @@
+name: smart-search-21-bridge-compress
+run-name: smart-search-21-bridge-compress-${{ inputs.profile || 'smoke' }}
+
+permissions:
+  contents: read
+  actions: read
+
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: "Use smoke first, then full. Custom requires all numeric fields."
+        required: true
+        default: smoke
+        type: choice
+        options: [smoke, full, custom]
+      seconds: {description: "CUSTOM only", required: false, default: ""}
+      workers: {description: "CUSTOM only", required: false, default: ""}
+      seed: {description: "CUSTOM only", required: false, default: ""}
+      beam_width: {description: "CUSTOM only", required: false, default: ""}
+      state_cap: {description: "CUSTOM only", required: false, default: ""}
+      candidate_lines: {description: "CUSTOM only", required: false, default: ""}
+      start_limit: {description: "CUSTOM only", required: false, default: ""}
+      window_min: {description: "CUSTOM only", required: false, default: ""}
+      window_max: {description: "CUSTOM only", required: false, default: ""}
+      max_mutations: {description: "CUSTOM only", required: false, default: ""}
+      max_pure_bridges: {description: "CUSTOM only", required: false, default: ""}
+      target_min_rich_or_productive: {description: "CUSTOM only", required: false, default: ""}
+      save_min_covered: {description: "CUSTOM only", required: false, default: ""}
+  workflow_call:
+    inputs:
+      profile: {required: true, type: string}
+      seconds: {required: false, type: string, default: ""}
+      workers: {required: false, type: string, default: ""}
+      seed: {required: false, type: string, default: ""}
+      beam_width: {required: false, type: string, default: ""}
+      state_cap: {required: false, type: string, default: ""}
+      candidate_lines: {required: false, type: string, default: ""}
+      start_limit: {required: false, type: string, default: ""}
+      window_min: {required: false, type: string, default: ""}
+      window_max: {required: false, type: string, default: ""}
+      max_mutations: {required: false, type: string, default: ""}
+      max_pure_bridges: {required: false, type: string, default: ""}
+      target_min_rich_or_productive: {required: false, type: string, default: ""}
+      save_min_covered: {required: false, type: string, default: ""}
+
+jobs:
+  precheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - name: Compile bridge-compress package
+        run: python -m py_compile scripts/bridge_compress_common.py scripts/bridge_compress_search.py scripts/check_rational_trail.py scripts/verify_rational_trail_independent.py scripts/build_bridge_compress_summary.py
+      - name: Verify known 23-link full trail
+        run: python scripts/check_rational_trail.py data/ripa_23_trail.json --expected-links 23 --require-full
+      - name: Verify official 60/64 ordered trail
+        run: python scripts/check_rational_trail.py runs/2026-07-03-smart-search-16-defect-relay-60-full/best_candidate.json --expected-links 22 --min-covered 60
+      - name: Verify search-20 diagnostic
+        run: python scripts/check_rational_trail.py runs/2026-07-09-smart-search-20-line-bridge-full/best_line_bridge_candidate.json --expected-links 22 --min-covered 58
+      - name: Verify strongest cover64 scaffolds
+        run: |
+          python scripts/check_cover64_line_set.py runs/2026-07-07-smart-search-17-cover64-stitch-graph-full/best_line_set.json --expect-covered 64 --max-lines 22 --min-stitch-path 22
+          python - <<'PY'
+          import json, subprocess, tempfile
+          from pathlib import Path
+          rows=[json.loads(x) for x in Path('candidates/line-set-additions-run28825060197-cover64-stitch.jsonl').read_text().splitlines() if x.strip()]
+          if len(rows)<4: raise SystemExit(f'need four strong scaffolds, found {len(rows)}')
+          with tempfile.TemporaryDirectory() as td:
+              for i,row in enumerate(rows[:4]):
+                  p=Path(td)/f'scaffold_{i}.json';p.write_text(json.dumps(row))
+                  subprocess.check_call(['python','scripts/check_cover64_line_set.py',str(p),'--expect-covered','64','--max-lines','22','--min-stitch-path','22'])
+          PY
+
+  bridge-compress:
+    needs: precheck
+    runs-on: ubuntu-latest
+    timeout-minutes: 359
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - name: Resolve effective profile
+        id: profile
+        shell: bash
+        run: |
+          set -euo pipefail
+          profile="${{ inputs.profile || 'smoke' }}"
+          case "$profile" in
+            smoke)
+              seconds=180; workers=4; seed=20260721; beam_width=2048; state_cap=200000
+              candidate_lines=3000; start_limit=24; window_min=3; window_max=5
+              max_mutations=1; max_pure_bridges=7; target_min_rich_or_productive=14; save_min_covered=48
+              ;;
+            full)
+              seconds=21000; workers=4; seed=20260721; beam_width=16000; state_cap=3000000
+              candidate_lines=8000; start_limit=64; window_min=3; window_max=6
+              max_mutations=2; max_pure_bridges=6; target_min_rich_or_productive=16; save_min_covered=56
+              ;;
+            custom)
+              seconds="${{ inputs.seconds }}"; workers="${{ inputs.workers }}"; seed="${{ inputs.seed }}"
+              beam_width="${{ inputs.beam_width }}"; state_cap="${{ inputs.state_cap }}"; candidate_lines="${{ inputs.candidate_lines }}"
+              start_limit="${{ inputs.start_limit }}"; window_min="${{ inputs.window_min }}"; window_max="${{ inputs.window_max }}"
+              max_mutations="${{ inputs.max_mutations }}"; max_pure_bridges="${{ inputs.max_pure_bridges }}"
+              target_min_rich_or_productive="${{ inputs.target_min_rich_or_productive }}"; save_min_covered="${{ inputs.save_min_covered }}"
+              for v in seconds workers seed beam_width state_cap candidate_lines start_limit window_min window_max max_mutations max_pure_bridges target_min_rich_or_productive save_min_covered; do
+                test -n "${!v}" || { echo "custom profile requires $v" >&2; exit 2; }
+              done
+              ;;
+            *) echo "unknown profile $profile" >&2; exit 2;;
+          esac
+          mkdir -p results/bridge_compress
+          shard=${{ matrix.shard }}
+          effective_seed=$((seed + shard * 1000003))
+          cat > results/bridge_compress/effective_profile_${shard}.json <<EOF
+          {"profile":"$profile","seconds":$seconds,"workers":$workers,"base_seed":$seed,"effective_seed":$effective_seed,"beam_width":$beam_width,"state_cap":$state_cap,"candidate_lines":$candidate_lines,"start_limit":$start_limit,"window_min":$window_min,"window_max":$window_max,"max_mutations":$max_mutations,"max_pure_bridges":$max_pure_bridges,"target_min_rich_or_productive":$target_min_rich_or_productive,"save_min_covered":$save_min_covered}
+          EOF
+          for v in profile seconds workers seed beam_width state_cap candidate_lines start_limit window_min window_max max_mutations max_pure_bridges target_min_rich_or_productive save_min_covered; do echo "$v=${!v}" >> "$GITHUB_OUTPUT"; done
+      - name: Run bridge compression shard
+        run: |
+          python scripts/bridge_compress_search.py \
+            --repo . \
+            --seconds "${{ steps.profile.outputs.seconds }}" \
+            --workers "${{ steps.profile.outputs.workers }}" \
+            --seed "${{ steps.profile.outputs.seed }}" \
+            --shard "${{ matrix.shard }}" --shards 20 \
+            --beam-width "${{ steps.profile.outputs.beam_width }}" \
+            --state-cap "${{ steps.profile.outputs.state_cap }}" \
+            --candidate-lines "${{ steps.profile.outputs.candidate_lines }}" \
+            --start-limit "${{ steps.profile.outputs.start_limit }}" \
+            --window-min "${{ steps.profile.outputs.window_min }}" \
+            --window-max "${{ steps.profile.outputs.window_max }}" \
+            --max-mutations "${{ steps.profile.outputs.max_mutations }}" \
+            --max-pure-bridges "${{ steps.profile.outputs.max_pure_bridges }}" \
+            --target-min-rich-or-productive "${{ steps.profile.outputs.target_min_rich_or_productive }}" \
+            --save-min-covered "${{ steps.profile.outputs.save_min_covered }}" \
+            --out "results/bridge_compress/best_candidate_${{ matrix.shard }}.json" \
+            --preferred-out "results/bridge_compress/preferred_candidates_${{ matrix.shard }}.jsonl" \
+            --report-out "results/bridge_compress/compression_report_${{ matrix.shard }}.json" \
+            --stats-out "results/bridge_compress/search_stats_${{ matrix.shard }}.json" \
+            --checkpoint-out "results/bridge_compress/checkpoint_${{ matrix.shard }}.json"
+      - name: Exact independent geometry check
+        if: always()
+        run: |
+          p="results/bridge_compress/best_candidate_${{ matrix.shard }}.json"
+          test -f "$p"
+          python scripts/check_rational_trail.py "$p" --expected-links 22 --min-covered 1
+          covered=$(python -c 'import json,sys; print(json.load(open(sys.argv[1]))["covered_count"])' "$p")
+          if [ "$covered" = 64 ]; then
+            python scripts/verify_rational_trail_independent.py "$p" --expected-links 22 --require-full
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: smart-search-21-bridge-compress-22-shard-${{ matrix.shard }}
+          path: results/bridge_compress/
+          if-no-files-found: error
+
+  aggregate:
+    needs: bridge-compress
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: smart-search-21-bridge-compress-22-shard-*
+          path: collected
+          merge-multiple: true
+      - name: Build run summary and candidate banks
+        run: python scripts/build_bridge_compress_summary.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: smart-search-21-bridge-compress-run-summary
+          path: |
+            collected/run_summary.json
+            collected/summary.md
+            collected/mode_breakdown.json
+            collected/coverage_histogram.json
+            collected/missing_point_frequency.json
+            collected/bridge_count_histogram.json
+            collected/compact_candidates.jsonl
+            collected/ordinary_candidate_additions.jsonl
+            collected/diagnostic_bridge_compress.jsonl
+            collected/originals_index.jsonl
+          if-no-files-found: error
