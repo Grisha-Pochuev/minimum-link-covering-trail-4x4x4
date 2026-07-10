@@ -1,6 +1,6 @@
 # START HERE — compact agent memory
 
-Last updated: 2026-07-10
+Last updated: 2026-07-11
 
 This file is the first thing to read in a new ChatGPT web chat. It is boot memory, not the full diary. Read it once at the beginning of the working chat. Detailed history belongs in `frontier/latest.*`, `runs/*/summary.md`, plans, runbooks, and candidate banks.
 
@@ -79,7 +79,7 @@ candidates/ordered-trail-additions-run29123090565-bridge-compress-smoke.jsonl
 
 - run id: `29123090565`
 - run URL: https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/29123090565
-- workflow: `smart-search-21-bridge-compress`, launched by the narrow bootstrap workflow
+- workflow display name: `smart-search-21-bridge-compress`
 - profile: `smoke`
 - status: `success`
 - all prechecks succeeded
@@ -101,8 +101,8 @@ The full search-21 run is active. Do not launch a duplicate.
 
 - run id: `29123493808`
 - run URL: https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/29123493808
-- workflow: `smart-search-21-bridge-compress`
-- head commit: `48a5c5a4a6afbbc81cba3fcb0ae5ebe3178261bd`
+- workflow display name: `smart-search-21-bridge-compress`
+- historical launch note: this run was started before workflow consolidation, through the old wrapper/reusable-workflow pair at head commit `48a5c5a4a6afbbc81cba3fcb0ae5ebe3178261bd`
 - profile: `full`
 - precheck: success
 - 20 full shards: created and computation started
@@ -130,10 +130,11 @@ timeout-minutes=359
 
 When this run completes, the next fresh chat should use Prompt 1 to record it. Do not choose a new hypothesis before its artifacts are analyzed.
 
-## 6. Search-21 package
+## 6. Search-21 package after consolidation
+
+There is now exactly one visible workflow for search number 21:
 
 ```text
-.github/workflows/smart-search-21-bridge-compress.yml
 .github/workflows/smart-search-21-bootstrap.yml
 scripts/bridge_compress_common.py
 scripts/bridge_compress_search.py
@@ -143,7 +144,15 @@ scripts/build_bridge_compress_summary.py
 docs/smart-search-21-bridge-compress-launch.md
 ```
 
-The main serious workflow supports `profile=smoke|full|custom` and has no push trigger. The bootstrap is a narrow launcher because the current connector does not expose GitHub's `workflow_dispatch` action. It watches only the two search-21 trigger files and invokes the reusable main workflow.
+The file keeps the historical filename `smart-search-21-bootstrap.yml`, but it is now the complete self-contained workflow. Its visible GitHub Actions name is `smart-search-21-bridge-compress`, which follows the serious-run naming rule. It directly contains precheck, 20 search shards, exact checking, aggregation, artifacts, manual `workflow_dispatch`, and a narrow automatic full-run push trigger. The duplicate `.github/workflows/smart-search-21-bridge-compress.yml` was removed.
+
+Automatic launch behavior for search-21:
+
+- changing `launch/smart-search-21-full.trigger` launches the same single workflow;
+- push-triggered launches always resolve to `profile=full`;
+- `full` means `21000` seconds = `5 h 50 min`, `20` shards, `max-parallel=20`, `4` workers per shard;
+- manual `Run workflow` remains available, with `full` as the default profile;
+- no second launcher/bootstrap workflow may be created for the same search number.
 
 ## 7. Search-21 shard modes
 
@@ -184,14 +193,27 @@ Counting caution: line-set scaffolds must never be merged into the ordinary orde
 
 1. Record a completed full run: artifacts, frontier, banks, originals, memory.
 2. Choose one new non-repeating research hypothesis and do small local checks if useful.
-3. Implement only that chosen hypothesis as a runnable launch package.
+3. Implement only that chosen hypothesis and automatically launch the serious full run.
 4. Review the chat and clean up project memory.
 
-Naming rule: serious searches use `smart-search-N-short-description`.
+### Mandatory Step-3 launch rule
 
-Manual-run safety rule: use one `profile` input. `profile=full` must resolve all numeric parameters inside YAML; blank custom boxes are expected.
+When the user asks for Step 3 after a hypothesis has been selected:
 
-Workflow safety rule: do not delete or rename an active long-run workflow.
+1. create one complete workflow for that numbered search;
+2. name it `smart-search-N-short-description`, with a short one- or two-word descriptive suffix;
+3. keep exactly one visible workflow for that number — never create a second `bootstrap`, `launcher`, or duplicate workflow with the same `N`;
+4. include precheck, engine, checker, aggregation and artifacts in that one workflow;
+5. automatically launch the full profile from the web chat without asking the user to press buttons when repository write access is available;
+6. if the connector has no `workflow_dispatch` action, put a narrow push trigger in that same workflow and launch it by committing `launch/smart-search-N-full.trigger`; do not create another workflow as a launcher;
+7. the serious full profile is `seconds=21000` (`5 h 50 min`), `20` shards/jobs, `max-parallel=20`, and normally `4` workers per shard unless the chosen engine has a documented reason to differ;
+8. all full numeric parameters must be resolved inside YAML; never rely on the user manually filling many boxes;
+9. verify from Actions that the intended full run started, precheck passed, and all 20 shard jobs were created;
+10. do not launch a duplicate after success.
+
+Manual-run safety rule: use one `profile` input. `profile=full` must be the default serious option and resolve all numeric parameters inside YAML; blank custom boxes are expected.
+
+Active-run safety rule: edits on `main` do not change the immutable workflow graph already running from its recorded head commit. Do not cancel or duplicate an active long run merely to improve workflow organization.
 
 ## 10. Current next step
 
