@@ -1,8 +1,8 @@
 # START HERE — compact agent memory
 
-Last updated: 2026-07-09
+Last updated: 2026-07-10
 
-This file is the first thing to read in a new ChatGPT web chat. It is the boot memory, not the full diary. Read it once at the beginning of the working chat, normally in prompt 1. Do not reopen it in prompts 2-4 unless the user says this is a new chat, memory was lost, or critical context is missing. Detailed history belongs in `frontier/latest.*`, `runs/*/summary.md`, plans, runbooks, and candidate banks.
+This file is the first thing to read in a new ChatGPT web chat. It is boot memory, not the full diary. Read it once at the beginning of the working chat. Detailed history belongs in `frontier/latest.*`, `runs/*/summary.md`, plans, runbooks, and candidate banks.
 
 ## 1. Project
 
@@ -14,11 +14,11 @@ Current target: a `22`-link trail covering `64/64`, or enough obstruction eviden
 
 Known practical status:
 
-- `23` links: known construction; used as control.
-- `22` links: open target.
+- `23` links: known full construction; used as control and compression source.
+- `22` links: open target; best checked partial candidate is now `61/64`.
 - `21` links: too hard for serious search now; use only as diagnostic pressure.
 
-Important: heuristic search results are evidence, not proof.
+Heuristic search results are evidence, not proof. A candidate becomes frontier evidence only after exact checking.
 
 ## 2. First reading order
 
@@ -29,136 +29,180 @@ At the beginning of a new working chat, start from:
 3. `frontier/latest.json`
 4. `docs/web-chat-runbook-prompts.md`
 5. exact workflow or prepared workflow
-6. matching plan doc
+6. matching plan/launch doc
 7. candidate bank/additions/originals
 8. latest relevant `runs/` folder
 9. GitHub Actions artifacts when analyzing a completed run
 
-After this boot read, avoid reopening `START_HERE.md` during prompts 2-4 in the same chat. Use `frontier/latest.*` and run summaries as the index instead of blindly scanning every old run.
+After this boot read, avoid reopening `START_HERE.md` during prompts 2–4 unless critical context is missing.
 
-## 3. Current recorded frontier
+## 3. Current checked ordered frontier
 
-Latest recorded completed full run is now search-20:
+A three-minute smoke run of search-21 produced the first checked improvement beyond the old `60/64` wall.
 
-- run id: `28973760924`
-- run URL: https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/28973760924
-- workflow: `smart-search-20-line-bridge`
-- status: `success`
-- head commit: `772596df3d9fd796d2a5bf5ee0ea48697ca17031`
-- profile: `full`
-- actual parameters: `seconds=21000`, `workers=4`, `seed=20260720`, `beam_width=12000`, `state_cap=2000000`, `candidate_scaffolds=6`, `max_mutations=1`, `candidate_lines=6000`, `start_limit=44`, `line_branch_limit=24`, `bridge_branch_limit=16`, `min_full_lines=14`, `max_full_lines=18`, `max_bridge_links=8`, `save_min_covered=54`
-- result type: full-line-preserving bridge ordered-chain diagnostic from search-17 cover64 scaffolds; below the ordered-trail frontier, not a proof and not an ordered-trail improvement
+Best candidate:
 
-Best recorded GitHub ordered-trail candidate remains:
-
-- candidate id: `mlct22-3cf45a2e21fe611c`
-- source: run `28674416173`, same geometry as run `28618565146`
-- file: `runs/2026-07-03-smart-search-16-defect-relay-60-full/best_candidate.json`
-- covered_count: `60/64`
+- candidate id: `mlct22-bc-889d7f8c45252068`
+- file: `runs/2026-07-10-smart-search-21-bridge-compress-smoke/best_candidate.json`
+- covered_count: `61/64`
 - links: `22`
-- missing: `(0,0,1)`, `(0,2,3)`, `(0,3,1)`, `(2,1,1)`
+- missing: `(0,2,1)`, `(1,3,1)`, `(2,3,1)`
+- mode: `ripa_6to5_slide`
+- construction: exact local `6→5` compression of the known full 23-link trail
+- pure bridges: `0`
+- rich4 links: `14`
+- rich3 links: `1`
+- productive connectors: `7`
+- source run: `29123090565`
+- status: `verified_partial_candidate`
 
-Best recorded cover64 stitch scaffold from run `28825060197` remains:
+Verification:
 
-- candidate id: `mlct22-lineset-9772981a21b2a88a`
-- file: `runs/2026-07-07-smart-search-17-cover64-stitch-graph-full/best_line_set.json`
-- unordered line coverage: `64/64`
-- line count: `22`
-- stitch graph: components=`1`, max component=`22/22`, path lower bound=`22/22`, edges=`23`
-- mode: `old_wall_line_injection`
-- source artifact: `cover64-stitch-22-shard-12`
-- status: `line_set_seed_not_a_trail`
+- 23 vertices, 22 nonzero links;
+- checked by the exact rational checker in GitHub Actions;
+- downloaded artifact independently recomputed again with a separate exact implementation;
+- result confirmed as exactly `61/64`.
 
-Key lesson from run `28825060197`:
+A second symmetry-inequivalent checked `61/64` candidate was also found:
 
-- ordered-trail numeric frontier stayed `60/64`;
-- no checked `61/64+` ordered-trail candidate was produced;
-- scaffold frontier improved: many unordered 22-line sets cover all `64/64`;
-- saved compact line-set scaffold representatives: `20`;
-- compact scaffold representatives with stitch path `22/22`: `4`;
-- ordinary ordered-trail additions saved: `0`;
-- there is no missing-point defect family at scaffold level; all saved line-set representatives cover `64/64`.
+- candidate id: `mlct22-bc-81b7ac625af94cf7`
+- missing: `(3,0,3)`, `(3,1,3)`, `(3,2,3)`
+- same `ripa_6to5_slide` family.
 
-Key lesson from run `28875314204`:
-
-- search-18 tried to convert search-17 `64/64` scaffolds into real ordered 22-link chains;
-- best ordered-chain reconstruction was only `44/64`, candidate `mlct22-order-5c31614d2aeaa2aa`;
-- ordinary ordered-trail additions saved: `0`;
-- line-set scaffold additions saved: `0`;
-- diagnostic bank saved: `candidates/diagnostic-order-from-cover64-run28875314204.jsonl`.
-
-Key lesson from run `28903545221`:
-
-- search-19 fixed the red technical launch and completed successfully;
-- best diagnostic ordered-chain reconstruction improved search-18 only slightly, `44/64 -> 46/64`;
-- best candidate: `mlct22-contactdp-2714c28ba62b5c26`, mode `official60_aware`, shard `14`;
-- ordinary ordered-trail additions saved: `0`;
-- diagnostic rows saved: `3`;
-- dominant failure was rich-line clipping: best candidate preserved only `8` rich lines and clipped `12`, losing `17` grid points over pieces.
-
-Key lesson from run `28973760924`:
-
-- search-20 completed the `smart-search-20-line-bridge` full run successfully;
-- all prechecks, 20 line-bridge shard jobs, and aggregate job succeeded;
-- aggregate rows: `40`;
-- shard-best outputs: `20`;
-- unique compact ordered candidates in summary: `6`;
-- best line-bridge ordered-chain diagnostic improved search-19 strongly, `46/64 -> 58/64`;
-- best candidate: `mlct22-flbridge-8da0e01c34bb9c88`, mode `one_line_replacement`, shard `16`, artifact `smart-search-20-line-bridge-22-shard-16`;
-- best links: `22`, covered_count: `58/64`, missing_count: `6`;
-- best missing: `(0,2,0)`, `(0,2,2)`, `(2,1,0)`, `(2,1,2)`, `(2,3,0)`, `(3,2,0)`;
-- best preserved rich lines: `14`, full-line links: `14`, bridge links: `8`;
-- official60 old-missing hits: `4`, meaning the four holes of the standing `60/64` candidate were all hit;
-- ordinary ordered-trail additions saved: `0`;
-- line-set scaffold additions saved: `0`;
-- diagnostic line-bridge rows saved: `6`;
-- originals index rows saved: `6`.
-
-Search-20 interpretation: full-line preservation is much better than search-19 contact-state clipping, but spending 8 explicit bridge links is still too expensive. The run repaired the old four-hole wall but created a new six-hole bridge-defect family. It is diagnostic progress, not an ordered-frontier improvement.
-
-Counting caution: search-17 artifacts are `cover64-stitch-line-set-v1` scaffolds. They must not be merged into the normal ordered-trail candidate bank until a separate reconstruction/checker turns them into actual consecutive 22-link polygonal trails. Search-18, search-19, and search-20 outputs are checked ordered-chain diagnostics, but search-20 best is still below the `60/64` ordered-trail frontier and must stay in diagnostic banks, not ordinary candidate additions.
-
-Do not rerun `smart-search-17-cover64-stitch-graph`, `smart-search-18-order-from-cover64-stitch`, `smart-search-19-contact-state-dp`, or `smart-search-20-line-bridge` unchanged as the next serious step.
-
-## 4. Standard four-prompt workflow
-
-Use the user's four-step rhythm:
-
-1. result-taking prompt: read `START_HERE.md` once at the start of a new chat, record completed main/full GitHub run results, artifacts, candidates, frontier, and memory;
-2. hypothesis prompt: think creatively, choose the next non-repeating hypothesis, and do any small local checks needed to make the idea launchable;
-3. launch-preparation prompt: **technical implementation only**. Take the already chosen hypothesis from prompt 2 and prepare runnable GitHub launch files so the user can press Run. This may include writing a new engine/generator/checker/summary builder if the chosen hypothesis requires it. Do not invent a new hypothesis, do not re-test the idea, and do not open a different research branch unless the requested launch is technically impossible;
-4. wrap-up prompt: review the whole chat, identify confusion/time loss, and update memory files if needed.
-
-Naming rule for serious numbered searches: keep the workflow/run family as `smart-search-N-short-description`, for example `smart-search-11-d2-bridge-repair` or `smart-search-20-line-bridge`. The suffix should be short, ideally one or two descriptive words, but do not drop the `smart-search-N` prefix.
-
-Prompt 3 caution from 2026-07-08: do not spend time repeatedly trying to open a PR before there are commits. First write the launch files, then open/merge the PR if needed. If the user asks to run automatically but the connector has no workflow_dispatch action, say so honestly and give exact manual Run inputs.
-
-Workflow rename/delete safety rule: before deleting, renaming, or replacing any `.github/workflows/*.yml`, first check whether a long manual GitHub Actions run is queued or running under that workflow. Do not remove the old workflow file while a 5h+ run may be active.
-
-Manual-run profile safety rule: for any serious GitHub Actions search that has smoke/full parameter sets, prefer a single `profile` input with choices `smoke`, `full`, and optionally `custom`. If `profile=full` is selected, GitHub's form may still show all custom numeric boxes as blank; that is expected. The workflow must resolve the full numeric set internally and write an `effective_profile*.json` artifact if possible.
-
-Smoke-test is only a technical green-light before the long run. If the user sees a green check and launches the 5h+ full run, the next result-taking chat records the full run, not the smoke-test. Inspect smoke separately only if it failed, looked suspicious, or the user explicitly asks.
-
-## 5. Latest saved run archive
-
-Search-20 result archive:
+Both are saved in:
 
 ```text
-runs/2026-07-09-smart-search-20-line-bridge-full/summary.md
-runs/2026-07-09-smart-search-20-line-bridge-full/best_line_bridge_candidate.json
-runs/2026-07-09-smart-search-20-line-bridge-full/line_bridge_run_summary_compact.json
-runs/2026-07-09-smart-search-20-line-bridge-full/mode_breakdown.json
-candidates/diagnostic-line-bridge-run28973760924.jsonl
-candidates/originals/run28973760924-line-bridge-index.jsonl
+candidates/ordered-trail-additions-run29123090565-bridge-compress-smoke.jsonl
 ```
 
-## 6. Current next step
+## 4. Search-21 smoke run
 
-The `smart-search-20-line-bridge` hypothesis has been tried and recorded. The next chat should use Prompt 2, not Prompt 1 or Prompt 3.
+- run id: `29123090565`
+- run URL: https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/29123090565
+- workflow: `smart-search-21-bridge-compress`, launched by the narrow bootstrap workflow
+- profile: `smoke`
+- status: `success`
+- all prechecks succeeded
+- all `20/20` shards succeeded
+- every shard-best passed the exact checker
+- aggregate succeeded
+- shard-best rows: `20`
+- compact classes: `598`
+- total attempts: `60554`
+- compact `61/64`: `2`
+- compact `60/64`: `9`
+- full `64/64`: `0`
 
-Next non-repeating research direction should use the search-20 lesson:
+Important lesson: direct local compression of the already complete 23-link trail is much more promising than reconstructing a trail from an unordered scaffold. Search-21 found `61/64` during smoke, before the long run.
 
-- preserving rich full lines helped a lot compared with contact-state clipping;
-- hitting all four old `60/64` missing points is possible;
-- but 8 explicit bridge links still leave a new six-hole bridge-defect family;
-- next hypothesis should reduce bridge cost, change the scaffold ordering principle, or construct endpoint-compatible rich scaffolds instead of repeating the same line-bridge workflow.
+## 5. Active full run
+
+The full search-21 run is active. Do not launch a duplicate.
+
+- run id: `29123493808`
+- run URL: https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/29123493808
+- workflow: `smart-search-21-bridge-compress`
+- head commit: `48a5c5a4a6afbbc81cba3fcb0ae5ebe3178261bd`
+- profile: `full`
+- precheck: success
+- 20 full shards: created and computation started
+
+Effective full parameters:
+
+```text
+seconds=21000
+workers=4
+shards=20
+seed=20260721 + shard*1000003
+beam_width=16000
+state_cap=3000000
+candidate_lines=8000
+start_limit=64
+window_min=3
+window_max=6
+max_mutations=2
+max_pure_bridges=6
+target_min_rich_or_productive=16
+save_min_covered=56
+max-parallel=20
+timeout-minutes=359
+```
+
+When this run completes, the next fresh chat should use Prompt 1 to record it. Do not choose a new hypothesis before its artifacts are analyzed.
+
+## 6. Search-21 package
+
+```text
+.github/workflows/smart-search-21-bridge-compress.yml
+.github/workflows/smart-search-21-bootstrap.yml
+scripts/bridge_compress_common.py
+scripts/bridge_compress_search.py
+scripts/check_rational_trail.py
+scripts/verify_rational_trail_independent.py
+scripts/build_bridge_compress_summary.py
+docs/smart-search-21-bridge-compress-launch.md
+```
+
+The main serious workflow supports `profile=smoke|full|custom` and has no push trigger. The bootstrap is a narrow launcher because the current connector does not expose GitHub's `workflow_dispatch` action. It watches only the two search-21 trigger files and invokes the reusable main workflow.
+
+## 7. Search-21 shard modes
+
+```text
+0–1   ripa_5to4_fixed
+2–3   ripa_6to5_slide
+4–5   ripa_outside_hub
+6–7   official60_single_window
+8–9   official60_double_window
+10–11 official60_productive_bridge
+12–13 scaffold_endpoint_zero_mutation
+14–15 scaffold_endpoint_one_mutation
+16–17 scaffold_endpoint_two_mutations
+18    search20_control
+19    mixed_compression
+```
+
+The strongest smoke family was `ripa_6to5_slide`.
+
+## 8. Previous structural history
+
+- search-17 found unordered 22-line scaffolds covering `64/64`; these are not trails.
+- search-18 ordered reconstruction reached only `44/64`.
+- search-19 contact-state reconstruction reached `46/64`; rich-line clipping was the main failure.
+- search-20 preserved 14 rich lines and reached `58/64`, but spent 8 explicit bridge links.
+- search-21 directly compressed the full 23-link trail and reached checked `61/64` with zero pure bridges.
+
+Best unordered scaffold remains:
+
+- candidate `mlct22-lineset-9772981a21b2a88a`
+- run `28825060197`
+- unordered coverage `64/64`
+- status `line_set_seed_not_a_trail`.
+
+Counting caution: line-set scaffolds must never be merged into the ordinary ordered-trail bank until exact consecutive trail vertices are constructed and checked.
+
+## 9. Standard four-prompt workflow
+
+1. Record a completed full run: artifacts, frontier, banks, originals, memory.
+2. Choose one new non-repeating research hypothesis and do small local checks if useful.
+3. Implement only that chosen hypothesis as a runnable launch package.
+4. Review the chat and clean up project memory.
+
+Naming rule: serious searches use `smart-search-N-short-description`.
+
+Manual-run safety rule: use one `profile` input. `profile=full` must resolve all numeric parameters inside YAML; blank custom boxes are expected.
+
+Workflow safety rule: do not delete or rename an active long-run workflow.
+
+## 10. Current next step
+
+Do nothing that duplicates the active full run.
+
+When run `29123493808` completes:
+
+1. use Prompt 1;
+2. inspect all jobs, logs, artifacts, effective profiles and aggregate;
+3. save all 20 shard-best originals;
+4. save compact candidate classes and ordinary additions;
+5. verify every `61/64+` candidate independently;
+6. update `frontier/latest.*`, `START_HERE.md`, run archive and candidate banks;
+7. only then choose the next hypothesis.
