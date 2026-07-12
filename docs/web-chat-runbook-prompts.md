@@ -1,6 +1,16 @@
 # Web-chat runbook prompts
 
-This file is for ChatGPT web-chat work on this repository. It is a compact operating memory, not a mathematical proof.
+This file is the operating memory for ChatGPT web-chat work on this repository. It is not a mathematical proof and should not duplicate full run archives.
+
+## File roles
+
+- `START_HERE.md`: stable boot memory and reading order.
+- `frontier/latest.md` and `frontier/latest.json`: best checked mathematical frontier.
+- `frontier/active_run.json`: current operational run, status and do-not-duplicate flag.
+- `docs/web-chat-runbook-prompts.md`: reusable process rules and prompts.
+- `docs/smart-search-N-*.md`: exact Step-2 to Step-3 handoff for one numbered search.
+- `runs/*`: completed-run evidence.
+- candidate banks/originals: reusable checked and diagnostic curves.
 
 ## Main process rule
 
@@ -8,17 +18,17 @@ The project uses four web-chat steps:
 
 ```text
 1. Record a completed run.
-2. Think creatively and choose the next hypothesis.
-3. Implement that chosen hypothesis and automatically launch the full GitHub run.
-4. Review the chat and update memory.
+2. Think creatively, test locally and choose one next hypothesis.
+3. Implement that chosen hypothesis, run smoke, then launch full.
+4. Review the chat and improve project memory/process.
 ```
 
 Important distinction:
 
-- Step 2 is the research/fantasy/checking step.
-- Step 3 is technical execution. It must not replace the chosen hypothesis with another one.
-- Step 3 ends only after the intended full run is visible in Actions and its precheck/start state has been verified.
-- Step 4 is retrospective memory cleanup.
+- Step 2 is research and selection.
+- Step 3 is implementation, verification and launch. It must not replace the chosen primary hypothesis.
+- Step 3 ends only after smoke passes and the intended full run is visible with green precheck and all expected shard jobs.
+- Step 4 records process lessons without modifying or duplicating an active immutable run.
 
 ## Naming and one-workflow rule
 
@@ -28,90 +38,169 @@ Every serious numbered search uses:
 smart-search-N-short-description
 ```
 
-The suffix should be short, ideally one or two descriptive words. Keep the `smart-search-N` prefix.
+The suffix should be short, normally one or two descriptive words. Keep exactly one visible GitHub Actions workflow for each `N`. Never create a second bootstrap, launcher, smoke-only workflow or duplicate workflow carrying the same number.
 
-Examples:
+One workflow should contain precheck, smoke/full profiles, search shards, exact checking, aggregation and artifacts.
+
+## Step-2 handoff contract
+
+Before Step 3 starts, persist the selected hypothesis in a launch/plan document. The document must contain:
 
 ```text
-smart-search-19-contact-state-dp
-smart-search-20-line-bridge
-smart-search-21-bridge-compress
+1. next unused search number and final workflow name;
+2. one primary hypothesis;
+3. optional modes clearly marked as optional;
+4. exact input seeds and source runs;
+5. local test commands and observed results;
+6. invariants, especially link count and exact-arithmetic requirements;
+7. smoke acceptance gate;
+8. fixed full resource profile;
+9. expected per-shard and aggregate artifacts;
+10. implementation-language choice and reason.
 ```
 
-For each number `N`, keep exactly one visible GitHub Actions workflow. Never create a second `bootstrap`, `launcher`, smoke-only workflow, or another workflow carrying the same number.
+Step 3 should implement this contract. It may fix technical mistakes, but it should not broaden the search without a concrete reason.
 
-A technical filename may differ for historical reasons, but the workflow's visible `name:` must follow the serious-run naming rule. Search-21 currently lives in `.github/workflows/smart-search-21-bootstrap.yml`, but its visible name is `smart-search-21-bridge-compress`, and it contains the complete workflow itself.
+## Scope-control rule
+
+A serious run should have one primary mechanism. Supporting modes are allowed, but they should not turn the run into several unrelated searches.
+
+Prefer:
+
+```text
+one main hypothesis
++ a few ablations or controls
++ one small control shard for the previous method
+```
+
+Avoid putting every interesting idea from Step 2 into the same workflow.
+
+## Local dry-run gate before GitHub smoke
+
+Before committing the first smoke trigger:
+
+```text
+1. compile every source file;
+2. verify the known 23-link full control;
+3. verify every new frontier seed with both exact checkers;
+4. run every shard mode briefly in a local sequential test;
+5. run the aggregate/summary builder on miniature outputs;
+6. verify artifact paths and all three bank outputs;
+7. confirm all states keep the required number of nonzero links.
+```
+
+Do not spend 20 GitHub jobs merely to discover a syntax error, missing seed, wrong path or broken aggregator.
+
+## Readable-source rule
+
+New engines should be ordinary readable source files.
+
+If a connector rejects one large file, split the engine into normal importable modules such as:
+
+```text
+geometry.py
+state.py
+modes.py
+search.py
+output.py
+```
+
+Do not prefer compressed payloads, encoded source or runtime concatenation of arbitrary fragments.
+
+Search-22 currently uses `scripts/endpoint_repair_parts/part-*.pyfrag` because the connector blocked a large single upload. The active run is immutable and should not be changed. After the full run is recorded, refactor this layout into normal Python modules before extending it for search-23.
 
 ## Mandatory Step-3 automatic launch rule
 
 When Step 3 is requested after a hypothesis has been selected:
 
 ```text
-1. Implement the chosen hypothesis in one complete workflow.
-2. Include precheck, engine/generator, exact checker, aggregation and artifacts.
-3. Use 20 shards/jobs and max-parallel=20 for a normal full search.
-4. Put all full parameters inside YAML.
-5. Full duration is seconds=21000, i.e. 5 h 50 min.
-6. Normally use 4 workers per shard unless the engine has a documented reason not to.
-7. Launch the full run automatically from the web chat when repository write access exists.
-8. Verify that the intended full profile started, precheck passed, and all 20 shard jobs were created.
-9. Do not launch a duplicate.
+1. Implement the handoff contract in one complete workflow.
+2. Run the local dry-run gate.
+3. Commit implementation first.
+4. Launch smoke through the same workflow.
+5. Wait for smoke aggregate, not just green precheck.
+6. Require all intended smoke shard artifacts and exact checks.
+7. Only then launch full through the same workflow.
+8. Verify full profile, green precheck and creation of all shard jobs.
+9. Record the active run in frontier/active_run.json.
+10. Do not launch a duplicate.
 ```
 
-If the connector exposes a true `workflow_dispatch` action, use it.
-
-If it does not expose `workflow_dispatch`, the same serious workflow must contain a narrow push trigger watching:
+Normal serious full profile:
 
 ```text
+seconds=21000
+shards=20
+max-parallel=20
+workers=4 per shard
+```
+
+A different worker count requires a documented technical reason. All full parameters must resolve inside YAML.
+
+If the connector exposes true `workflow_dispatch`, use it. Otherwise the same workflow may watch narrow trigger files:
+
+```text
+launch/smart-search-N-smoke.trigger
 launch/smart-search-N-full.trigger
 ```
 
-Then launch by committing that trigger file after the workflow implementation has been committed. Do not create a separate launcher workflow.
+Do not create a separate launcher workflow.
 
-The push-triggered path must resolve automatically to `profile=full`. Manual `Run workflow` should also default to `full`. Custom numeric boxes may remain blank because they are used only by `profile=custom`.
+## Trigger-isolation rule
+
+Generic or legacy workflows must use narrow `paths:` filters. Commits changing only launch triggers, docs, memory, run archives, candidate banks or unrelated numbered-search files must not start old short searches.
 
 ## Fast technical checklist
 
 ```text
-1. Read the already-opened START_HERE/frontier context.
-2. Confirm the selected hypothesis and next unused number N.
-3. Confirm the visible name is smart-search-N-short-description.
-4. Confirm no second workflow already uses N.
-5. Implement workflow, engine, checker, summary builder, seeds and plan as needed.
-6. Compile/check scripts before spending GitHub time.
-7. Confirm full: seconds=21000, 20 shards, max-parallel=20, normally workers=4.
-8. Confirm seed paths, artifact names and checker inputs match.
-9. Commit implementation first.
-10. Trigger the same workflow automatically.
-11. Inspect Actions: correct run name/profile, green precheck, 20 shard jobs.
-12. Stop; do not start another copy.
+1. Use already-opened START_HERE/frontier context.
+2. Read frontier/active_run.json and do not duplicate an active run.
+3. Confirm selected hypothesis, next unused number and final visible name.
+4. Confirm no second workflow already uses that number.
+5. Confirm the Step-2 launch/plan document exists.
+6. Implement normal readable modules, seeds, workflow, checker and summary builder.
+7. Run the local dry-run gate.
+8. Confirm smoke and full values inside YAML.
+9. Commit implementation.
+10. Trigger smoke in the same workflow.
+11. Check smoke aggregate, all shard artifacts and exact verification.
+12. Trigger full only after smoke passes.
+13. Check full profile, green precheck and all shard jobs.
+14. Update frontier/active_run.json and stop.
 ```
 
-If a run fails red, distinguish:
+## Failure handling
+
+Distinguish:
 
 ```text
-- engine/search step failed: inspect logs and fix engine or inputs;
-- checker/summary failed after search: may be workflow plumbing, not mathematical failure;
-- failed run predates a fix commit: start a fresh run from main, not Re-run failed jobs.
+- engine/search step failed: inspect logs and fix code or inputs;
+- checker failed: candidate may be invalid or serialization may be wrong;
+- aggregation failed: search results may still be useful, inspect shard artifacts;
+- artifact missing: record exactly which shard is absent;
+- failed run predates a fix commit: launch a fresh run from main rather than rerunning stale code.
 ```
+
+Never describe a failed checker as a mathematical negative result.
 
 ## Prompt 1 — record completed run
 
 ```text
 Сними результаты завершённого GitHub run: <RUN_URL>.
 
-Это начало нового рабочего чата, поэтому сначала один раз открой START_HERE.md как долговременную память проекта. Затем открой frontier/latest.md, frontier/latest.json, docs/web-chat-runbook-prompts.md, workflow этого run, artifacts, jobs/logs и нужные runs/candidates.
+Это начало нового рабочего чата, поэтому сначала один раз открой START_HERE.md как долговременную память проекта. Затем открой frontier/latest.*, frontier/active_run.json, docs/web-chat-runbook-prompts.md, workflow этого run, artifacts, jobs/logs и нужные runs/candidates.
 
 Запиши результат в репозиторий и сделай коммит:
 - runs/<date>-<workflow>/summary.md и нужные json/jsonl;
 - frontier/latest.md и frontier/latest.json;
+- frontier/active_run.json: пометь завершение или очисти активный статус;
 - START_HERE.md, если изменилась долговременная память;
 - candidate additions/originals, если появились новые кривые или важные shard-best записи.
 
 В конце коротко скажи:
 1. лучший результат было/стало;
 2. сколько shard-best кривых получили;
-3. сколько новых compact/original кандидатов записали;
+3. сколько compact/original кандидатов записали;
 4. какие дырки или defect-family повторялись;
 5. какой следующий неповторяющийся шаг.
 ```
@@ -121,9 +210,11 @@ If a run fails red, distinguish:
 ```text
 Теперь сделай следующий исследовательский шаг: подумай, куда нам идти дальше.
 
-START_HERE.md уже был открыт в этом чате, не открывай его заново. Опирайся на последний записанный run, frontier, run summaries, candidate banks, originals и artifacts.
+START_HERE.md уже был открыт в этом чате, не открывай его заново. Опирайся на последний записанный run, frontier, candidate banks, originals и artifacts.
 
-Не повторяй прошлый workflow. Выбери одну новую гипотезу и при необходимости проверь её маленькими локальными проверками прямо в чате. Доведи идею до точного технического задания для GitHub-прогона.
+Не повторяй прошлый workflow. Выбери одну главную гипотезу и проверь её маленькими локальными тестами. Не складывай все интересные идеи в один будущий прогон.
+
+До конца шага создай или обнови docs/smart-search-N-<name>-launch.md: точная гипотеза, seeds, локальные результаты, инварианты, выбранные режимы, smoke gate, full profile и artifacts.
 
 В конце коротко скажи: какая гипотеза выбрана, почему она не повтор прошлого, что показали проверки и стоит ли запускать большой прогон.
 ```
@@ -131,15 +222,15 @@ START_HERE.md уже был открыт в этом чате, не открыв
 ## Prompt 3 — implement and launch
 
 ```text
-Подготовь и автоматически запусти GitHub-прогон под уже выбранную гипотезу.
+Подготовь и автоматически запусти GitHub-прогон по уже сохранённому Step-2 handoff.
 
-START_HERE.md уже был открыт в этом чате, не открывай его заново. Не придумывай новую гипотезу. Реализуй выбранную идею в одном полном workflow с названием smart-search-N-короткая-характеристика.
+START_HERE.md уже был открыт. Не придумывай новую основную гипотезу. Реализуй один workflow smart-search-N-короткая-характеристика.
 
-Не создавай отдельный bootstrap/launcher и не создавай второй workflow с тем же номером. Если workflow_dispatch недоступен, добавь узкий push-trigger в этот же workflow и запусти full через launch/smart-search-N-full.trigger.
+Сначала выполни локальный dry-run всех режимов и агрегации. Затем запусти smoke. Полный прогон запускай только после успешного smoke aggregate, всех ожидаемых shard artifacts и точных проверок.
 
-Основной full: 21000 секунд (5 ч 50 мин), 20 shards/jobs, max-parallel=20, обычно 4 workers/job. Все параметры full должны быть внутри YAML.
+Основной full: 21000 секунд, 20 shards/jobs, max-parallel=20, обычно 4 workers/job. Все параметры находятся внутри YAML.
 
-После запуска проверь Actions: правильное имя, profile=full, precheck success и 20 созданных shard jobs. В ответе дай ссылку на один главный run и коротко перечисли, что было создано.
+После запуска full проверь правильное имя/profile, precheck success и все 20 shard jobs. Запиши run в frontier/active_run.json. Не запускай копию.
 ```
 
 ## Prompt 4 — whole-chat wrap-up
@@ -147,28 +238,24 @@ START_HERE.md уже был открыт в этом чате, не открыв
 ```text
 Посмотри на всю работу в этом чате целиком.
 
-START_HERE.md уже был открыт в начале чата, не открывай его заново только ради чтения. Но если выводы нужно сохранить, измени START_HERE.md, frontier/latest.*, docs/web-chat-runbook-prompts.md, plan docs или другие файлы.
+START_HERE.md уже был открыт. Проверь потери времени, путаницу ролей файлов, лишние workflow-запуски, слишком широкий scope, непрозрачную упаковку исходников и незаписанные результаты.
 
-Проверь, не появились ли:
-- два workflow с одним номером;
-- отдельный launcher/bootstrap;
-- ручные параметры, которые должны быть внутри full-профиля;
-- незаписанные результаты или противоречивые правила.
+При необходимости измени START_HERE.md, frontier/active_run.json, docs/web-chat-runbook-prompts.md, launch/plan docs или другие файлы. Не меняй вычислительный граф уже активного run.
 
-В конце коротко скажи: что изменил, зачем изменил и какой следующий шаг записан в памяти проекта.
+В конце коротко скажи: что изменил, зачем изменил и какой следующий шаг записан.
 ```
 
 ## Current project state
 
 ```text
-best checked ordered-trail candidate: 61/64
-candidate: mlct22-bc-889d7f8c45252068
-source smoke run: 29123090565
-active full run: 29123493808
-active hypothesis: direct 23-link to 22-link bridge compression
-single search-21 workflow file: .github/workflows/smart-search-21-bootstrap.yml
-visible workflow name: smart-search-21-bridge-compress
-full profile: 21000 seconds, 20 shards, max-parallel=20, workers=4
+best checked ordered trail: 62/64
+candidate: mlct22-er-943c78ae82c82664
+missing: (2,3,1), (3,3,1)
+source smoke run: 29181400035
+active full run: 29181546758
+active hypothesis: endpoint repair plus local/coupled repair
+workflow: .github/workflows/smart-search-22-endpoint-repair.yml
+full: 21000 seconds, 20 shards, max-parallel=20, workers=4
 ```
 
-Do not duplicate active run `29123493808`. When it completes, use Prompt 1 before choosing another hypothesis.
+Do not duplicate active full run `29181546758`. When it completes, use Prompt 1 before choosing search-23.
