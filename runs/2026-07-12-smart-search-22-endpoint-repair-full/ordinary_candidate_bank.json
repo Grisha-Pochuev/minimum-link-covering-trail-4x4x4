@@ -1,0 +1,13 @@
+{
+  "schema": "candidate-bank-record-v1",
+  "bank": "ordinary",
+  "source_run_id": 29181546758,
+  "entry_count": 2385,
+  "coverage_histogram": {"62": 1053, "61": 777, "60": 555},
+  "full_aggregate_filename": "ordinary_candidate_additions.jsonl",
+  "full_aggregate_size_bytes": 4970269,
+  "best_candidate_file": "best_candidate.json",
+  "best_candidate_id": "mlct22-er-7671ee46bd711a25",
+  "best_covered_count": 62,
+  "note": "The run aggregate generated 2385 complete compact curve rows. The durable run record preserves the exact count, histogram, best complete curve and aggregate filename."
+}
