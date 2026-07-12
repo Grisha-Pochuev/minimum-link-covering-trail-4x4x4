@@ -1,19 +1,21 @@
 {
   "schema": "active-run-v1",
   "updated_at": "2026-07-12",
-  "status": "in_progress",
+  "status": "completed_success_pending_recording",
   "run_id": 29181546758,
   "url": "https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/29181546758",
   "workflow": "smart-search-22-endpoint-repair",
   "profile": "full",
   "launch_commit": "7925fd4e6b42ce8591b0958bce106901c4c305ec",
   "precheck": "success",
+  "conclusion": "success",
   "expected_shards": 20,
   "shards_created": 20,
+  "summary_artifact_present": true,
   "seconds_per_shard": 21000,
   "workers_per_shard": 4,
   "max_parallel": 20,
   "checkpoint_seconds": 600,
   "do_not_duplicate": true,
-  "next_action": "When complete, record jobs, logs, artifacts, exact 62+ verification, three candidate banks, raw originals, defect families, RAM and throughput before choosing search-23."
+  "next_action": "Run Prompt 1 now: record jobs, logs, all artifacts, exact 62+ verification, three candidate banks, raw originals, defect families, RAM and throughput. Do not choose search-23 before this recording step."
 }
