@@ -1,0 +1,142 @@
+#!/usr/bin/env python3
+"""Smart-search 22: endpoint-led exact local repair for 22-link 4x4x4 trails.
+
+The hot loop uses coordinates scaled by two and exact integer cross products.
+Every emitted candidate is therefore suitable for the repository's two exact
+rational checkers.  Search states always contain 23 vertices (22 links).
+"""
+from __future__ import annotations
+
+import argparse
+import hashlib
+import gzip
+import itertools
+import json
+import math
+import multiprocessing as mp
+import os
+import random
+import resource
+import signal
+import time
+from collections import Counter
+from pathlib import Path
+from typing import Iterable, Sequence
+
+Point = tuple[int, int, int]
+PathT = tuple[Point, ...]
+GRID: tuple[Point, ...] = tuple((2*x, 2*y, 2*z) for x in range(4) for y in range(4) for z in range(4))
+FULL_MASK = (1 << 64) - 1
+GRID_INDEX = {p: i for i, p in enumerate(GRID)}
+STOP = False
+SEGMENT_CACHE: dict[tuple[Point, Point], int] = {}
+
+
+def stop_handler(signum, frame):
+    global STOP
+    STOP = True
+
+
+def cross(a: Point, b: Point) -> Point:
+    return (a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0])
+
+
+def sub(a: Point, b: Point) -> Point:
+    return (a[0]-b[0], a[1]-b[1], a[2]-b[2])
+
+
+def dot(a: Point, b: Point) -> int:
+    return a[0]*b[0]+a[1]*b[1]+a[2]*b[2]
+
+
+def segment_mask(a: Point, b: Point) -> int:
+    if a == b:
+        return 0
+    key = (a,b) if a <= b else (b,a)
+    hit = SEGMENT_CACHE.get(key)
+    if hit is not None:
+        return hit
+    d = sub(b,a)
+    dd = dot(d,d)
+    m = 0
+    for p in GRID:
+        e = sub(p,a)
+        if cross(d,e) == (0,0,0):
+            t = dot(e,d)
+            if 0 <= t <= dd:
+                m |= 1 << GRID_INDEX[p]
+    if len(SEGMENT_CACHE) > 350000:
+        SEGMENT_CACHE.clear()
+    SEGMENT_CACHE[key] = m
+    return m
+
+
+def link_masks(v: PathT) -> list[int]:
+    return [segment_mask(a,b) for a,b in zip(v,v[1:])]
+
+
+def analyze(v: PathT) -> dict:
+    masks = link_masks(v)
+    union = 0
+    counts = [0]*64
+    rich4=rich3=productive=pure=0
+    gains=[]
+    classes=[]
+    for m in masks:
+        gain=(m & ~union).bit_count(); gains.append(gain)
+        total=m.bit_count()
+        if total >= 4: rich4 += 1; cls='rich4'
+        elif total >= 3: rich3 += 1; cls='rich3'
+        elif gain: productive += 1; cls='productive_connector'
+        else: pure += 1; cls='pure_bridge'
+        classes.append(cls)
+        union |= m
+        mm=m
+        while mm:
+            bit=(mm & -mm); idx=bit.bit_length()-1; counts[idx]+=1; mm-=bit
+    missing=[[x,y,z] for x in range(4) for y in range(4) for z in range(4)
+             if not (union >> GRID_INDEX[(2*x,2*y,2*z)]) & 1]
+    unique=sum(c==1 for c in counts)
+    redundant=sum(c>=2 for c in counts)
+    return {
+        'links':len(v)-1, 'covered_count':union.bit_count(),
+        'coverage_percent':100.0*union.bit_count()/64.0,
+        'covered_mask_hex':hex(union), 'missing':missing, 'missing_count':len(missing),
+        'rich4_count':rich4, 'rich3_count':rich3,
+        'productive_connector_count':productive, 'pure_bridge_count':pure,
+        'unique_coverage_points':unique, 'redundantly_covered_points':redundant,
+        'link_point_counts':[m.bit_count() for m in masks], 'link_gains':gains,
+        'link_classes':classes,
+    }
+
+
+def raw_key(v: PathT) -> str:
+    return hashlib.sha256(repr(v).encode()).hexdigest()
+
+
+def transforms(v: PathT) -> Iterable[PathT]:
+    # Scaled cube reflection is coordinate q -> 6-q.
+    for rev in (False,True):
+        base=tuple(reversed(v)) if rev else v
+        for perm in itertools.permutations(range(3)):
+            for flips in itertools.product((False,True), repeat=3):
+                yield tuple(tuple(6-p[perm[j]] if flips[j] else p[perm[j]] for j in range(3)) for p in base)
+
+
+def canonical_key(v: PathT) -> str:
+    best=min(repr(x) for x in transforms(v))
+    return hashlib.sha256(best.encode()).hexdigest()
+
+
+def score(rep: dict) -> tuple:
+    # Coverage is absolute.  For ties prefer robustness, then rich links and fewer bridges.
+    return (rep['covered_count'], rep['redundantly_covered_points'], -rep['unique_coverage_points'],
+            rep['rich4_count'], rep['rich3_count'], rep['productive_connector_count'],
+            -rep['pure_bridge_count'])
+
+
+def row_for(v: PathT, *, mode: str, shard: int, worker: int, seed: int,
+            parent: str|None=None, operation: str|None=None, attempts: int=0, canonical: bool=False) -> dict:
+    rep=analyze(v)
+    rk=raw_key(v)
+    rep.update({

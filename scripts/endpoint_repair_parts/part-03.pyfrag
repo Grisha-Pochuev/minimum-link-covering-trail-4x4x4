@@ -1,0 +1,73 @@
+    seeds=[(cid,tuple(tuple(p) for p in v),r) for cid,v,r in seed_rows]
+    subset=choose_seed_subset(seeds,mode)
+    base=base_catalog(subset)
+    seed_paths=[v for _,v,_ in subset]
+    beam=[]; seen=set(); saved={}; attempts=0; accepted=0
+    op_counts=Counter(); best_row=None; best_v=None
+    for cid,v,r in subset:
+        rep=analyze(v); k=raw_key(v); seen.add(k); beam.append((score(rep),v,cid,rep))
+        if rep['covered_count']>=save_min:
+            saved[k]=row_for(v,mode=mode,shard=shard,worker=wid,seed=seed,parent=cid,operation='seed')
+        if best_row is None or score(rep)>score(best_row):
+            best_v=v; best_row=row_for(v,mode=mode,shard=shard,worker=wid,seed=seed,parent=cid,operation='seed')
+    beam.sort(reverse=True,key=lambda x:x[0]); beam=beam[:max(32,min(beam_width,512))]
+
+    # Deterministic endpoint sweeps ensure the known 62 result is reconstructed rather than merely copied.
+    sweep_sources=subset[:min(4,len(subset))]
+    for cid,v,r in sweep_sources:
+        for endpoint,anchor in ((0,1),(-1,-2)):
+            rep0=analyze(v); focus=focused_catalog(rep0,base)
+            for p in endpoint_options(v[anchor],focus):
+                w=list(v); w[endpoint]=p; w=tuple(w)
+                if any(a==b for a,b in zip(w,w[1:])): continue
+                attempts+=1; rep=analyze(w); k=raw_key(w)
+                if k in seen: continue
+                seen.add(k)
+                if score(rep)>score(best_row):
+                    best_v=w; best_row=row_for(w,mode=mode,shard=shard,worker=wid,seed=seed,parent=cid,operation='endpoint_sweep',attempts=attempts)
+                if rep['covered_count']>=save_min:
+                    saved[k]=row_for(w,mode=mode,shard=shard,worker=wid,seed=seed,parent=cid,operation='endpoint_sweep',attempts=attempts)
+                beam.append((score(rep),w,cid,rep))
+    beam.sort(reverse=True,key=lambda x:x[0]); beam=beam[:max(64,min(beam_width,2048))]
+
+    start=time.monotonic(); next_cp=start+max(20,checkpoint_seconds)
+    while not STOP and time.monotonic()-start < seconds:
+        attempts+=1
+        # Mostly exploit top states, sometimes explore the whole retained beam.
+        if rng.random()<0.82:
+            parent=rng.choice(beam[:max(1,min(len(beam),128))])
+        else: parent=rng.choice(beam)
+        _,v,parent_id,rep0=parent
+        w,op=mutate(v,rep0,rng,mode,base,seed_paths); op_counts[op]+=1
+        if w==v: continue
+        k=raw_key(w)
+        if k in seen: continue
+        seen.add(k); rep=analyze(w)
+        worst=beam[-1][0]
+        if len(beam)<beam_width or score(rep)>worst or (rep['covered_count']>=60 and rng.random()<0.02):
+            accepted+=1; beam.append((score(rep),w,parent_id,rep))
+            if len(beam)>beam_width+256:
+                beam.sort(reverse=True,key=lambda x:x[0]); beam=beam[:beam_width]
+        if best_row is None or score(rep)>score(best_row):
+            best_v=w; best_row=row_for(w,mode=mode,shard=shard,worker=wid,seed=seed,parent=parent_id,operation=op,attempts=attempts)
+        if rep['covered_count']>=save_min:
+            saved[k]=row_for(w,mode=mode,shard=shard,worker=wid,seed=seed,parent=parent_id,operation=op,attempts=attempts)
+            if len(saved)>top_diverse*4:
+                vals=sorted(saved.values(),key=score,reverse=True)[:top_diverse*2]
+                # Preserve one representative per missing set when possible.
+                keep={r['raw_path_key_sha256']:r for r in vals}
+                for r in saved.values():
+                    mk=tuple(map(tuple,r['missing']))
+                    if not any(tuple(map(tuple,x['missing']))==mk for x in keep.values()): keep[r['raw_path_key_sha256']]=r
+                saved=keep
+        if len(seen)>=state_cap:
+            seen={raw_key(x[1]) for x in beam}; SEGMENT_CACHE.clear()
+        now=time.monotonic()
+        if now>=next_cp:
+            cp={'schema':'endpoint-repair-checkpoint-v1','shard':shard,'worker':wid,'mode':mode,
+                'attempts':attempts,'accepted':accepted,'elapsed_seconds':now-start,
+                'best_covered':best_row['covered_count'],'best_missing':best_row['missing'],
+                'seen_states':len(seen),'beam_size':len(beam),
+                'max_rss_kb':resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,
+                'operation_counts':dict(op_counts)}
+            Path(outdir,f'worker_{wid}_checkpoint.json').write_text(json.dumps(cp,indent=2,sort_keys=True))

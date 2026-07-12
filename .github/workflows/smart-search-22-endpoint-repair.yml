@@ -1,0 +1,194 @@
+name: smart-search-22-endpoint-repair
+run-name: smart-search-22-endpoint-repair-${{ inputs.profile || (contains(github.event.head_commit.message, 'smoke') && 'smoke' || 'full') }}
+
+permissions:
+  contents: read
+  actions: read
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - launch/smart-search-22-smoke.trigger
+      - launch/smart-search-22-full.trigger
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: "Full is the normal serious run. Smoke validates the package first."
+        required: true
+        default: full
+        type: choice
+        options: [full, smoke]
+
+jobs:
+  precheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - name: Compile search-22 package
+        run: |
+          python -m py_compile \
+            scripts/endpoint_repair_search.py \
+            scripts/build_endpoint_repair_summary.py \
+            scripts/verify_endpoint_repair_batch.py \
+            scripts/check_rational_trail.py \
+            scripts/verify_rational_trail_independent.py
+          cat data/search22_run21_60plus_seed_parts/part-*.jsonlpart > data/search22_run21_60plus_seeds.jsonl
+          python - <<'PY'
+          from pathlib import Path
+          base=Path('scripts/endpoint_repair_parts')
+          source=''.join(p.read_text(encoding='utf-8') for p in sorted(base.glob('part-*.pyfrag')))
+          compile(source,str(base),'exec')
+          PY
+      - name: Verify known 23-link full trail
+        run: python scripts/check_rational_trail.py data/ripa_23_trail.json --expected-links 23 --require-full
+      - name: Verify local 62/64 endpoint-repair seed twice
+        run: |
+          python scripts/verify_endpoint_repair_batch.py data/search22_endpoint_62_seed.json --min-covered 62
+      - name: Verify full search-21 seed bank
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          rows=[json.loads(x) for x in Path('data/search22_run21_60plus_seeds.jsonl').read_text().splitlines() if x.strip()]
+          assert len(rows)==103, len(rows)
+          assert sum(r['covered_count']==61 for r in rows)==24
+          assert sum(r['covered_count']==60 for r in rows)==79
+          assert all(len(r['vertices2'])==23 for r in rows)
+          print({'seeds':len(rows),'61':24,'60':79})
+          PY
+
+  endpoint-repair:
+    needs: precheck
+    runs-on: ubuntu-latest
+    timeout-minutes: 359
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - name: Assemble exact text assets
+        run: cat data/search22_run21_60plus_seed_parts/part-*.jsonlpart > data/search22_run21_60plus_seeds.jsonl
+      - name: Resolve effective profile
+        id: profile
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "push" ]; then
+            case "${{ github.event.head_commit.message }}" in
+              *smoke*) profile=smoke ;;
+              *) profile=full ;;
+            esac
+          else
+            profile="${{ inputs.profile }}"
+          fi
+          case "$profile" in
+            smoke)
+              seconds=180
+              workers=4
+              seed=20260722
+              beam_width=1500
+              state_cap=100000
+              save_min_covered=60
+              top_diverse=120
+              checkpoint_seconds=60
+              ;;
+            full)
+              seconds=21000
+              workers=4
+              seed=20260722
+              beam_width=12000
+              state_cap=750000
+              save_min_covered=60
+              top_diverse=200
+              checkpoint_seconds=600
+              ;;
+            *) echo "unknown profile: $profile" >&2; exit 2 ;;
+          esac
+          mkdir -p results/endpoint_repair
+          shard=${{ matrix.shard }}
+          effective_seed=$((seed + shard * 1000003))
+          cat > results/endpoint_repair/effective_profile_${shard}.json <<EOF
+          {"profile":"$profile","seconds":$seconds,"workers":$workers,"base_seed":$seed,"effective_seed":$effective_seed,"beam_width_per_worker":$beam_width,"state_cap_per_worker":$state_cap,"save_min_covered":$save_min_covered,"top_diverse_per_worker":$top_diverse,"checkpoint_seconds":$checkpoint_seconds}
+          EOF
+          for v in profile seconds workers seed beam_width state_cap save_min_covered top_diverse checkpoint_seconds; do
+            echo "$v=${!v}" >> "$GITHUB_OUTPUT"
+          done
+      - name: Run endpoint-repair shard
+        shell: bash
+        run: |
+          set -euo pipefail
+          ulimit -v 12582912 || true
+          python scripts/endpoint_repair_search.py \
+            --repo . \
+            --seconds "${{ steps.profile.outputs.seconds }}" \
+            --workers "${{ steps.profile.outputs.workers }}" \
+            --seed "${{ steps.profile.outputs.seed }}" \
+            --shard "${{ matrix.shard }}" \
+            --shards 20 \
+            --beam-width "${{ steps.profile.outputs.beam_width }}" \
+            --state-cap "${{ steps.profile.outputs.state_cap }}" \
+            --save-min-covered "${{ steps.profile.outputs.save_min_covered }}" \
+            --top-diverse "${{ steps.profile.outputs.top_diverse }}" \
+            --checkpoint-seconds "${{ steps.profile.outputs.checkpoint_seconds }}" \
+            --outdir results/endpoint_repair
+      - name: Exact dual verification
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          best="results/endpoint_repair/best_candidate_${{ matrix.shard }}.json"
+          test -f "$best"
+          python scripts/verify_endpoint_repair_batch.py "$best" --min-covered 1
+          batch="results/endpoint_repair/verified_62plus_${{ matrix.shard }}.jsonl"
+          test -f "$batch"
+          python scripts/verify_endpoint_repair_batch.py "$batch" --jsonl --min-covered 62
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: smart-search-22-endpoint-repair-22-shard-${{ matrix.shard }}
+          path: results/endpoint_repair/
+          if-no-files-found: error
+          retention-days: 14
+
+  aggregate:
+    needs: endpoint-repair
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: smart-search-22-endpoint-repair-22-shard-*
+          path: collected
+          merge-multiple: true
+      - name: Build summary and three candidate banks
+        run: python scripts/build_endpoint_repair_summary.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: smart-search-22-endpoint-repair-run-summary
+          path: |
+            collected/run_summary.json
+            collected/summary.md
+            collected/best_candidate.json
+            collected/coverage_histogram.json
+            collected/defect_family_histogram.json
+            collected/mode_breakdown.json
+            collected/endpoint_operation_statistics.json
+            collected/paired_transfer_statistics.json
+            collected/exact_verification_report.json
+            collected/compact_candidates.jsonl
+            collected/verified_62plus.jsonl
+            collected/ordinary_candidate_additions.jsonl
+            collected/diagnostic_endpoint_repair.jsonl
+            collected/originals_index.jsonl
+            collected/shard_best_originals.jsonl
+          if-no-files-found: error
+          retention-days: 14

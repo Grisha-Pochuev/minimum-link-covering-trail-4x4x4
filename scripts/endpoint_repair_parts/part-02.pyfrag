@@ -1,0 +1,85 @@
+        m=segment_mask(anchor,p)
+        if m:
+            old=by_mask.get(m)
+            if old is None or sum((p[i]-anchor[i])**2 for i in range(3)) < sum((old[i]-anchor[i])**2 for i in range(3)):
+                by_mask[m]=p
+    return tuple(by_mask.values())
+
+
+def mutate(v: PathT, rep: dict, rng: random.Random, mode: str, base: tuple[Point,...], seeds_paths: Sequence[PathT]) -> tuple[PathT,str]:
+    w=list(v); focus=focused_catalog(rep,base); miss=missing_scaled(rep)
+    r=rng.random()
+    # Mode-specific endpoint bias.
+    if mode=='free_start_62' or (mode.startswith('endpoint_') and r<0.22):
+        opts=endpoint_options(w[1],focus); w[0]=rng.choice(opts); return tuple(w),'free_start'
+    if mode=='free_end_62' or (mode.startswith('endpoint_') and r<0.44):
+        opts=endpoint_options(w[-2],focus); w[-1]=rng.choice(opts); return tuple(w),'free_end'
+    if mode=='two_free_ends' and r<0.55:
+        w[0]=rng.choice(endpoint_options(w[1],focus)); w[-1]=rng.choice(endpoint_options(w[-2],focus)); return tuple(w),'two_free_ends'
+    if mode=='defect_line_forcing' or (len(miss)>=2 and r<0.16):
+        a,b=rng.sample(miss,2); lp=line_points_through(a,b)
+        i=rng.randrange(1,21)
+        p,q=sorted(rng.sample(lp,2), key=lambda x: sum((x[j]-a[j])**2 for j in range(3)))
+        w[i]=p; w[i+1]=q
+        if w[i-1]==w[i] or w[i+1]==w[i+2]: return v,'rejected_zero'
+        return tuple(w),'force_defect_line'
+    if mode in ('endpoint_window_2to3','endpoint_window_4to5','endpoint_window_6to8') or r<0.42:
+        if mode.endswith('2to3'): k=rng.randint(2,3)
+        elif mode.endswith('4to5'): k=rng.randint(4,5)
+        elif mode.endswith('6to8'): k=rng.randint(6,8)
+        else: k=rng.randint(2,6)
+        start=rng.randint(0,22-k)
+        for j in range(start+1,start+k):
+            w[j]=rng.choice(focus)
+        if any(a==b for a,b in zip(w,w[1:])): return v,'rejected_zero'
+        return tuple(w),f'window_{k}'
+    if mode=='paired_budget_transfer' or r<0.66:
+        # Coupled distant changes: one endpoint/defect repair plus one compression-like vertex move.
+        if rng.random()<0.5: w[0]=rng.choice(endpoint_options(w[1],focus))
+        else: w[-1]=rng.choice(endpoint_options(w[-2],focus))
+        i=rng.randrange(1,22); j=rng.randrange(1,22)
+        while abs(i-j)<3: j=rng.randrange(1,22)
+        w[i]=rng.choice(focus)
+        # Pull second vertex onto a line between its neighbours, emulating a budget-saving compression.
+        a,c=w[j-1],w[j+1]
+        t=rng.choice((1,2,3))
+        w[j]=tuple((a[d]*(4-t)+c[d]*t)//4 for d in range(3))
+        if any(a==b for a,b in zip(w,w[1:])): return v,'rejected_zero'
+        return tuple(w),'paired_transfer'
+    if r<0.78:
+        i=rng.randrange(1,22); w[i]=rng.choice(focus)
+        if w[i] in (w[i-1],w[i+1]): return v,'rejected_zero'
+        return tuple(w),'single_vertex'
+    if r<0.89:
+        i,j=sorted(rng.sample(range(1,22),2)); w[i]=rng.choice(focus); w[j]=rng.choice(focus)
+        if any(a==b for a,b in zip(w,w[1:])): return v,'rejected_zero'
+        return tuple(w),'two_vertex'
+    if r<0.96:
+        # Segment crossover with another strong search-21 seed.
+        donor=rng.choice(seeds_paths); i,j=sorted(rng.sample(range(1,22),2)); w[i:j]=donor[i:j]
+        if any(a==b for a,b in zip(w,w[1:])): return v,'rejected_zero'
+        return tuple(w),'seed_crossover'
+    i,j=sorted(rng.sample(range(1,22),2)); w[i:j]=reversed(w[i:j])
+    if any(a==b for a,b in zip(w,w[1:])): return v,'rejected_zero'
+    return tuple(w),'subpath_reverse'
+
+
+def choose_seed_subset(seeds, mode):
+    if mode in ('free_start_62','free_end_62','endpoint_window_2to3','endpoint_window_4to5','endpoint_window_6to8','paired_budget_transfer','two_free_ends','defect_line_forcing'):
+        return seeds[:32]
+    if mode=='endpoint_all_61_family_A':
+        target=[[0,2,1],[1,3,1],[2,3,1]]
+        x=[s for s in seeds if s[2].get('missing')==target]
+        return x or seeds[:32]
+    if mode=='endpoint_all_61_family_B':
+        target=[[3,0,3],[3,1,3],[3,2,3]]
+        x=[s for s in seeds if s[2].get('missing')==target]
+        return x or seeds[:32]
+    return seeds[1:64] or seeds
+
+
+def worker_main(args):
+    (wid, shard, mode, seconds, seed, beam_width, state_cap, save_min, top_diverse,
+     checkpoint_seconds, outdir, seed_rows) = args
+    signal.signal(signal.SIGTERM, stop_handler); signal.signal(signal.SIGINT, stop_handler)
+    rng=random.Random(seed)

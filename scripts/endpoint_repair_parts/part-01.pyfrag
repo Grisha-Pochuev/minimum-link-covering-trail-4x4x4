@@ -1,0 +1,117 @@
+        'schema':'endpoint-repair-candidate-v1',
+        'candidate_id':'mlct22-er-'+rk[:16],
+        'raw_path_key_sha256':rk,
+        'coordinate_scale':2,
+        'vertices2':[list(p) for p in v],
+        'vertices':[[x/2 for x in p] for p in v],
+        'vertices_q':[[str(x//2) if x%2==0 else f'{x}/2' for x in p] for p in v],
+        'mode':mode, 'source_shard':shard, 'source_worker':worker,
+        'effective_seed':seed, 'parent_candidate_id':parent,
+        'operation':operation, 'attempts_when_found':attempts,
+    })
+    if canonical:
+        rep['canonical_key_sha256']=canonical_key(v)
+    return rep
+
+
+def load_path(row: dict) -> PathT:
+    if row.get('vertices2') is not None:
+        s=int(row.get('coordinate_scale',2))
+        if s == 2:
+            return tuple(tuple(int(x) for x in p) for p in row['vertices2'])
+        return tuple(tuple(round(2*int(x)/s) for x in p) for p in row['vertices2'])
+    out=[]
+    for p in row.get('vertices_q',row['vertices']):
+        q=[]
+        for x in p:
+            text=str(x)
+            if '/' in text:
+                a,b=text.split('/'); q.append(2*int(a)//int(b))
+            else: q.append(round(2*float(text)))
+        out.append(tuple(q))
+    return tuple(out)
+
+
+def load_seeds(repo: Path) -> list[tuple[str,PathT,dict]]:
+    rows=[]
+    local=json.loads((repo/'data/search22_endpoint_62_seed.json').read_text())
+    rows.append((local['candidate_id'],load_path(local),local))
+    seed_lines=(repo/'data/search22_run21_60plus_seeds.jsonl').read_text(encoding='utf-8').splitlines()
+    for line in seed_lines:
+        if line.strip():
+            r=json.loads(line); rows.append((r['candidate_id'],load_path(r),r))
+    # Exact re-ranking protects against stale stored metadata.
+    out=[]
+    seen=set()
+    for cid,v,r in rows:
+        if len(v)!=23 or any(a==b for a,b in zip(v,v[1:])): continue
+        k=raw_key(v)
+        if k in seen: continue
+        seen.add(k); rep=analyze(v); r=dict(r); r.update(rep); out.append((cid,v,r))
+    out.sort(key=lambda x: score(x[2]), reverse=True)
+    return out
+
+
+def mode_for_shard(shard: int) -> str:
+    if shard <= 1: return 'free_start_62'
+    if shard <= 3: return 'free_end_62'
+    if shard <= 5: return 'endpoint_all_61_family_A'
+    if shard <= 7: return 'endpoint_all_61_family_B'
+    if shard <= 9: return 'endpoint_window_2to3'
+    if shard <= 11: return 'endpoint_window_4to5'
+    if shard <= 13: return 'endpoint_window_6to8'
+    if shard <= 16: return 'paired_budget_transfer'
+    if shard == 17: return 'two_free_ends'
+    if shard == 18: return 'defect_line_forcing'
+    return 'search21_control'
+
+
+def base_catalog(seeds: Sequence[tuple[str,PathT,dict]]) -> tuple[Point,...]:
+    pts=set(GRID)
+    for _,v,_ in seeds[:40]: pts.update(v)
+    # Integer and half-integer outside hubs in a moderate box.
+    coords=(-4,-2,0,2,4,6,8,10)
+    for x in coords:
+        for y in coords:
+            for z in coords:
+                # Keep surfaces/corners and near-cube points; avoid a dense 2197 point cube.
+                outside=sum(c<0 or c>6 for c in (x,y,z))
+                if outside or (x in (0,2,4,6) and y in (0,2,4,6) and z in (0,2,4,6)):
+                    pts.add((x,y,z))
+    return tuple(sorted(pts))
+
+
+def missing_scaled(rep: dict) -> list[Point]:
+    return [(2*x,2*y,2*z) for x,y,z in rep['missing']]
+
+
+def line_points_through(a: Point,b: Point) -> tuple[Point,...]:
+    d=sub(b,a)
+    g=math.gcd(abs(d[0]),math.gcd(abs(d[1]),abs(d[2]))) or 1
+    step=(d[0]//g,d[1]//g,d[2]//g)
+    return tuple((a[0]+t*step[0],a[1]+t*step[1],a[2]+t*step[2]) for t in range(-8,9))
+
+
+def focused_catalog(rep: dict, base: tuple[Point,...]) -> tuple[Point,...]:
+    pts=set(base)
+    miss=missing_scaled(rep)
+    pts.update(miss)
+    for a,b in itertools.combinations(miss,2): pts.update(line_points_through(a,b))
+    # Axis lines through each defect are especially cheap repair candidates.
+    for p in miss:
+        for axis in range(3):
+            for t in range(-4,11):
+                q=list(p); q[axis]=t; pts.add(tuple(q))
+    return tuple(pts)
+
+
+def endpoint_options(anchor: Point, base: tuple[Point,...]) -> tuple[Point,...]:
+    by_mask={}
+    candidates=set(base)
+    for p in GRID:
+        d=sub(p,anchor)
+        candidates.add(p)
+        candidates.add((anchor[0]+2*d[0],anchor[1]+2*d[1],anchor[2]+2*d[2]))
+        candidates.add((anchor[0]+3*d[0],anchor[1]+3*d[1],anchor[2]+3*d[2]))
+    for p in candidates:
+        if p==anchor: continue

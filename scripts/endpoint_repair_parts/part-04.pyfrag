@@ -1,0 +1,66 @@
+            Path(outdir,f'worker_{wid}_best.json').write_text(json.dumps(best_row,indent=2,sort_keys=True))
+            next_cp=now+max(20,checkpoint_seconds)
+    beam.sort(reverse=True,key=lambda x:x[0])
+    # Canonicalization is expensive, so apply it only to the strongest finite tail.
+    vals=sorted(saved.values(),key=score,reverse=True)[:max(top_diverse*4,top_diverse)]
+    compact={}
+    for r in vals:
+        vv=tuple(tuple(p) for p in r['vertices2'])
+        r=dict(r); r['canonical_key_sha256']=canonical_key(vv)
+        ck=r['canonical_key_sha256']
+        if ck not in compact or score(r)>score(compact[ck]): compact[ck]=r
+    vals=sorted(compact.values(),key=score,reverse=True)[:top_diverse]
+    if 'canonical_key_sha256' not in best_row:
+        best_row=dict(best_row); best_row['canonical_key_sha256']=canonical_key(best_v)
+    stats={'schema':'endpoint-repair-worker-stats-v1','shard':shard,'worker':wid,'mode':mode,
+           'effective_seed':seed,'attempts':attempts,'accepted':accepted,
+           'elapsed_seconds':time.monotonic()-start,'states_per_second':attempts/max(0.001,time.monotonic()-start),
+           'seen_states':len(seen),'beam_size':len(beam),'saved_count':len(vals),
+           'best_covered':best_row['covered_count'],'best_missing':best_row['missing'],
+           'max_rss_kb':resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,
+           'operation_counts':dict(op_counts)}
+    return best_row,vals,stats
+
+
+def write_json(path:Path,obj): path.parent.mkdir(parents=True,exist_ok=True); path.write_text(json.dumps(obj,indent=2,sort_keys=True)+'\n')
+def write_jsonl(path:Path,rows): path.parent.mkdir(parents=True,exist_ok=True); path.write_text(''.join(json.dumps(r,sort_keys=True,separators=(',',':'))+'\n' for r in rows))
+
+
+def main():
+    ap=argparse.ArgumentParser()
+    ap.add_argument('--repo',type=Path,default=Path('.')); ap.add_argument('--seconds',type=int,required=True)
+    ap.add_argument('--workers',type=int,default=4); ap.add_argument('--seed',type=int,required=True)
+    ap.add_argument('--shard',type=int,required=True); ap.add_argument('--shards',type=int,default=20)
+    ap.add_argument('--beam-width',type=int,default=1500); ap.add_argument('--state-cap',type=int,default=100000)
+    ap.add_argument('--save-min-covered',type=int,default=60); ap.add_argument('--top-diverse',type=int,default=200)
+    ap.add_argument('--checkpoint-seconds',type=int,default=600); ap.add_argument('--outdir',type=Path,required=True)
+    a=ap.parse_args(); a.outdir.mkdir(parents=True,exist_ok=True)
+    seeds=load_seeds(a.repo); mode=mode_for_shard(a.shard)
+    effective=a.seed+a.shard*1000003
+    serial=[(cid,[list(p) for p in v],r) for cid,v,r in seeds]
+    tasks=[(wid,a.shard,mode,a.seconds,effective+wid*10007,a.beam_width,a.state_cap,
+            a.save_min_covered,a.top_diverse,a.checkpoint_seconds,str(a.outdir),serial) for wid in range(a.workers)]
+    ctx=mp.get_context('fork')
+    with ctx.Pool(a.workers) as pool: results=pool.map(worker_main,tasks)
+    bests=[x[0] for x in results]; best=max(bests,key=score)
+    allrows=[]
+    for _,rows,_ in results: allrows.extend(rows)
+    compact={}
+    for r in allrows:
+        ck=r['canonical_key_sha256']
+        if ck not in compact or score(r)>score(compact[ck]): compact[ck]=r
+    rows=sorted(compact.values(),key=score,reverse=True)
+    stats={'schema':'endpoint-repair-shard-stats-v1','shard':a.shard,'mode':mode,'workers':a.workers,
+           'base_seed':a.seed,'effective_seed':effective,'seconds':a.seconds,
+           'best_covered':best['covered_count'],'best_missing':best['missing'],
+           'compact_saved_count':len(rows),'worker_stats':[x[2] for x in results]}
+    write_json(a.outdir/f'best_candidate_{a.shard}.json',best)
+    write_jsonl(a.outdir/f'verified_candidates_{a.shard}.jsonl',rows)
+    write_jsonl(a.outdir/f'verified_62plus_{a.shard}.jsonl',[r for r in rows if r['covered_count']>=62])
+    write_jsonl(a.outdir/f'raw_originals_{a.shard}.jsonl',bests)
+    write_json(a.outdir/f'mode_statistics_{a.shard}.json',stats)
+    write_json(a.outdir/f'checkpoint_{a.shard}.json',stats)
+    mem={'shard':a.shard,'mode':mode,'workers':[x[2]['max_rss_kb'] for x in results],
+         'max_worker_rss_kb':max(x[2]['max_rss_kb'] for x in results)}
+    write_json(a.outdir/f'memory_statistics_{a.shard}.json',mem)
+    print(json.dumps({'shard':a.shard,'mode':mode,'best':best['covered_count'],'missing':best['missing'],
