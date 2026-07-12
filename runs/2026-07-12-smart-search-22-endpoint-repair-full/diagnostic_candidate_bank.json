@@ -1,0 +1,8 @@
+{
+  "schema": "candidate-bank-record-v1",
+  "bank": "diagnostic",
+  "source_run_id": 29181546758,
+  "entry_count": 0,
+  "full_aggregate_filename": "diagnostic_endpoint_repair.jsonl",
+  "note": "No separate diagnostic-only class survived the search-22 bank policy. This empty bank is recorded intentionally, not omitted."
+}
