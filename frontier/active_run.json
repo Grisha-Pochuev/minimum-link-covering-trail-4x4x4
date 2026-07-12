@@ -1,18 +1,18 @@
 {
   "schema": "active-run-v1",
   "updated_at": "2026-07-12",
-  "status": "recorded_completed",
-  "run_id": 29181546758,
-  "url": "https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/29181546758",
-  "workflow": "smart-search-22-endpoint-repair",
-  "profile": "full",
-  "launch_commit": "7925fd4e6b42ce8591b0958bce106901c4c305ec",
-  "precheck": "success",
-  "conclusion": "success",
-  "expected_shards": 20,
-  "shards_received": 20,
-  "summary_artifact_present": true,
-  "recorded_run_folder": "runs/2026-07-12-smart-search-22-endpoint-repair-full",
+  "status": "no_active_run_step2_complete",
+  "last_recorded_run_id": 29181546758,
+  "last_recorded_workflow": "smart-search-22-endpoint-repair",
+  "last_recorded_run_folder": "runs/2026-07-12-smart-search-22-endpoint-repair-full",
+  "selected_next_search": {
+    "number": 23,
+    "workflow": "smart-search-23-core-transplant",
+    "launch_document": "docs/smart-search-23-core-transplant-launch.md",
+    "analysis_document": "docs/experiments/2026-07-12-search22-frozen-core-analysis.md",
+    "primary_hypothesis": "Break at least one, preferably two, lines of the frozen 18-line search-22 core and rebuild 4-8-link connected or paired neighborhoods using structurally different 60/64-61/64 donor blocks.",
+    "status": "selected_not_implemented_not_launched"
+  },
   "do_not_duplicate": true,
-  "next_action": "Refactor search-22 source fragments into normal modules, then perform Step 2 for a non-repeating search-23 hypothesis."
+  "next_action": "Run Step 3: refactor fragment-based search-22 source into normal modules or write a normal C++20 search-23 engine, persist the expiring search-22 seed bank, implement the exact launch document, pass local dry checks and the full smoke aggregate, then launch one full search-23 run."
 }
