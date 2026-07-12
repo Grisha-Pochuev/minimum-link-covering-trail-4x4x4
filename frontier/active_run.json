@@ -1,7 +1,7 @@
 {
   "schema": "active-run-v1",
   "updated_at": "2026-07-12",
-  "status": "completed_success_pending_recording",
+  "status": "recorded_completed",
   "run_id": 29181546758,
   "url": "https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/29181546758",
   "workflow": "smart-search-22-endpoint-repair",
@@ -10,12 +10,9 @@
   "precheck": "success",
   "conclusion": "success",
   "expected_shards": 20,
-  "shards_created": 20,
+  "shards_received": 20,
   "summary_artifact_present": true,
-  "seconds_per_shard": 21000,
-  "workers_per_shard": 4,
-  "max_parallel": 20,
-  "checkpoint_seconds": 600,
+  "recorded_run_folder": "runs/2026-07-12-smart-search-22-endpoint-repair-full",
   "do_not_duplicate": true,
-  "next_action": "Run Prompt 1 now: record jobs, logs, all artifacts, exact 62+ verification, three candidate banks, raw originals, defect families, RAM and throughput. Do not choose search-23 before this recording step."
+  "next_action": "Refactor search-22 source fragments into normal modules, then perform Step 2 for a non-repeating search-23 hypothesis."
 }
