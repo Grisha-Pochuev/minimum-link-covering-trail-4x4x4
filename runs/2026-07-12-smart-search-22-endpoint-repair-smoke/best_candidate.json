@@ -1,0 +1,31 @@
+{
+  "schema": "endpoint-repair-candidate-v1",
+  "candidate_id": "mlct22-er-943c78ae82c82664",
+  "canonical_key_sha256": "ed8bcae4c5a60fe7be9838ae0d8e716ccffaa294c29b14dd7352da67cfd76d72",
+  "raw_path_key_sha256": "943c78ae82c82664c20153658e6a80b2cd8b83adf14118b05f107b6a8654cc6c",
+  "coordinate_scale": 2,
+  "covered_count": 62,
+  "coverage_percent": 96.875,
+  "links": 22,
+  "missing": [[2,3,1],[3,3,1]],
+  "missing_count": 2,
+  "mode": "free_start_62",
+  "operation": "endpoint_sweep",
+  "source_shard": 0,
+  "source_worker": 0,
+  "effective_seed": 20260722,
+  "parent_candidate_id": "mlct22-bc-c341f8191e20f309",
+  "rich4_count": 14,
+  "rich3_count": 2,
+  "productive_connector_count": 6,
+  "pure_bridge_count": 0,
+  "vertices2": [[2,6,2],[-4,0,2],[6,0,2],[6,0,6],[6,6,6],[0,0,0],[6,0,0],[0,6,6],[0,0,6],[6,6,0],[-2,6,0],[4,6,6],[4,-2,6],[-2,4,0],[8,4,0],[2,-2,6],[2,8,6],[8,2,0],[-2,2,0],[6,6,4],[6,-4,4],[0,14,4],[0,0,4]],
+  "vertices_q": [["1","3","1"],["-2","0","1"],["3","0","1"],["3","0","3"],["3","3","3"],["0","0","0"],["3","0","0"],["0","3","3"],["0","0","3"],["3","3","0"],["-1","3","0"],["2","3","3"],["2","-1","3"],["-1","2","0"],["4","2","0"],["1","-1","3"],["1","4","3"],["4","1","0"],["-1","1","0"],["3","3","2"],["3","-2","2"],["0","7","2"],["0","0","2"]],
+  "source_run_id": 29181400035,
+  "status": "verified_partial_candidate",
+  "verification": {
+    "primary_exact_rational_checker": true,
+    "independent_exact_rational_checker": true,
+    "nonzero_links": 22
+  }
+}

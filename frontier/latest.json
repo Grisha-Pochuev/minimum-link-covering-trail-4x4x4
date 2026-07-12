@@ -1,142 +1,105 @@
 {
   "schema": "mlct-frontier-v1",
   "repository": "Grisha-Pochuev/minimum-link-covering-trail-4x4x4",
-  "updated_utc": "2026-07-10T21:05:00Z",
-  "status": "verified_61_of_64_frontier_full_search21_running",
+  "updated_utc": "2026-07-12T05:43:00Z",
+  "status": "verified_62_of_64_frontier_full_search22_running",
   "best_recorded_ordered_trail_candidate": {
-    "candidate_id": "mlct22-bc-889d7f8c45252068",
-    "canonical_key_sha256": "373cedc7eba48b04af8902899e7a8a2d43df558cff75ec54634b5cba8985ece3",
-    "coverage_percent": 95.3125,
-    "covered_count": 61,
+    "candidate_id": "mlct22-er-943c78ae82c82664",
+    "canonical_key_sha256": "ed8bcae4c5a60fe7be9838ae0d8e716ccffaa294c29b14dd7352da67cfd76d72",
+    "covered_count": 62,
     "grid_points": 64,
+    "coverage_percent": 96.875,
     "links": 22,
-    "missing": [[0,2,1],[1,3,1],[2,3,1]],
-    "missing_count": 3,
-    "mode": "ripa_6to5_slide",
-    "pure_bridge_count": 0,
+    "vertices": 23,
+    "missing": [[2,3,1],[3,3,1]],
+    "missing_count": 2,
+    "mode": "free_start_62",
+    "operation": "endpoint_sweep",
+    "source_shard": 0,
+    "source_worker": 0,
+    "effective_seed": 20260722,
     "rich4_count": 14,
-    "rich3_count": 1,
-    "productive_connector_count": 7,
-    "source_file": "runs/2026-07-10-smart-search-21-bridge-compress-smoke/best_candidate.json",
-    "source_run_id": 29123090565,
-    "source_run_url": "https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/29123090565",
+    "rich3_count": 2,
+    "productive_connector_count": 6,
+    "pure_bridge_count": 0,
+    "source_file": "runs/2026-07-12-smart-search-22-endpoint-repair-smoke/best_candidate.json",
+    "source_run_id": 29181400035,
+    "source_run_url": "https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/29181400035",
     "source_profile": "smoke",
-    "source_workflow": "smart-search-21-bridge-compress",
+    "source_workflow": "smart-search-22-endpoint-repair",
     "status": "verified_partial_candidate",
     "verification": {
-      "github_exact_rational_checker": true,
-      "independent_artifact_recheck": true,
-      "vertices": 23,
+      "primary_exact_rational_checker": true,
+      "independent_exact_rational_checker": true,
       "nonzero_links": 22
     }
   },
-  "additional_verified_frontier_candidates": [
-    {
-      "candidate_id": "mlct22-bc-81b7ac625af94cf7",
-      "canonical_key_sha256": "c8c7e8f310a50218ce4e4f8acee4b391625baef8951843efced7618ee8be8144",
-      "covered_count": 61,
-      "links": 22,
-      "missing": [[3,0,3],[3,1,3],[3,2,3]],
-      "missing_count": 3,
-      "mode": "ripa_6to5_slide",
-      "status": "verified_partial_candidate"
+  "latest_completed_run": {
+    "run_id": 29181400035,
+    "run_url": "https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/29181400035",
+    "workflow_name": "smart-search-22-endpoint-repair",
+    "profile": "smoke",
+    "status": "success",
+    "statistics": {
+      "received_shards": 20,
+      "expected_shards": 20,
+      "shard_best_count": 20,
+      "raw_original_count": 80,
+      "compact_candidate_count": 38,
+      "compact_62_count": 38,
+      "compact_63_count": 0,
+      "compact_64_count": 0,
+      "all_shards_succeeded": true,
+      "aggregate_succeeded": true
+    },
+    "comparison_with_previous_frontier": {
+      "previous_best_ordered_trail_covered_count": 61,
+      "new_best_ordered_trail_covered_count": 62,
+      "ordered_trail_numeric_frontier_changed": true
+    },
+    "archive": {
+      "run_folder": "runs/2026-07-12-smart-search-22-endpoint-repair-smoke/",
+      "summary_file": "runs/2026-07-12-smart-search-22-endpoint-repair-smoke/summary.md",
+      "best_candidate_file": "runs/2026-07-12-smart-search-22-endpoint-repair-smoke/best_candidate.json"
     }
-  ],
+  },
+  "active_full_run": {
+    "run_id": 29181546758,
+    "run_url": "https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/29181546758",
+    "workflow_name": "smart-search-22-endpoint-repair",
+    "profile": "full",
+    "head_commit_sha": "7925fd4e6b42ce8591b0958bce106901c4c305ec",
+    "status_when_recorded": "precheck_success_all_20_shards_created",
+    "parameters": {
+      "seconds": 21000,
+      "workers": 4,
+      "shards": 20,
+      "max_parallel": 20,
+      "seed": 20260722,
+      "seed_stride": 1000003,
+      "beam_width_per_worker": 12000,
+      "state_cap_per_worker": 750000,
+      "save_min_covered": 60,
+      "top_diverse_per_worker": 200,
+      "checkpoint_seconds": 600,
+      "timeout_minutes": 359
+    }
+  },
   "best_recorded_cover64_stitch_scaffold": {
     "candidate_id": "mlct22-lineset-9772981a21b2a88a",
     "covered_count": 64,
     "line_count": 22,
     "interpretation": "unordered 22-line cover64 scaffold; not an ordered trail",
-    "source_file": "runs/2026-07-07-smart-search-17-cover64-stitch-graph-full/best_line_set.json",
     "source_run_id": 28825060197,
     "status": "line_set_seed_not_a_trail"
   },
-  "latest_completed_run": {
-    "run_id": 29123090565,
-    "run_url": "https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/29123090565",
-    "workflow_name": "smart-search-21-bridge-compress",
-    "profile": "smoke",
-    "status": "success",
-    "head_commit_sha": "6a97f1310056cccf7ee72280319d61dde43aefc6",
-    "parameters": {
-      "seconds": 180,
-      "workers": 4,
-      "shards": 20,
-      "seed": 20260721,
-      "beam_width": 2048,
-      "state_cap": 200000,
-      "candidate_lines": 3000,
-      "start_limit": 24,
-      "window_min": 3,
-      "window_max": 5,
-      "max_mutations": 1,
-      "max_pure_bridges": 7,
-      "target_min_rich_or_productive": 14,
-      "save_min_covered": 48
-    },
-    "statistics": {
-      "shard_best_count": 20,
-      "compact_candidate_count": 598,
-      "total_attempts": 60554,
-      "compact_61_count": 2,
-      "compact_60_count": 9,
-      "full_64_count": 0,
-      "all_shards_succeeded": true,
-      "aggregate_succeeded": true
-    },
-    "comparison_with_previous_frontier": {
-      "previous_best_ordered_trail_covered_count": 60,
-      "new_best_ordered_trail_covered_count": 61,
-      "ordered_trail_numeric_frontier_changed": true
-    },
-    "archive": {
-      "run_folder": "runs/2026-07-10-smart-search-21-bridge-compress-smoke/",
-      "summary_file": "runs/2026-07-10-smart-search-21-bridge-compress-smoke/summary.md",
-      "best_candidate_file": "runs/2026-07-10-smart-search-21-bridge-compress-smoke/best_candidate.json",
-      "ordinary_candidate_additions": "candidates/ordered-trail-additions-run29123090565-bridge-compress-smoke.jsonl"
-    }
-  },
-  "active_full_run": {
-    "run_id": 29123493808,
-    "run_url": "https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/29123493808",
-    "workflow_name": "smart-search-21-bridge-compress",
-    "profile": "full",
-    "head_commit_sha": "48a5c5a4a6afbbc81cba3fcb0ae5ebe3178261bd",
-    "status_when_recorded": "precheck_success_shards_started",
-    "parameters": {
-      "seconds": 21000,
-      "workers": 4,
-      "shards": 20,
-      "seed": 20260721,
-      "beam_width": 16000,
-      "state_cap": 3000000,
-      "candidate_lines": 8000,
-      "start_limit": 64,
-      "window_min": 3,
-      "window_max": 6,
-      "max_mutations": 2,
-      "max_pure_bridges": 6,
-      "target_min_rich_or_productive": 16,
-      "save_min_covered": 56
-    }
-  },
-  "prepared_launch_package": {
-    "workflow_file": ".github/workflows/smart-search-21-bridge-compress.yml",
-    "bootstrap_file": ".github/workflows/smart-search-21-bootstrap.yml",
-    "engine_file": "scripts/bridge_compress_search.py",
-    "geometry_file": "scripts/bridge_compress_common.py",
-    "primary_checker": "scripts/check_rational_trail.py",
-    "independent_checker": "scripts/verify_rational_trail_independent.py",
-    "summary_builder": "scripts/build_bridge_compress_summary.py",
-    "launch_doc": "docs/smart-search-21-bridge-compress-launch.md"
-  },
   "current_next_step": {
-    "step_type": "record_completed_full_search21",
-    "instruction": "Do not start a duplicate run. When run 29123493808 completes, use Prompt 1 to record its artifacts, 20 shard-best originals, compact candidates, bank additions, missing frequencies, and final checked frontier.",
+    "step_type": "record_completed_full_search22",
+    "instruction": "Do not launch a duplicate. When run 29181546758 completes, record all jobs, logs, artifacts, exact 62+ checks, three banks, raw originals, defect families, speed and RAM, then choose search-23.",
     "do_not_do": [
-      "do not rerun smart-search-20 unchanged",
-      "do not start another smart-search-21 while run 29123493808 is active",
-      "do not treat unordered scaffolds as trails"
+      "do not launch another search-22 while run 29181546758 is active",
+      "do not rerun search-21 unchanged",
+      "do not treat unordered line-set scaffolds as trails"
     ]
   }
 }
