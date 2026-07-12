@@ -1,8 +1,8 @@
 {
   "schema": "mlct-frontier-v1",
   "repository": "Grisha-Pochuev/minimum-link-covering-trail-4x4x4",
-  "updated_utc": "2026-07-12T05:43:00Z",
-  "status": "verified_62_of_64_frontier_full_search22_running",
+  "updated_utc": "2026-07-12T11:35:04Z",
+  "status": "verified_62_of_64_frontier_full_search22_completed_pending_recording",
   "best_recorded_ordered_trail_candidate": {
     "candidate_id": "mlct22-er-943c78ae82c82664",
     "canonical_key_sha256": "ed8bcae4c5a60fe7be9838ae0d8e716ccffaa294c29b14dd7352da67cfd76d72",
@@ -34,7 +34,7 @@
       "nonzero_links": 22
     }
   },
-  "latest_completed_run": {
+  "latest_completed_recorded_run": {
     "run_id": 29181400035,
     "run_url": "https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/29181400035",
     "workflow_name": "smart-search-22-endpoint-repair",
@@ -63,13 +63,15 @@
       "best_candidate_file": "runs/2026-07-12-smart-search-22-endpoint-repair-smoke/best_candidate.json"
     }
   },
-  "active_full_run": {
+  "completed_full_run_pending_recording": {
     "run_id": 29181546758,
     "run_url": "https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/29181546758",
     "workflow_name": "smart-search-22-endpoint-repair",
     "profile": "full",
     "head_commit_sha": "7925fd4e6b42ce8591b0958bce106901c4c305ec",
-    "status_when_recorded": "precheck_success_all_20_shards_created",
+    "status": "completed",
+    "conclusion": "success",
+    "summary_artifact_present": true,
     "parameters": {
       "seconds": 21000,
       "workers": 4,
@@ -95,9 +97,10 @@
   },
   "current_next_step": {
     "step_type": "record_completed_full_search22",
-    "instruction": "Do not launch a duplicate. When run 29181546758 completes, record all jobs, logs, artifacts, exact 62+ checks, three banks, raw originals, defect families, speed and RAM, then choose search-23.",
+    "instruction": "Run Prompt 1 now. Record all jobs, logs, artifacts, exact 62+ checks, three banks, raw originals, defect families, speed and RAM before choosing search-23.",
     "do_not_do": [
-      "do not launch another search-22 while run 29181546758 is active",
+      "do not launch another search-22",
+      "do not choose search-23 before recording full run 29181546758",
       "do not rerun search-21 unchanged",
       "do not treat unordered line-set scaffolds as trails"
     ]
