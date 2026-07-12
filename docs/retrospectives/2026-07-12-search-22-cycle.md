@@ -8,7 +8,7 @@ Date: 2026-07-12
 - Small exact local experiments in Step 2 found a genuine `62/64` endpoint-repair seed before spending the full GitHub budget.
 - Smoke ran before full, received all `20/20` shards, exercised every mode, checked candidates with two independent exact verifiers, and validated aggregation plus the three candidate-bank outputs.
 - Search-22 kept exactly one visible workflow and the full run was launched automatically from the web chat.
-- The active full run was recorded in project memory immediately after launch.
+- The full run completed successfully; its mathematical results are intentionally left for the dedicated Prompt-1 recording step.
 
 ## Where time was lost
 
@@ -50,13 +50,13 @@ Before the first GitHub smoke commit:
 
 Do not leave a new engine as concatenated code fragments unless there is no workable alternative. If a connector rejects a large file, split it into ordinary importable modules such as geometry, state, modes, search and output. Do not hide source in compressed or opaque payloads.
 
-Search-22's `endpoint_repair_parts/part-*.pyfrag` layout is accepted for the already running immutable full run. After that run is recorded, refactor it into normal modules before reusing or extending the engine for search-23.
+Search-22's `endpoint_repair_parts/part-*.pyfrag` layout is accepted for its immutable historical full-run commit. After that run is recorded, refactor it into normal modules before reusing or extending the engine for search-23.
 
 ### Memory roles
 
 - `START_HERE.md`: stable boot memory and reading order.
 - `frontier/latest.md` and `.json`: best checked mathematical result.
-- `frontier/active_run.json`: one machine-readable current run and do-not-duplicate state.
+- `frontier/active_run.json`: machine-readable active run or completed run awaiting recording.
 - `docs/web-chat-runbook-prompts.md`: process rules and reusable prompts.
 - `runs/*`: durable evidence and completed-run archives.
 - launch/plan documents: exact Step-2 to Step-3 handoff for one numbered search.
@@ -71,7 +71,8 @@ Generic regression workflows must use narrow `paths:` filters. Launch files, doc
 - Narrowed `.github/workflows/check-and-short-search.yml` so launch and memory commits do not trigger it.
 - Updated the runbook to the search-22 state and added the handoff, local dry-run and readable-source rules.
 - Updated `START_HERE.md` to clarify file roles and record the deferred source-module cleanup.
+- When run `29181546758` completed during the retrospective, marked it `completed_success_pending_recording` rather than pretending its artifacts had already been analyzed.
 
 ## Next action
 
-Do not alter or duplicate active full run `29181546758`. When it finishes, complete Prompt 1 first. After recording its evidence, refactor the search-22 fragment layout into normal Python modules before adapting the engine for search-23.
+Run Prompt 1 for completed full run `29181546758`. Record all artifacts, candidates, exact checks, defect families, RAM and speed before choosing search-23. After recording its evidence, refactor the search-22 fragment layout into normal Python modules.
