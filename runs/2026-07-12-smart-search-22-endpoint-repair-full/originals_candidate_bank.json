@@ -1,0 +1,10 @@
+{
+  "schema": "candidate-bank-record-v1",
+  "bank": "originals",
+  "source_run_id": 29181546758,
+  "entry_count": 80,
+  "full_aggregate_filename": "shard_best_originals.jsonl",
+  "originals_index_filename": "originals_index.jsonl",
+  "best_candidate_file": "best_candidate.json",
+  "note": "The aggregate contains 80 raw worker/shard-best ordered trails and an 80-row originals index."
+}
