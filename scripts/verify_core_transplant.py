@@ -43,6 +43,7 @@ def segment_mask(a: tuple[int,int,int], b: tuple[int,int,int]) -> int:
 def verify(row: dict, min_covered: int) -> None:
     vertices = [tuple(map(int,p)) for p in row['vertices2']]
     assert len(vertices) == 23
+    assert int(row.get('links', len(vertices)-1)) == 22
     mask = 0
     for a,b in zip(vertices,vertices[1:]):
         mask |= segment_mask(a,b)
@@ -57,7 +58,6 @@ def verify(row: dict, min_covered: int) -> None:
                 idx += 1
     assert covered == int(row['covered_count']), (row.get('candidate_id'), covered, row['covered_count'])
     assert missing == row['missing'], (row.get('candidate_id'), missing, row['missing'])
-    assert int(row['links']) == 22
     assert covered >= min_covered
 
 
