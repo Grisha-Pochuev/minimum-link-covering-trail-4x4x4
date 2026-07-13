@@ -1,0 +1,294 @@
+name: smart-search-23-core-transplant
+run-name: smart-search-23-core-transplant-${{ inputs.profile || (contains(github.event.head_commit.message, 'smoke') && 'smoke' || 'full') }}
+
+permissions:
+  contents: write
+  actions: read
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - launch/smart-search-23-smoke.trigger
+      - launch/smart-search-23-full.trigger
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: "Full is the 5h50m scientific run. Smoke validates all modes and artifacts first."
+        required: true
+        default: full
+        type: choice
+        options: [full, smoke]
+
+jobs:
+  precheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - name: Compile readable search-23 package
+        run: |
+          python -m py_compile \
+            scripts/materialize_search23_seed_data.py \
+            scripts/prepare_search23_seeds.py \
+            scripts/verify_core_transplant.py \
+            scripts/verify_core_transplant_independent.py \
+            scripts/build_resource_usage.py \
+            scripts/build_core_transplant_summary.py
+          mkdir -p build/search23
+          g++ -std=c++20 -O3 -pthread -Wall -Wextra -Wpedantic \
+            src/core_transplant_search.cpp \
+            -o build/core_transplant_search
+      - name: Materialize permanent search-23 seeds from search-22 if needed
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ ! -f data/search23_seed_materialization.json ]; then
+            rm -rf prior-search22
+            mkdir -p prior-search22
+            gh run download 29181546758 \
+              --repo Grisha-Pochuev/minimum-link-covering-trail-4x4x4 \
+              --name smart-search-22-endpoint-repair-run-summary \
+              --dir prior-search22
+            verified=$(find prior-search22 -name verified_62plus.jsonl -print -quit)
+            compact=$(find prior-search22 -name compact_candidates.jsonl -print -quit)
+            test -n "$verified"
+            test -n "$compact"
+            python scripts/materialize_search23_seed_data.py \
+              --verified62 "$verified" \
+              --compact "$compact" \
+              --repo .
+            git config user.name github-actions[bot]
+            git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+            git add data/search23_verified62_seed_parts \
+              data/search23_core_diverse_donors.jsonl \
+              data/search23_required_seeds.jsonl \
+              data/search23_seed_materialization.json
+            if ! git diff --cached --quiet; then
+              git commit -m "Persist search-23 seed material"
+              git push origin HEAD:main
+            fi
+          fi
+          python scripts/prepare_search23_seeds.py --repo . --outdir build/search23
+      - name: Upload prepared seed material for all shard jobs
+        uses: actions/upload-artifact@v4
+        with:
+          name: smart-search-23-prepared-seeds
+          path: |
+            data/search23_verified62_seed_parts/
+            data/search23_core_diverse_donors.jsonl
+            data/search23_required_seeds.jsonl
+            data/search23_seed_materialization.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Verify known 23-link full trail
+        run: python scripts/check_rational_trail.py data/ripa_23_trail.json --expected-links 23 --require-full
+      - name: Verify all 12 required parents and donors twice
+        run: |
+          python scripts/verify_core_transplant.py data/search23_required_seeds.jsonl --jsonl --min-covered 60
+          python scripts/verify_core_transplant_independent.py data/search23_required_seeds.jsonl --jsonl --min-covered 60
+      - name: One-second package exercise for every shard mode
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf precheck-modes
+          for shard in $(seq 0 19); do
+            out="precheck-modes/$shard"
+            mkdir -p "$out"
+            build/core_transplant_search \
+              --repo . \
+              --outdir "$out" \
+              --seconds 1 \
+              --workers 1 \
+              --seed 20260723 \
+              --shard "$shard" \
+              --shards 20 \
+              --beam-width 100 \
+              --state-cap 1000 \
+              --save-min-covered 60 \
+              --top-diverse 20 \
+              --checkpoint-seconds 1
+            python scripts/verify_core_transplant.py "$out/best_candidate_${shard}.json" --min-covered 1
+            python scripts/verify_core_transplant_independent.py "$out/best_candidate_${shard}.json" --min-covered 1
+          done
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          rows=[]
+          for shard in range(20):
+              row=json.loads((Path('precheck-modes')/str(shard)/f'search_stats_{shard}.json').read_text())
+              rows.append(row)
+          assert len(rows)==20
+          assert all(r['changed_core_attempts']>0 and r['min_core_overlap']<18 for r in rows if r['shard']<19)
+          assert all(r['diagnostic_count']>0 for r in rows if r['shard']<19)
+          print({'all_modes':20,'core_break_modes_passed':19,'control_passed':True})
+          PY
+
+  core-transplant:
+    needs: precheck
+    runs-on: ubuntu-latest
+    timeout-minutes: 359
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - name: Resolve effective profile
+        id: profile
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "push" ]; then
+            case "${{ github.event.head_commit.message }}" in
+              *smoke*) profile=smoke ;;
+              *) profile=full ;;
+            esac
+          else
+            profile="${{ inputs.profile }}"
+          fi
+          case "$profile" in
+            smoke)
+              seconds=180
+              workers=4
+              seed=20260723
+              beam_width=2000
+              state_cap=100000
+              save_min_covered=60
+              top_diverse=120
+              checkpoint_seconds=60
+              ;;
+            full)
+              seconds=21000
+              workers=4
+              seed=20260723
+              beam_width=12000
+              state_cap=750000
+              save_min_covered=60
+              top_diverse=200
+              checkpoint_seconds=600
+              ;;
+            *) echo "unknown profile: $profile" >&2; exit 2 ;;
+          esac
+          shard=${{ matrix.shard }}
+          effective_seed=$((seed + shard * 1000003))
+          for v in profile seconds workers seed beam_width state_cap save_min_covered top_diverse checkpoint_seconds effective_seed; do
+            echo "$v=${!v}" >> "$GITHUB_OUTPUT"
+          done
+      - name: Download prepared seed material
+        uses: actions/download-artifact@v4
+        with:
+          name: smart-search-23-prepared-seeds
+          path: prepared-seeds
+      - name: Build search core and exact seed tables
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p data/search23_verified62_seed_parts
+          find prepared-seeds -name 'part-*.jsonlpart' -exec cp {} data/search23_verified62_seed_parts/ \;
+          find prepared-seeds -name search23_core_diverse_donors.jsonl -exec cp {} data/ \;
+          find prepared-seeds -name search23_required_seeds.jsonl -exec cp {} data/ \;
+          find prepared-seeds -name search23_seed_materialization.json -exec cp {} data/ \;
+          python scripts/prepare_search23_seeds.py --repo . --outdir build/search23
+          g++ -std=c++20 -O3 -pthread \
+            src/core_transplant_search.cpp \
+            -o build/core_transplant_search
+      - name: Run core-transplant shard with resource metrics
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p results/core_transplant
+          ulimit -v 12582912 || true
+          /usr/bin/time -v \
+            -o "results/core_transplant/resource_usage_raw_${{ matrix.shard }}.txt" \
+            build/core_transplant_search \
+              --repo . \
+              --outdir results/core_transplant \
+              --seconds "${{ steps.profile.outputs.seconds }}" \
+              --workers "${{ steps.profile.outputs.workers }}" \
+              --seed "${{ steps.profile.outputs.seed }}" \
+              --shard "${{ matrix.shard }}" \
+              --shards 20 \
+              --beam-width "${{ steps.profile.outputs.beam_width }}" \
+              --state-cap "${{ steps.profile.outputs.state_cap }}" \
+              --save-min-covered "${{ steps.profile.outputs.save_min_covered }}" \
+              --top-diverse "${{ steps.profile.outputs.top_diverse }}" \
+              --checkpoint-seconds "${{ steps.profile.outputs.checkpoint_seconds }}"
+      - name: Exact dual verification
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          shard=${{ matrix.shard }}
+          best="results/core_transplant/best_candidate_${shard}.json"
+          ordinary="results/core_transplant/verified_62plus_${shard}.jsonl"
+          diagnostic="results/core_transplant/core_escape_diagnostics_${shard}.jsonl"
+          test -f "$best"
+          test -f "$ordinary"
+          test -f "$diagnostic"
+          python scripts/verify_core_transplant.py "$best" --min-covered 1
+          python scripts/verify_core_transplant_independent.py "$best" --min-covered 1
+          python scripts/verify_core_transplant.py "$ordinary" --jsonl --min-covered 60
+          python scripts/verify_core_transplant_independent.py "$ordinary" --jsonl --min-covered 60
+          python scripts/verify_core_transplant.py "$diagnostic" --jsonl --min-covered 1
+          python scripts/verify_core_transplant_independent.py "$diagnostic" --jsonl --min-covered 1
+      - name: Build resource summary
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          shard=${{ matrix.shard }}
+          python scripts/build_resource_usage.py \
+            --raw "results/core_transplant/resource_usage_raw_${shard}.txt" \
+            --stats "results/core_transplant/search_stats_${shard}.json" \
+            --out "results/core_transplant/resource_usage_${shard}.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: smart-search-23-core-transplant-shard-${{ matrix.shard }}
+          path: results/core_transplant/
+          if-no-files-found: error
+          retention-days: 90
+
+  aggregate:
+    needs: core-transplant
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: smart-search-23-core-transplant-shard-*
+          path: collected
+          merge-multiple: true
+      - name: Build exact summary and three candidate banks
+        run: python scripts/build_core_transplant_summary.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: smart-search-23-core-transplant-run-summary
+          path: |
+            collected/run_summary.json
+            collected/summary.md
+            collected/best_candidate.json
+            collected/coverage_histogram.json
+            collected/defect_pair_and_orbit_histogram.json
+            collected/frozen_core_overlap_histogram.json
+            collected/window_length_breakdown.json
+            collected/donor_usage_breakdown.json
+            collected/operation_breakdown.json
+            collected/exact_verification_report.json
+            collected/ordinary_candidate_additions.jsonl
+            collected/diagnostic_core_escape.jsonl
+            collected/originals_index.jsonl
+            collected/shard_best_originals.jsonl
+          if-no-files-found: error
+          retention-days: 90
