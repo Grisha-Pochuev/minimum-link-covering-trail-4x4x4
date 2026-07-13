@@ -1,0 +1,9 @@
+{
+  "schema": "search23-materialized-seeds-v1",
+  "parent_count": 1053,
+  "part_count": 4,
+  "donor_count": 5,
+  "required_seed_count": 12,
+  "source_verified62": "prior-search22/verified_62plus.jsonl",
+  "source_compact": "prior-search22/compact_candidates.jsonl"
+}
