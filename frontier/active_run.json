@@ -15,5 +15,11 @@
   "trigger_path": "launch/smart-search-23-full.trigger",
   "run_id": null,
   "do_not_duplicate": true,
-  "next_action": "Wait for the single full run triggered by launch commit ac18bf46b23146f4f4a581cbf5af641c746d3171 to appear in GitHub Actions; do not launch another copy. After completion, record it through Step 1."
+  "step4_retrospective": {
+    "completed": true,
+    "document": "docs/retrospectives/2026-07-13-search23-step3.md",
+    "process_commit": "f6b10d0a938d4c5dfd849b96a654a7c241eb2169",
+    "main_lesson": "Future Step 3 uses one automatic preflight-to-smoke-to-full chain and must not require a second user prompt."
+  },
+  "next_action": "Do not launch another search-23 copy. After the single active full run completes, record it through Step 1 before choosing search-24."
 }
