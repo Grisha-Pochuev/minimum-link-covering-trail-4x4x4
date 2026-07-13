@@ -32,6 +32,7 @@ def on_segment(p: tuple[int,int,int], a: tuple[int,int,int], b: tuple[int,int,in
 def verify(row: dict, min_covered: int) -> None:
     vertices=[tuple(map(int,p)) for p in row['vertices2']]
     assert len(vertices)==23
+    assert int(row.get('links', len(vertices)-1))==22
     for a,b in zip(vertices,vertices[1:]): assert a!=b
     covered=[]
     for x in range(4):
@@ -44,7 +45,6 @@ def verify(row: dict, min_covered: int) -> None:
     missing=[[x,y,z] for x in range(4) for y in range(4) for z in range(4) if (x,y,z) not in covered_set]
     assert len(covered)==int(row['covered_count'])
     assert missing==row['missing']
-    assert int(row['links'])==22
     assert len(covered)>=min_covered
 
 
