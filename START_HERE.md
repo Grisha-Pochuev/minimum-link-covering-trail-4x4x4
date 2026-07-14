@@ -30,11 +30,15 @@ Heuristic output is evidence only. Every frontier candidate requires exact check
 
 File roles:
 
-- `frontier/latest.*`: best checked mathematical frontier, including a verified candidate from an incomplete run when clearly labelled.
-- `frontier/active_run.json`: active run, retry or selected next search.
+- `START_HERE.md`: stable compact boot memory and reading order. It must not be the authoritative live-stage tracker.
+- `frontier/latest.*`: best checked mathematical frontier.
+- `frontier/active_run.json`: the only authoritative live run/stage record.
 - `docs/smart-search-N-*.md`: binding Step-2 to Step-3 handoff.
-- `docs/retrospectives/*`: process lessons; not mathematical frontier.
+- `docs/retrospectives/*`: process lessons and explicit execution exceptions; not mathematical frontier.
 - `runs/*`: completed or explicitly labelled partial-run evidence.
+- candidate banks/originals: reusable checked and diagnostic candidates.
+
+If this file and `frontier/active_run.json` disagree about the current stage, trust `active_run.json` and repair this file during Step 4.
 
 ## Current checked frontier
 
@@ -53,47 +57,45 @@ It passed both CI exact verifiers and two additional local exact checks.
 
 The numeric frontier did not increase, but the structural frontier did: search-22's best 62-curves retained all 18 frozen-core lines, while this candidate breaks two and belongs to a new two-hole orbit.
 
-## Search-23 first-attempt result
+## Historical search-23 source state
 
 Run `29249275103`, workflow `smart-search-23-core-transplant`:
 
-- precheck succeeded;
 - first attempt produced `19/20` shard artifacts;
-- `core-transplant (11)` produced no artifact;
-- GitHub is rerunning shard 11 under the same run id;
-- strict full aggregate is therefore not final yet;
-- partial archive: `runs/2026-07-13-smart-search-23-core-transplant-full/`.
+- shard 11 produced no artifact and was retried under the historical commit;
+- checked partial archive: `runs/2026-07-13-smart-search-23-core-transplant-full/`;
+- checked partial statistics: `1115` compact exact `62/64`, `40` with frozen-core overlap `<=16`, `1600` compact core-escape diagnostics, `74` raw originals, no `63/64` or `64/64` ordered trail.
 
-Checked partial statistics from 19 shards:
+Search-24 was later launched under an explicit 19-shard source exception because all 40 known primary core-escape seeds came from available shard 14. The exact exception and cleanup obligation are recorded in `frontier/active_run.json` and `docs/retrospectives/2026-07-14-search-24-step3.md`.
 
-- compact exact `62/64`: `1115`;
-- exact `62/64` with frozen-core overlap `<=16`: `40`;
-- compact diagnostic core-escape states: `1600`;
-- raw worker-best originals: `74`;
-- `63/64`: `0`;
-- `64/64`: `0`;
-- one new two-hole orbit;
-- `82,917,351,393` attempts.
+## Current active search identity
 
-Do not start search-24 before the shard-11 retry and strict 20/20 aggregate are recorded.
+Active workflow: `smart-search-24-defect-graft`
 
-## Why `core-transplant (11)` failed
+Run: `29357369876`
 
-The exact old platform log became unavailable after the retry began, so do not claim a fully proven final message. The evidence strongly supports a job-time/runner interruption, not OOM:
+URL: `https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/29357369876`
 
-- sibling shards used at most `0.3404 GiB` RAM;
-- successful search executables ran almost exactly `21000` seconds;
-- `timeout-minutes=359` left only `540` seconds for checkout, setup, seed preparation, compilation, final sorting, two verifiers and artifact upload;
-- shard 11 left no artifact at all.
+Launch commit: `7ece93a06ea910371ea6a987e43d5b6cdd3e21b5`
 
-Permanent prevention rule:
+Always read `frontier/active_run.json` for the current stage. Do not duplicate this run.
 
-- normal full search time is now `20400` seconds when job timeout is `359` minutes;
-- every new full workflow must run `scripts/check_long_run_budget.py` in preflight;
-- require at least `900` seconds of job headroom;
-- scientific aggregate is final only with every required shard;
-- an `if: always()` failure report may archive missing-shard evidence, but must be labelled incomplete;
-- rerunning an old run uses its historical commit and does not receive later fixes.
+Dated smoke snapshot:
+
+- strict `20/20` smoke aggregate succeeded;
+- best ordered trail remained `62/64`;
+- `1901` compact exact `64/64` supporting-line sets;
+- `93` connected exact `64/64` line sets;
+- `0` Hamiltonian supporting-line orders;
+- `0` ordered `63/64` or `64/64` trails.
+
+These are smoke diagnostics, not the final search-24 result.
+
+## Search-24 hypothesis
+
+The line through the two missing points is the exact missing coverage object for many search-23 `62/64` seeds. The current search replaces a zero-contribution or zero-exclusive link by that defect line, replaces additional weak links by exact connector lines, then solves the exact supporting-line intersection ordering and finite-segment realization problem.
+
+An unordered `64/64` line set is not a trail. A Hamiltonian order of infinite supporting lines is not success until finite segments are exactly realized and checked.
 
 ## Search history
 
@@ -103,20 +105,40 @@ Permanent prevention rule:
 - search-20: rich-line preservation `58/64`, but eight explicit bridges.
 - search-21: direct compression `61/64`, zero pure bridges.
 - search-22: endpoint repair `62/64`, saturated in one frozen 18-line family.
-- search-23: core transplant; first attempt already found exact `62/64` with overlap `16`, but shard 11 is being recovered.
+- search-23: core transplant; exact `62/64` with frozen-core overlap `16/18` and a new defect orbit.
+- search-24: defect-line graft plus exact connector topology and Hamiltonian support ordering; active run `29357369876`.
 
-The unordered `64/64` scaffold from run `28825060197` is not an ordered trail and must remain in its separate bank.
+The unordered `64/64` scaffold from run `28825060197` remains in its separate diagnostic bank.
+
+## Permanent long-run safety
+
+The search-23 shard-11 failure was most likely a job-time/runner interruption, not OOM:
+
+- measured sibling RAM was at most `0.3404 GiB`;
+- search seconds were `21000`;
+- timeout was `359` minutes;
+- only `540` seconds remained for setup, compilation, finalization, two verifiers and upload.
+
+Permanent rule:
+
+- normal full search time is `20400` seconds when job timeout is `359` minutes;
+- every serious workflow runs `scripts/check_long_run_budget.py` in preflight;
+- require at least `900` seconds headroom;
+- current search-24 headroom is `1140` seconds;
+- scientific aggregate is final only with all required shards and exact verifiers;
+- an incomplete failure report must never be called a completed mathematical result;
+- rerunning an old run uses its historical commit and does not receive later fixes.
 
 ## Four-step cycle
 
 1. Record a completed run, or explicitly archive an incomplete attempt without pretending it is complete.
 2. Select and test one non-repeating hypothesis; save a precise launch document.
-3. Implement and automatically execute one complete chain: local preflight → smoke aggregate → full launch.
-4. Review process and memory.
+3. Implement and automatically execute one complete chain: shared preflight -> smoke aggregate -> full launch.
+4. Review process and memory without changing the historical commit of an active run.
 
-## Mandatory single-prompt Step-3 rule
+## Step-3 permanent rules
 
-A Step-3 request authorizes the complete chain. Normal future architecture:
+A Step-3 request authorizes the complete automatic chain:
 
 ```text
 precheck
@@ -126,24 +148,35 @@ precheck
   -> full-aggregate
 ```
 
-Manual smoke/full profiles may remain for recovery only.
+Additional rules:
 
-Additional permanent rules:
-
-- local validation and GitHub precheck call the same versioned preflight with the same seeds;
-- normalize seed schemas before exact checkers;
-- commit permanent seeds before smoke; scientific workflows do not commit source/seeds during execution;
-- publish coherent source in one atomic tree commit or the smallest practical number;
+- local validation and GitHub precheck call the same versioned preflight;
+- normalize seed schemas before exact checking;
+- permanent seeds should be committed before smoke;
+- if runtime artifact materialization is unavoidable, record exact artifact ids, source shard count, hashes and a final persistence obligation;
+- the Step-2 implementation language is binding unless a benchmarked written exception is recorded before launch;
+- prepare a file manifest before publishing;
+- publish one atomic tree commit when possible, otherwise implementation bundle -> workflow -> active-run record -> trigger last;
 - never repeat a trigger without proving no equivalent run exists;
-- Step 3 ends only after the intended full jobs are visible;
-- long-run preflight must validate time headroom, not only search seconds.
+- Step 3 ends only after intended full jobs are visible;
+- long-run preflight validates total job headroom, not only search seconds.
+
+## Step-4 consistency sweep
+
+At every retrospective:
+
+1. inspect the actual Actions stage and artifacts;
+2. update `frontier/active_run.json` first;
+3. remove contradictory live instructions from `START_HERE.md`;
+4. keep smoke or partial diagnostics out of the mathematical frontier;
+5. record any handoff, language, input or resource exception;
+6. do not modify the historical commit used by an active run;
+7. do not launch, rerun or cancel during Step 4 unless explicitly requested.
 
 ## Current next action
 
 Read `frontier/active_run.json`.
 
-- Do not launch another search-23 copy.
-- Do not start search-24.
-- After shard 11 retry completes, inspect its artifact and logs, run the strict 20/20 aggregate, merge ordinary/diagnostic/originals banks, finalize the run archive, and mark search-23 fully recorded.
+Do not start another search-24 copy. Let the active full matrix and strict aggregate finish. The next Step 1 must inspect all full jobs, logs and artifacts, require exact `20/20`, persist the prepared seed material and provenance, archive the run, merge ordinary/diagnostic/originals banks only after exact final verification, and then update the mathematical frontier.
 
-Do not treat heuristic failure or a technical missing shard as proof that 22 links are impossible.
+Do not treat heuristic failure, a checker failure, a technical missing shard, a connected line set without Hamiltonian order, or an unordered `64/64` cover as proof that 22 links are impossible.
