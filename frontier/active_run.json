@@ -1,15 +1,30 @@
 {
   "schema": "active-run-v1",
   "updated_at": "2026-07-14",
-  "status": "smoke_in_progress",
+  "status": "full_in_progress",
   "workflow": "smart-search-24-defect-graft",
   "run_id": 29357369876,
   "run_url": "https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/29357369876",
   "launch_commit": "7ece93a06ea910371ea6a987e43d5b6cdd3e21b5",
   "profile": "automatic_precheck_smoke_then_full",
   "precheck_status": "success",
-  "smoke_status": "in_progress_20_shards",
-  "full_status": "blocked_until_strict_smoke_success",
+  "smoke_status": "success_strict_20_of_20",
+  "smoke_summary_artifact_id": 8320866025,
+  "smoke_summary": {
+    "best_ordered_covered_count": 62,
+    "compact_exact_64_line_sets": 1901,
+    "connected_exact_64_line_sets": 93,
+    "hamiltonian_support_orders": 0,
+    "ordered_63_trails": 0,
+    "ordered_64_trails": 0,
+    "attempts": 53955,
+    "missing_shards": [],
+    "max_peak_ram_gib": 0.0673,
+    "mean_attempts_per_second_per_shard": 14.92,
+    "interpretation": "Smoke diagnostics only; not the final scientific result."
+  },
+  "full_status": "in_progress_20_shards",
+  "observed_total_jobs_after_full_creation": 42,
   "smoke_seconds": 180,
   "full_seconds": 20400,
   "timeout_minutes": 359,
@@ -22,19 +37,20 @@
   "trigger_path": "launch/smart-search-24-defect-graft.trigger",
   "do_not_duplicate": true,
   "automatic_chain": [
-    "precheck",
-    "smoke_20_of_20",
-    "strict_smoke_aggregate",
-    "full_20_of_20",
-    "strict_full_aggregate"
+    "precheck_success",
+    "smoke_20_of_20_success",
+    "strict_smoke_aggregate_success",
+    "full_20_of_20_in_progress",
+    "strict_full_aggregate_pending"
   ],
   "source_search23": {
     "run_id": 29249275103,
-    "available_source_shards": 19,
-    "missing_shards": [11],
+    "available_source_shards_at_launch": 19,
+    "missing_shards_at_launch": [11],
     "shard11_retry_job_id": 87086816523,
     "shard11_retry_status_at_launch": "in_progress",
-    "launch_exception_reason": "All 40 known core-escape 62/64 primary seeds come from available shard 14. The precheck records source completeness explicitly and refuses fewer than 19 source artifacts."
+    "launch_exception_reason": "All 40 known core-escape 62/64 primary seeds came from available shard 14. Precheck recorded source completeness explicitly and refused fewer than 19 source artifacts.",
+    "required_cleanup_after_full": "Persist exact prepared seed material or content hashes plus a lossless reconstruction path in the final run archive."
   },
   "hypothesis": "Replace a zero-contribution or zero-exclusive link with the exact line through the two missing points, replace additional weak links with exact connectors, and solve the resulting line-intersection Hamiltonian-path and finite-segment realization problem.",
   "safety": {
@@ -43,7 +59,13 @@
     "state_cap_enforced": true,
     "periodic_checkpoints": true,
     "dual_exact_verification": true,
-    "unordered_64_cover_not_counted_as_trail": true
+    "unordered_64_cover_not_counted_as_trail": true,
+    "full_time_headroom_checked": true
   },
-  "next_action": "Do not start another copy. Let the automatic smoke gate decide whether the 20-shard full stage may begin."
+  "process_notes": {
+    "retrospective": "docs/retrospectives/2026-07-14-search-24-step3.md",
+    "implementation_language_exception": "Python multiprocessing was used although the Step-2 handoff preferred C++20; benchmark and reassess after the run.",
+    "runtime_seed_materialization_exception": true
+  },
+  "next_action": "Do not start another copy. Let the current full matrix and strict full aggregate finish. Then perform Step 1: inspect all jobs/logs/artifacts, require 20/20, persist seed provenance, archive the run, merge banks only after exact final verification, and update the frontier."
 }
