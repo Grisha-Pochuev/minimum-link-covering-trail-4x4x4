@@ -1,9 +1,15 @@
 {
   "schema": "active-run-v1",
   "updated_at": "2026-07-14",
-  "status": "search24_launch_ready",
+  "status": "smoke_in_progress",
   "workflow": "smart-search-24-defect-graft",
+  "run_id": 29357369876,
+  "run_url": "https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/29357369876",
+  "launch_commit": "7ece93a06ea910371ea6a987e43d5b6cdd3e21b5",
   "profile": "automatic_precheck_smoke_then_full",
+  "precheck_status": "success",
+  "smoke_status": "in_progress_20_shards",
+  "full_status": "blocked_until_strict_smoke_success",
   "smoke_seconds": 180,
   "full_seconds": 20400,
   "timeout_minutes": 359,
@@ -39,5 +45,5 @@
     "dual_exact_verification": true,
     "unordered_64_cover_not_counted_as_trail": true
   },
-  "next_action": "Commit the trigger exactly once, verify the new Actions run reaches precheck, and do not start another copy."
+  "next_action": "Do not start another copy. Let the automatic smoke gate decide whether the 20-shard full stage may begin."
 }
