@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
     inputs:
       profile:
-        description: "Full is the 5h50m scientific run. Smoke validates all modes and artifacts first."
+        description: "Full is the 5h40m scientific run. Smoke validates all modes and artifacts first."
         required: true
         default: full
         type: choice
@@ -27,7 +27,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: "3.11"}
-      - name: Compile readable search-23 package
+      - name: Compile readable search-23 package and validate time budget
         run: |
           python -m py_compile \
             scripts/materialize_search23_seed_data.py \
@@ -35,7 +35,12 @@ jobs:
             scripts/verify_core_transplant.py \
             scripts/verify_core_transplant_independent.py \
             scripts/build_resource_usage.py \
-            scripts/build_core_transplant_summary.py
+            scripts/build_core_transplant_summary.py \
+            scripts/check_long_run_budget.py
+          python scripts/check_long_run_budget.py \
+            --search-seconds 20400 \
+            --timeout-minutes 359 \
+            --minimum-headroom-seconds 900
           mkdir -p build/search23
           g++ -std=c++20 -O3 -pthread -Wall -Wextra -Wpedantic \
             src/core_transplant_search.cpp \
@@ -165,7 +170,7 @@ jobs:
               checkpoint_seconds=60
               ;;
             full)
-              seconds=21000
+              seconds=20400
               workers=4
               seed=20260723
               beam_width=12000
