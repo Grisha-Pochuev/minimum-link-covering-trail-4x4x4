@@ -1,0 +1,339 @@
+name: smart-search-24-defect-graft
+run-name: smart-search-24-defect-graft-auto
+
+permissions:
+  contents: read
+  actions: read
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - launch/smart-search-24-defect-graft.trigger
+  workflow_dispatch:
+
+concurrency:
+  group: smart-search-24-defect-graft
+  cancel-in-progress: false
+
+jobs:
+  precheck:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - name: Compile package and validate long-run budget
+        run: |
+          python -m py_compile \
+            scripts/materialize_search24_seeds.py \
+            scripts/search24_defect_graft.py \
+            scripts/verify_defect_graft.py \
+            scripts/verify_defect_graft_independent.py \
+            scripts/build_defect_graft_summary.py \
+            scripts/preflight_search24.py \
+            scripts/build_resource_usage.py \
+            scripts/check_long_run_budget.py
+          python scripts/check_long_run_budget.py \
+            --search-seconds 20400 \
+            --timeout-minutes 359 \
+            --minimum-headroom-seconds 900
+      - name: Download checked search-23 source artifacts and materialize permanent run inputs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf prior-search23 prepared-search24
+          mkdir -p prior-search23 prepared-search24
+          gh run download 29249275103 \
+            --repo Grisha-Pochuev/minimum-link-covering-trail-4x4x4 \
+            --pattern 'smart-search-23-core-transplant-shard-*' \
+            --dir prior-search23
+          count=$(find prior-search23 -name 'core_escape_diagnostics_*.jsonl' | wc -l)
+          echo "search-23 source shard artifacts: $count"
+          test "$count" -ge 19
+          python scripts/materialize_search24_seeds.py \
+            --artifacts-root prior-search23 \
+            --outdir prepared-search24 \
+            --minimum-source-shards 19
+      - name: Verify known full control
+        run: python scripts/check_rational_trail.py data/ripa_23_trail.json --expected-links 23 --require-full
+      - name: Exercise all 20 modes and the real aggregate builder
+        run: |
+          python scripts/preflight_search24.py \
+            --repo . \
+            --prepared prepared-search24 \
+            --workdir preflight-search24 \
+            --seconds-per-mode 1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: smart-search-24-prepared-seeds
+          path: |
+            prepared-search24/search24_core_escape62_seeds.jsonl
+            prepared-search24/search24_seeds.tsv
+            prepared-search24/search24_defect_graft_manifest.json
+            prepared-search24/search24_substitution_check.json
+          if-no-files-found: error
+          retention-days: 90
+
+  smoke:
+    needs: precheck
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - uses: actions/download-artifact@v4
+        with:
+          name: smart-search-24-prepared-seeds
+          path: prepared-search24
+      - name: Run smoke shard with resource metrics
+        id: search
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p results/defect_graft
+          ulimit -v 12582912 || true
+          /usr/bin/time -v \
+            -o "results/defect_graft/resource_usage_raw_${{ matrix.shard }}.txt" \
+            python scripts/search24_defect_graft.py \
+              --seeds prepared-search24/search24_core_escape62_seeds.jsonl \
+              --outdir results/defect_graft \
+              --seconds 180 \
+              --workers 4 \
+              --seed 20260724 \
+              --shard "${{ matrix.shard }}" \
+              --shards 20 \
+              --state-cap 2000000 \
+              --hamiltonian-state-cap 20000 \
+              --top-diverse 120 \
+              --checkpoint-seconds 60
+      - name: Exact dual verification
+        id: verify
+        if: always()
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+          shard=${{ matrix.shard }}
+          root=results/defect_graft
+          python scripts/verify_defect_graft.py "$root/best_trail_${shard}.json" --min-covered 62
+          python scripts/verify_defect_graft_independent.py "$root/best_trail_${shard}.json" --min-covered 62
+          for file in "verified_62plus_${shard}.jsonl:62" "cover64_line_sets_${shard}.jsonl:64" "hamiltonian_line_orders_${shard}.jsonl:64" "near_hamiltonian_graphs_${shard}.jsonl:64"; do
+            name=${file%%:*}; min=${file##*:}
+            python scripts/verify_defect_graft.py "$root/$name" --jsonl --min-covered "$min"
+            python scripts/verify_defect_graft_independent.py "$root/$name" --jsonl --min-covered "$min"
+          done
+      - name: Build resource and failure summaries
+        if: always()
+        continue-on-error: true
+        shell: bash
+        run: |
+          shard=${{ matrix.shard }}
+          root=results/defect_graft
+          if [ -f "$root/resource_usage_raw_${shard}.txt" ] && [ -f "$root/search_stats_${shard}.json" ]; then
+            python scripts/build_resource_usage.py \
+              --raw "$root/resource_usage_raw_${shard}.txt" \
+              --stats "$root/search_stats_${shard}.json" \
+              --out "$root/resource_usage_${shard}.json"
+          fi
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          shard=os.environ['SHARD'];root=Path('results/defect_graft')
+          row={'schema':'defect-graft-job-report-v1','profile':'smoke','shard':int(shard),'search_outcome':os.environ['SEARCH_OUTCOME'],'verify_outcome':os.environ['VERIFY_OUTCOME'],'stats_present':(root/f'search_stats_{shard}.json').exists(),'checkpoint_present':(root/f'checkpoint_{shard}.json').exists()}
+          (root/f'job_report_{shard}.json').write_text(json.dumps(row,indent=2)+'\n')
+          PY
+        env:
+          SHARD: ${{ matrix.shard }}
+          SEARCH_OUTCOME: ${{ steps.search.outcome }}
+          VERIFY_OUTCOME: ${{ steps.verify.outcome }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: smart-search-24-smoke-shard-${{ matrix.shard }}
+          path: results/defect_graft/
+          if-no-files-found: warn
+          retention-days: 90
+      - name: Enforce smoke success
+        if: always()
+        run: |
+          test "${{ steps.search.outcome }}" = success
+          test "${{ steps.verify.outcome }}" = success
+
+  smoke-aggregate:
+    needs: smoke
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require every smoke shard to pass
+        run: test "${{ needs.smoke.result }}" = success
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: smart-search-24-smoke-shard-*
+          path: collected
+          merge-multiple: true
+      - name: Build strict smoke aggregate
+        run: python scripts/build_defect_graft_summary.py --input collected --out collected --expected-shards 20 --strict
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: smart-search-24-smoke-summary
+          path: |
+            collected/run_summary.json
+            collected/summary.md
+            collected/best_candidate.json
+            collected/coverage_histogram.json
+            collected/graph_component_histogram.json
+            collected/degree_one_histogram.json
+            collected/hamiltonian_order_report.json
+            collected/finite_realization_report.json
+            collected/exact_verification_report.json
+          if-no-files-found: error
+          retention-days: 90
+
+  full:
+    needs: smoke-aggregate
+    runs-on: ubuntu-latest
+    timeout-minutes: 359
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - uses: actions/download-artifact@v4
+        with:
+          name: smart-search-24-prepared-seeds
+          path: prepared-search24
+      - name: Run full shard with resource metrics
+        id: search
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p results/defect_graft
+          ulimit -v 12582912 || true
+          /usr/bin/time -v \
+            -o "results/defect_graft/resource_usage_raw_${{ matrix.shard }}.txt" \
+            python scripts/search24_defect_graft.py \
+              --seeds prepared-search24/search24_core_escape62_seeds.jsonl \
+              --outdir results/defect_graft \
+              --seconds 20400 \
+              --workers 4 \
+              --seed 20260724 \
+              --shard "${{ matrix.shard }}" \
+              --shards 20 \
+              --state-cap 50000000 \
+              --hamiltonian-state-cap 500000 \
+              --top-diverse 200 \
+              --checkpoint-seconds 600
+      - name: Exact dual verification
+        id: verify
+        if: always()
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+          shard=${{ matrix.shard }}
+          root=results/defect_graft
+          python scripts/verify_defect_graft.py "$root/best_trail_${shard}.json" --min-covered 62
+          python scripts/verify_defect_graft_independent.py "$root/best_trail_${shard}.json" --min-covered 62
+          for file in "verified_62plus_${shard}.jsonl:62" "cover64_line_sets_${shard}.jsonl:64" "hamiltonian_line_orders_${shard}.jsonl:64" "near_hamiltonian_graphs_${shard}.jsonl:64"; do
+            name=${file%%:*}; min=${file##*:}
+            python scripts/verify_defect_graft.py "$root/$name" --jsonl --min-covered "$min"
+            python scripts/verify_defect_graft_independent.py "$root/$name" --jsonl --min-covered "$min"
+          done
+      - name: Build resource and failure summaries
+        if: always()
+        continue-on-error: true
+        shell: bash
+        run: |
+          shard=${{ matrix.shard }}
+          root=results/defect_graft
+          if [ -f "$root/resource_usage_raw_${shard}.txt" ] && [ -f "$root/search_stats_${shard}.json" ]; then
+            python scripts/build_resource_usage.py \
+              --raw "$root/resource_usage_raw_${shard}.txt" \
+              --stats "$root/search_stats_${shard}.json" \
+              --out "$root/resource_usage_${shard}.json"
+          fi
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          shard=os.environ['SHARD'];root=Path('results/defect_graft')
+          row={'schema':'defect-graft-job-report-v1','profile':'full','shard':int(shard),'search_outcome':os.environ['SEARCH_OUTCOME'],'verify_outcome':os.environ['VERIFY_OUTCOME'],'stats_present':(root/f'search_stats_{shard}.json').exists(),'checkpoint_present':(root/f'checkpoint_{shard}.json').exists()}
+          (root/f'job_report_{shard}.json').write_text(json.dumps(row,indent=2)+'\n')
+          PY
+        env:
+          SHARD: ${{ matrix.shard }}
+          SEARCH_OUTCOME: ${{ steps.search.outcome }}
+          VERIFY_OUTCOME: ${{ steps.verify.outcome }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: smart-search-24-defect-graft-shard-${{ matrix.shard }}
+          path: results/defect_graft/
+          if-no-files-found: warn
+          retention-days: 90
+      - name: Enforce full-shard success
+        if: always()
+        run: |
+          test "${{ steps.search.outcome }}" = success
+          test "${{ steps.verify.outcome }}" = success
+
+  full-aggregate:
+    needs: full
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require every full shard to pass
+        run: test "${{ needs.full.result }}" = success
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: smart-search-24-defect-graft-shard-*
+          path: collected
+          merge-multiple: true
+      - name: Build strict full aggregate and three banks
+        run: python scripts/build_defect_graft_summary.py --input collected --out collected --expected-shards 20 --strict
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: smart-search-24-defect-graft-run-summary
+          path: |
+            collected/run_summary.json
+            collected/summary.md
+            collected/best_candidate.json
+            collected/coverage_histogram.json
+            collected/defect_orbit_breakdown.json
+            collected/graft_size_breakdown.json
+            collected/removed_weak_link_breakdown.json
+            collected/connector_usage_breakdown.json
+            collected/graph_component_histogram.json
+            collected/degree_one_histogram.json
+            collected/hamiltonian_order_report.json
+            collected/finite_realization_report.json
+            collected/exact_verification_report.json
+            collected/ordinary_candidate_additions.jsonl
+            collected/diagnostic_cover64_and_graph_states.jsonl
+            collected/originals_index.jsonl
+            collected/shard_best_originals.jsonl
+          if-no-files-found: error
+          retention-days: 90
