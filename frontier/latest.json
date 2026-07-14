@@ -1,73 +1,64 @@
 {
   "schema": "mlct-frontier-v1",
   "repository": "Grisha-Pochuev/minimum-link-covering-trail-4x4x4",
-  "updated_utc": "2026-07-12T16:00:00Z",
-  "status": "verified_62_of_64_frontier_full_search22_recorded",
+  "updated_utc": "2026-07-14T13:00:00Z",
+  "status": "verified_62_structural_core_escape_search23_partial_retry_active",
   "best_recorded_ordered_trail_candidate": {
-    "candidate_id": "mlct22-er-7671ee46bd711a25",
-    "canonical_key_sha256": "2acb9ddd99efec029b67bc93f3e8fec45705920ca5094ed10c42e5131b0a544d",
+    "candidate_id": "mlct22-ct-c64aebf0ed34cdf4",
+    "canonical_key_sha256": "021082d34574ab0cc81b55d1d4a67653cd6923c863e302c213aa7bbcb0ea358d",
     "covered_count": 62,
     "grid_points": 64,
     "coverage_percent": 96.875,
     "links": 22,
     "vertices": 23,
-    "missing": [[0,2,1],[3,3,1]],
+    "missing": [[1,0,2],[3,3,1]],
     "missing_count": 2,
-    "mode": "endpoint_all_61_family_A",
-    "operation": "seed_crossover",
-    "source_shard": 4,
-    "source_worker": 0,
-    "effective_seed": 24260734,
-    "rich4_count": 15,
-    "rich3_count": 3,
-    "productive_connector_count": 4,
-    "pure_bridge_count": 0,
-    "source_file": "runs/2026-07-12-smart-search-22-endpoint-repair-full/best_candidate.json",
-    "source_run_id": 29181546758,
-    "source_run_url": "https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/29181546758",
-    "source_profile": "full",
-    "source_workflow": "smart-search-22-endpoint-repair",
-    "status": "verified_partial_candidate",
+    "mode": "paired_core_transplant",
+    "operation": "paired_core_transplant",
+    "source_shard": 14,
+    "source_worker": 1,
+    "effective_seed": 34270772,
+    "frozen_core_overlap": 16,
+    "frozen_core_lines_changed": 2,
+    "source_file": "runs/2026-07-13-smart-search-23-core-transplant-full/best_candidate.json",
+    "source_run_id": 29249275103,
+    "source_run_url": "https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/29249275103",
+    "source_profile": "full_first_attempt_19_of_20",
+    "source_workflow": "smart-search-23-core-transplant",
+    "status": "verified_partial_candidate_from_incomplete_run",
     "verification": {
-      "primary_exact_rational_checker": true,
-      "independent_exact_rational_checker": true,
+      "ci_primary_exact_checker": true,
+      "ci_independent_exact_checker": true,
+      "local_integer_cross_product_checker": true,
+      "local_fraction_parametric_checker": true,
       "nonzero_links": 22
     }
   },
   "latest_completed_recorded_run": {
     "run_id": 29181546758,
-    "run_url": "https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/29181546758",
     "workflow_name": "smart-search-22-endpoint-repair",
-    "profile": "full",
     "status": "success",
+    "archive": "runs/2026-07-12-smart-search-22-endpoint-repair-full/"
+  },
+  "latest_checked_partial_run": {
+    "run_id": 29249275103,
+    "workflow_name": "smart-search-23-core-transplant",
+    "status": "retry_active_after_first_attempt_missing_shard_11",
+    "received_shards": 19,
+    "expected_shards": 20,
+    "missing_shards": [11],
     "statistics": {
-      "received_shards": 20,
-      "expected_shards": 20,
-      "raw_original_count": 80,
-      "ordinary_additions_count": 2385,
-      "diagnostic_count": 0,
-      "compact_62_count": 1053,
-      "compact_61_count": 777,
-      "compact_60_count": 555,
+      "compact_62_count": 1115,
+      "compact_62_core_escape_count": 40,
+      "compact_diagnostic_count": 1600,
+      "raw_original_count": 74,
       "compact_63_count": 0,
       "compact_64_count": 0,
-      "verified_62plus_count": 1053,
-      "all_shards_succeeded": true,
-      "aggregate_succeeded": true
+      "new_two_hole_orbit_count": 1,
+      "attempts": 82917351393,
+      "peak_ram_gib_max": 0.3404
     },
-    "comparison_with_previous_frontier": {
-      "previous_best_ordered_trail_covered_count": 62,
-      "new_best_ordered_trail_covered_count": 62,
-      "ordered_trail_numeric_frontier_changed": false
-    },
-    "archive": {
-      "run_folder": "runs/2026-07-12-smart-search-22-endpoint-repair-full/",
-      "summary_file": "runs/2026-07-12-smart-search-22-endpoint-repair-full/summary.md",
-      "best_candidate_file": "runs/2026-07-12-smart-search-22-endpoint-repair-full/best_candidate.json",
-      "ordinary_bank_file": "runs/2026-07-12-smart-search-22-endpoint-repair-full/ordinary_candidate_bank.json",
-      "diagnostic_bank_file": "runs/2026-07-12-smart-search-22-endpoint-repair-full/diagnostic_candidate_bank.json",
-      "originals_bank_file": "runs/2026-07-12-smart-search-22-endpoint-repair-full/originals_candidate_bank.json"
-    }
+    "archive": "runs/2026-07-13-smart-search-23-core-transplant-full/"
   },
   "best_recorded_cover64_stitch_scaffold": {
     "candidate_id": "mlct22-lineset-9772981a21b2a88a",
@@ -78,12 +69,12 @@
     "status": "line_set_seed_not_a_trail"
   },
   "current_next_step": {
-    "step_type": "research_after_recorded_search22",
-    "instruction": "Refactor the search-22 fragment engine into normal modules, then perform Step 2 and choose one non-repeating search-23 hypothesis.",
+    "step_type": "finish_search23_recording",
+    "instruction": "Wait for the active retry of shard 11 under run 29249275103, then run the strict 20/20 aggregate and finalize all three banks before selecting search-24.",
     "do_not_do": [
-      "do not launch search-22 again unchanged",
-      "do not treat unordered line-set scaffolds as trails",
-      "do not call heuristic saturation a proof"
+      "do not launch another search-23 copy",
+      "do not start search-24 before final search-23 recording",
+      "do not treat the missing shard as a mathematical failure"
     ]
   }
 }

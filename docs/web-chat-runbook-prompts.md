@@ -1,320 +1,153 @@
 # Web-chat runbook prompts
 
-This file is the operating memory for ChatGPT web-chat work on this repository. It defines process, not mathematical truth. Current state belongs in `START_HERE.md`, `frontier/latest.*` and `frontier/active_run.json`; do not append a stale project-status snapshot here.
+This file defines reusable process, not mathematical truth. Current state belongs in `START_HERE.md`, `frontier/latest.*` and `frontier/active_run.json`.
 
 ## File roles
 
 - `START_HERE.md`: compact boot memory and reading order.
-- `frontier/latest.md` and `frontier/latest.json`: best checked mathematical frontier.
-- `frontier/active_run.json`: current operational run, pending recording state or selected next search.
-- `docs/web-chat-runbook-prompts.md`: reusable four-step process rules.
-- `docs/smart-search-N-*.md`: exact Step-2 to Step-3 handoff for one numbered search.
+- `frontier/latest.*`: best checked mathematical frontier.
+- `frontier/active_run.json`: active run, retry, pending recording or selected next search.
+- `docs/smart-search-N-*.md`: exact Step-2 to Step-3 handoff.
 - `docs/retrospectives/*`: process lessons.
-- `runs/*`: completed-run evidence.
+- `runs/*`: completed evidence or explicitly labelled incomplete-attempt evidence.
 - candidate banks/originals: reusable checked and diagnostic curves.
 
 ## Fixed four-step process
 
 ```text
-1. Record a completed run.
+1. Record a completed run, or explicitly archive an incomplete attempt.
 2. Think creatively, test locally and choose one next hypothesis.
-3. Implement the chosen hypothesis and automatically execute preflight -> smoke -> full.
+3. Implement the hypothesis and automatically execute preflight -> smoke -> full.
 4. Review the chat and improve project memory/process.
 ```
 
-Important distinctions:
-
-- Step 2 is research and selection.
-- Step 3 is implementation, validation and launch. It must not replace the selected primary hypothesis.
-- Step 3 is one user-prompt transaction. It ends only after full is launched with the intended profile, green precheck and all expected shard jobs.
-- Step 4 records process lessons without changing the historical commit of an active or completed run.
+Step 2 is research and selection. Step 3 implements the saved handoff and must not broaden it. Step 4 records process lessons without rewriting the historical commit of an active run.
 
 ## Naming and one-workflow rule
 
-Every serious numbered search uses:
-
-```text
-smart-search-N-short-description
-```
-
-Keep exactly one visible GitHub Actions workflow for each `N`. Never create a second bootstrap, launcher or smoke-only workflow with the same number.
-
-One workflow owns precheck, smoke, smoke aggregate, full, exact checks, full aggregate and artifacts.
+Every serious numbered search is `smart-search-N-short-description`. Keep exactly one visible workflow for each `N`; it owns precheck, smoke, smoke aggregate, full, exact checks, full aggregate and artifacts.
 
 ## Step-2 handoff contract
 
-Before Step 3 starts, persist the selected hypothesis in a launch document containing:
+Persist before Step 3:
 
-```text
-1. next unused search number and final workflow name;
+1. unused number and workflow name;
 2. one primary hypothesis;
-3. optional modes clearly marked as controls or ablations;
-4. exact input seeds and source runs;
-5. local tests and observed results;
-6. invariants, especially link count and exact arithmetic;
-7. one shared preflight command;
-8. smoke acceptance gate;
-9. automatic smoke-to-full workflow shape;
-10. fixed full resource profile;
-11. expected per-shard and aggregate artifacts;
+3. controls/ablations;
+4. exact seeds and source runs;
+5. local tests;
+6. invariants;
+7. one shared preflight;
+8. smoke gate;
+9. automatic smoke-to-full shape;
+10. full resource profile;
+11. shard and aggregate artifacts;
 12. implementation language and reason.
-```
-
-Step 3 implements this contract. It may fix technical errors but must not broaden the scientific search without a concrete recorded reason.
-
-## Scope control
-
-Prefer:
-
-```text
-one primary mechanism
-+ a few controlled variants
-+ one small previous-method control
-```
-
-Do not put every idea from Step 2 into one expensive run.
 
 ## Shared preflight rule
 
-Each numbered search must provide one versioned preflight entry point, for example:
+Local and CI precheck use the same versioned command. It must compile sources, verify the known 23-link control, normalize and verify seeds twice, reconstruct structural invariants, exercise every mode, run the real miniature aggregate, verify all bank outputs, and assert 22 nonzero links.
+
+For every serious full workflow it must also run:
 
 ```text
-scripts/preflight_searchN.py
+python scripts/check_long_run_budget.py   --search-seconds <seconds>   --timeout-minutes <timeout>   --minimum-headroom-seconds 900
 ```
 
-or an equivalent shell command.
+Do not maintain separate local and CI test logic.
 
-The exact same command and files must be used locally and in GitHub precheck. It must:
+## Long-run budget rule
+
+A job timeout covers checkout, setup, downloads, compilation, the search, final trimming, exact verification, reports and artifact upload—not only the search executable.
+
+Default serious full profile:
 
 ```text
-1. compile every source file;
-2. verify the known 23-link full control;
-3. normalize and verify every required seed with both exact checkers;
-4. reconstruct any structural invariants required by the launch document;
-5. run every shard mode briefly;
-6. run the real aggregate builder on miniature outputs;
-7. verify artifact paths and all three bank outputs;
-8. assert exactly 22 nonzero links for every emitted state.
+seconds=20400
+shards=20
+max-parallel=20
+workers=4 per shard
+timeout-minutes=359
+minimum headroom=900 seconds
 ```
 
-Do not maintain separate local and CI test logic that can drift.
+`21000` seconds under a 359-minute job is unsafe: it leaves only `540` seconds. Use a longer search only after measured setup/finalization data proves the required headroom remains.
 
-### Seed schema rule
-
-Define one canonical internal seed schema. Normalize compact/historical rows before checkers and search code.
-
-Do not assume redundant fields such as `links` exist when `23` ordered vertices already determine `22` links. Checkers may derive redundant values, but must verify them when explicitly present.
-
-## Readable-source and coherent-commit rule
-
-New engines must use ordinary readable modules.
-
-Do not use encoded payloads or runtime concatenation of arbitrary source fragments.
-
-Prepare the complete coherent implementation locally, then publish it as:
-
-1. one atomic Git tree commit when blob/tree/commit/ref operations are available; or
-2. the smallest practical number of coherent commits.
-
-Avoid long chains of one-file commits. They clutter provenance and increase exposure to transient connector or safety-layer failures.
-
-## Permanent-input rule
-
-All permanent seed data, manifests and source files required by the run must be committed before the smoke trigger.
-
-A scientific workflow must be read-only with respect to repository source and seeds. It may upload artifacts, but precheck or shard jobs must not commit generated source or seed material back to `main`.
-
-Reason: self-modifying workflows advance the branch while the active run still executes its original commit, creating provenance and race problems.
-
-## Mandatory single-prompt Step 3
-
-When Step 3 is requested after Step 2 is complete, the request authorizes the whole chain:
-
-```text
-1. Read the saved handoff and active-run state.
-2. Implement one numbered workflow and normal source modules.
-3. Run the shared preflight locally.
-4. Publish one coherent implementation commit.
-5. Trigger the automatic profile.
-6. Run precheck.
-7. Run smoke on all intended shards.
-8. Require smoke aggregate, exact checks and every expected artifact.
-9. Automatically start full after the smoke gate succeeds.
-10. Verify full profile, green precheck and creation of all 20 shard jobs.
-11. Record launch identity in frontier/active_run.json.
-12. Stop without requiring another user prompt or launch click.
-```
-
-The assistant must not finish Step 3 merely because smoke was launched.
-
-If smoke fails and repository permissions allow a fix, diagnose, correct and restart the chain during the same Step-3 work. Do not ask the user to supply the smoke URL or send a separate command merely to launch full.
-
-## Preferred automatic workflow architecture
-
-For future numbered searches, normal Step 3 uses one `auto` profile or one narrow `auto.trigger`:
+## Preferred automatic architecture
 
 ```text
 precheck
   -> smoke matrix [20]
   -> smoke-aggregate
-  -> full matrix [20]      needs smoke-aggregate; runs only on success
+  -> full matrix [20]      needs smoke-aggregate success
   -> full-aggregate
+  -> failure-report        if: always()
 ```
 
-Manual `smoke` and `full` profiles may remain for debugging and recovery, but they are not the normal user-facing Step-3 path.
+The scientific aggregate is strict and final only after all required shard artifacts exist. A lightweight failure report may run with `if: always()` and archive missing shard ids, checkpoints and available results, but it must clearly say `incomplete` and must not merge final banks.
 
-The full matrix jobs use their own `timeout-minutes=359`; the preceding smoke jobs do not consume that per-job limit.
+## Permanent-input and readable-source rules
 
-Normal serious full profile:
+All permanent seeds, manifests and sources are committed before smoke. Scientific workflows are read-only with respect to repository source and seeds. Use ordinary readable modules, not encoded payloads or runtime concatenation of arbitrary fragments.
 
-```text
-seconds=21000
-shards=20
-max-parallel=20
-workers=4 per shard
-```
+Publish a coherent implementation in one atomic Git tree commit when possible, otherwise the smallest practical number of commits.
 
-A different worker count requires a documented technical reason. All parameters resolve inside YAML.
+## Mandatory single-prompt Step 3
 
-If true `workflow_dispatch` is unavailable, use one narrow path such as:
+A Step-3 request authorizes the whole chain: read the handoff and active run, implement, run shared local preflight, publish coherently, trigger once, require complete smoke aggregate and artifacts, automatically start full, verify intended profile and all jobs, record active-run identity, then stop without asking for another launch prompt.
 
-```text
-launch/smart-search-N-auto.trigger
-```
+If smoke fails and permissions allow a fix, diagnose and restart the chain in the same Step-3 work. Never repeat a trigger merely because a run id is not yet visible.
 
-Do not create a separate launcher workflow.
+## Trigger safety
 
-## Aggregate dependency rule
+Before writing a trigger:
 
-The scientific aggregate must run only after all required shard jobs succeed and artifacts exist.
+1. read `frontier/active_run.json`;
+2. inspect trigger path and latest commit;
+3. confirm no active or unrecorded equivalent run;
+4. write once;
+5. record launch commit immediately;
+6. never duplicate without proof the first launch did not exist.
 
-A lightweight failure-report job may use `if: always()`, but it must not run the normal aggregator against missing outputs.
-
-## Trigger safety and duplicate prevention
-
-Before any smoke, auto or full trigger:
-
-```text
-1. read frontier/active_run.json;
-2. inspect the trigger path and latest commit;
-3. confirm no active or completed-unrecorded run uses the same search number/profile;
-4. write the trigger once;
-5. record the launch commit immediately;
-6. never repeat the trigger merely because the run ID is not yet visible.
-```
-
-A ChatGPT connector safety block is not proof that GitHub Actions rejected or forbids the launch.
-
-When a write is blocked:
-
-- determine whether it was a trigger or a non-trigger write;
-- inspect repository and Actions state before retrying;
-- reduce or clarify the payload;
-- prefer an atomic explicit commit;
-- retry only when no equivalent write or run exists.
-
-Never conflate connector safety warnings, GitHub CI failures and mathematical search results.
-
-## Trigger isolation
-
-Generic and legacy workflows must use narrow `paths:` filters. Commits changing docs, memory, run archives, candidate banks or another numbered search must not start old workflows.
+Generic and legacy workflows use narrow `paths:` filters so docs, memory and run archives do not start old searches.
 
 ## Failure handling
 
 Distinguish:
 
-```text
-- preflight/checker failure: code, schema or candidate serialization problem;
-- engine/search failure: inspect shard logs and inputs;
-- aggregation failure after successful shards: shard results may still be useful;
-- missing artifact: record the exact missing shard;
-- connector safety block: tool-layer event, not CI evidence;
-- failed run predates a fix commit: launch a fresh run from fixed main, not stale rerun.
-```
+- preflight/checker failure: code/schema/serialization problem;
+- engine failure: inspect shard logs and inputs;
+- job-time or runner interruption: inspect duration, headroom and absence of artifact;
+- memory failure: require measured peak process-tree RAM, not guesswork;
+- aggregation failure after successful shards: shard data may still be useful;
+- missing artifact: record the exact missing shard and create an incomplete archive;
+- stale rerun: GitHub reruns use the historical commit, so later fixes do not affect it;
+- connector safety block: tool-layer event, not CI or mathematical evidence.
 
-Never describe a failed checker as a mathematical negative result.
+Never describe a failed checker, missing shard or runner interruption as a mathematical negative result.
 
-## Fast Step-3 checklist
-
-```text
-1. Reuse already-opened START_HERE/frontier context.
-2. Read frontier/active_run.json; do not duplicate.
-3. Confirm selected hypothesis, unused number and final visible name.
-4. Confirm exactly one workflow uses that number.
-5. Confirm the Step-2 launch document exists.
-6. Commit all permanent seeds before launch.
-7. Implement readable modules, workflow, checkers and aggregation.
-8. Run the same preflight command locally that CI will run.
-9. Publish coherently, preferably one atomic tree commit.
-10. Trigger auto once.
-11. Check complete smoke aggregate and all artifacts.
-12. Let full begin automatically.
-13. Check intended full profile, green precheck and all 20 jobs.
-14. Update frontier/active_run.json and stop.
-```
-
-## Prompt 1 — record completed run
+## Prompt 1 — record run
 
 ```text
-Сними результаты завершённого GitHub run: <RUN_URL>.
+Сними результаты GitHub run: <RUN_URL>.
 
-Это начало нового рабочего чата, поэтому сначала один раз открой START_HERE.md как долговременную память проекта. Затем открой frontier/latest.*, frontier/active_run.json, docs/web-chat-runbook-prompts.md, workflow этого run, artifacts, jobs/logs и нужные runs/candidates.
+В начале нового чата один раз открой START_HERE.md, затем frontier/latest.*, frontier/active_run.json, runbook, workflow, artifacts, jobs/logs и нужные runs/candidates.
 
-Запиши результат в репозиторий и сделай коммит:
-- runs/<date>-<workflow>/summary.md и нужные json/jsonl;
-- frontier/latest.md и frontier/latest.json;
-- frontier/active_run.json: пометь результат как записанный и убери pending;
-- START_HERE.md, если изменилась долговременная память;
-- все три банка: ordinary, diagnostic и originals.
+Если все обязательные shards и aggregate успешны, запиши completed run, обнови frontier, active_run, START_HERE и все три банка.
 
-В конце коротко скажи:
-1. лучший результат было/стало;
-2. сколько shard-best кривых получили;
-3. сколько compact/original кандидатов записали;
-4. какие дырки или defect-family повторялись;
-5. какой следующий неповторяющийся шаг.
+Если run неполный, не притворяйся, что он завершён: создай runs/<date>-<workflow>/ с partial summary, best checked candidates, missing-shard/failure analysis; обнови active_run как recovery pending; не сливай окончательные банки до строгого полного aggregate.
+
+В конце скажи: было/стало, shard count, compact/original count, defect families, technical failure if any, and next non-duplicating action.
 ```
 
 ## Prompt 2 — choose next hypothesis
 
-```text
-Теперь сделай следующий исследовательский шаг: подумай, куда нам идти дальше.
+Do not begin while `frontier/active_run.json` contains an active retry or pending recording. Use the last fully recorded run plus any clearly verified structural candidate. Choose one non-repeating hypothesis and save `docs/smart-search-N-<name>-launch.md`.
 
-START_HERE.md уже был открыт в этом чате, не открывай его заново. Опирайся на последний полностью записанный run, frontier, candidate banks, originals и artifacts.
+## Prompt 3 — implement and launch
 
-Не начинай Step 2, если frontier/active_run.json говорит completed_success_pending_recording. Сначала выполни Prompt 1.
-
-Не повторяй прошлый workflow. Выбери одну главную гипотезу и проверь её маленькими локальными тестами. Не складывай все идеи в один будущий прогон.
-
-До конца шага создай или обнови docs/smart-search-N-<name>-launch.md: гипотеза, seeds, локальные результаты, общий preflight, инварианты, режимы, автоматический smoke-to-full gate, full profile и artifacts.
-
-В конце коротко скажи: какая гипотеза выбрана, почему она не повтор прошлого, что показали проверки и стоит ли запускать большой прогон.
-```
-
-## Prompt 3 — implement and automatically launch
-
-```text
-Подготовь и автоматически выполни весь Step 3 по сохранённому Step-2 handoff одним заходом.
-
-START_HERE.md уже был открыт. Не меняй основную гипотезу. Реализуй один workflow smart-search-N-короткая-характеристика и нормальные читаемые модули.
-
-Сначала запусти общий локальный preflight, совпадающий с GitHub precheck. Затем один раз запусти auto-профиль: smoke, полный smoke aggregate и точные проверки должны автоматически открыть full-матрицу.
-
-Основной full: 21000 секунд, 20 shards/jobs, max-parallel=20, обычно 4 workers/job. Все параметры находятся внутри YAML.
-
-Не заканчивай шаг после запуска smoke и не проси у меня второе сообщение для запуска full. После старта full проверь profile, green precheck и все 20 shard jobs. Запиши active run и не запускай копию.
-```
+Use the saved handoff. Run the shared preflight, including long-run budget validation. Normal full is `20400` seconds, 20 jobs, max-parallel 20, usually 4 workers/job and timeout 359 minutes. Execute the complete automatic smoke-to-full chain once and record the active run.
 
 ## Prompt 4 — whole-chat wrap-up
 
-```text
-Посмотри на всю работу в этом чате целиком.
-
-START_HERE.md уже был открыт. Проверь потери времени, путаницу ролей файлов, лишние workflow-запуски, несовпадение local preflight и CI, self-modifying workflow, слишком много мелких коммитов, непрозрачные исходники и незаписанные результаты.
-
-При необходимости измени START_HERE.md, frontier/active_run.json, docs/web-chat-runbook-prompts.md, launch/plan docs или другие файлы. Не меняй исторический commit уже запущенного или завершённого run.
-
-Если run завершился во время Step 4, пометь его completed_success_pending_recording и сделай Prompt 1 следующим обязательным шагом, но не подменяй полноценный анализ результатов поверхностной записью.
-
-В конце коротко скажи: что изменил, зачем изменил и какой следующий шаг записан.
-```
+Review lost time, file-role confusion, duplicate runs, local/CI drift, self-modifying workflows, fragmented commits, opaque sources, unsafe time headroom and unrecorded results. Update memory/process files without changing the historical commit of an active run.
