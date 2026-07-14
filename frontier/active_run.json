@@ -1,43 +1,43 @@
 {
   "schema": "active-run-v1",
   "updated_at": "2026-07-14",
-  "status": "failed_shard_retry_in_progress",
-  "workflow": "smart-search-23-core-transplant",
-  "profile": "full",
-  "seconds": 21000,
+  "status": "search24_launch_ready",
+  "workflow": "smart-search-24-defect-graft",
+  "profile": "automatic_precheck_smoke_then_full",
+  "smoke_seconds": 180,
+  "full_seconds": 20400,
+  "timeout_minutes": 359,
+  "headroom_seconds": 1140,
+  "minimum_required_headroom_seconds": 900,
   "shards": 20,
   "workers_per_shard": 4,
   "max_parallel": 20,
-  "base_seed": 20260723,
-  "smoke_run_id": 29248411212,
-  "smoke_status": "success_with_summary_artifact",
-  "launch_commit": "ac18bf46b23146f4f4a581cbf5af641c746d3171",
-  "trigger_path": "launch/smart-search-23-full.trigger",
-  "run_id": 29249275103,
+  "base_seed": 20260724,
+  "trigger_path": "launch/smart-search-24-defect-graft.trigger",
   "do_not_duplicate": true,
-  "first_attempt": {
-    "status": "incomplete_19_of_20",
+  "automatic_chain": [
+    "precheck",
+    "smoke_20_of_20",
+    "strict_smoke_aggregate",
+    "full_20_of_20",
+    "strict_full_aggregate"
+  ],
+  "source_search23": {
+    "run_id": 29249275103,
+    "available_source_shards": 19,
     "missing_shards": [11],
-    "missing_artifacts": ["smart-search-23-core-transplant-shard-11"],
-    "partial_archive": "runs/2026-07-13-smart-search-23-core-transplant-full/",
-    "structural_best_candidate_id": "mlct22-ct-c64aebf0ed34cdf4",
-    "structural_best_core_overlap": 16,
-    "numeric_frontier_changed": false
+    "shard11_retry_job_id": 87086816523,
+    "shard11_retry_status_at_launch": "in_progress",
+    "launch_exception_reason": "All 40 known core-escape 62/64 primary seeds come from available shard 14. The precheck records source completeness explicitly and refuses fewer than 19 source artifacts."
   },
-  "recovery": {
-    "status": "rerun_in_progress",
-    "job_name": "core-transplant (11)",
-    "latest_job_id": 87086816523,
-    "note": "GitHub reruns use the historical launch commit; later workflow fixes do not affect this attempt."
+  "hypothesis": "Replace a zero-contribution or zero-exclusive link with the exact line through the two missing points, replace additional weak links with exact connectors, and solve the resulting line-intersection Hamiltonian-path and finite-segment realization problem.",
+  "safety": {
+    "smoke_blocks_full_on_any_failed_shard_or_verifier": true,
+    "full_blocks_final_aggregate_on_any_failed_shard_or_verifier": true,
+    "state_cap_enforced": true,
+    "periodic_checkpoints": true,
+    "dual_exact_verification": true,
+    "unordered_64_cover_not_counted_as_trail": true
   },
-  "technical_diagnosis": {
-    "memory_exhaustion_supported": false,
-    "probable_cause": "insufficient job-time headroom or runner interruption",
-    "search_seconds": 21000,
-    "timeout_minutes": 359,
-    "headroom_seconds": 540,
-    "future_default_search_seconds": 20400,
-    "future_minimum_headroom_seconds": 900
-  },
-  "next_action": "Do not launch another copy and do not start search-24. After shard 11 retry completes, inspect its artifact, run the strict 20/20 aggregate, merge all three banks, and mark search-23 fully recorded."
+  "next_action": "Commit the trigger exactly once, verify the new Actions run reaches precheck, and do not start another copy."
 }
