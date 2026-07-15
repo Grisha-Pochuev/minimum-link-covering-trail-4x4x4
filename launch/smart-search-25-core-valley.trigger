@@ -1,0 +1,5 @@
+workflow=smart-search-25-core-valley
+implementation_commit=dcaf6e2b47165f1f61a080a4545b83c6edb4708a
+runtime_sha256=edd133b3fccf61638100360c146e9bd4e903107fa3fa4f9f2c4c896f73f983d5
+profile=automatic-precheck-smoke20-full20
+date=2026-07-16
