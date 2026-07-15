@@ -1,14 +1,18 @@
 {
   "schema": "active-run-v1",
   "updated_at": "2026-07-16",
-  "status": "search25_retry5_prepared_not_triggered",
+  "status": "search25_retry6_prepared_not_triggered",
   "active_run": null,
-  "do_not_duplicate_run_id": 29454149578,
+  "do_not_duplicate_run_id": 29454334615,
   "last_completed_run": {
     "workflow": "smart-search-24-defect-graft",
     "run_id": 29357369876,
+    "run_url": "https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/29357369876",
+    "aggregate_status": "success_strict",
     "full_status": "success_strict_20_of_20",
-    "best_ordered_covered_count": 62
+    "best_ordered_covered_count": 62,
+    "ordered_63_trails": 0,
+    "ordered_64_trails": 0
   },
   "step2_handoff": {
     "workflow_name": "smart-search-25-core-valley",
@@ -16,21 +20,47 @@
     "engine_language": "C++20",
     "plateau62_closed_state_count": 43,
     "common_core_lines": 17,
-    "corebreak61_seed_count": 641
+    "corebreak61_seed_count": 641,
+    "numeric_frontier_after_local_experiments": 62
+  },
+  "reconstructed_search25_inputs": {
+    "transport_path": "data/search25_reconstructed_inputs.zip.b64",
+    "transport_sha256": "18c0a360cad88dafa40cd5ff039fca4b3a94f293010e3f5b2d3600b985236cfd",
+    "decoded_zip_sha256": "49210583f1bc518b31decaa23b6c07b83ae3104e36e1b048d5ffba4e475ee182",
+    "plateau62_rows": 43,
+    "common_core_lines": 17,
+    "corebreak61_rows": 641,
+    "missing_triple_classes": 51,
+    "recovered_exact_rows": 289,
+    "regenerated_exact_rows": 352,
+    "reason": "The original Step-2 ZIP member search25_corebreak61_seeds.jsonl failed CRC during Actions preflight. The replacement bank was reconstructed exactly and is reverified semantically before search."
   },
   "step3_implementation": {
     "workflow_path": ".github/workflows/smart-search-25-core-valley.yml",
     "runtime_archive": "data/search25_runtime.tar.gz",
     "runtime_archive_sha256": "51f642824516333142732818b9eaca75932b7c1aeca4e0788cbad63e2869b493",
     "semantic_materializer_patch": "scripts/search25_materialize_semantic.py",
-    "full_profile": {"search_seconds": 20400, "timeout_minutes": 359, "shards": 20, "workers_per_shard": 4, "checkpoint_seconds": 600},
+    "full_profile": {
+      "search_seconds": 20400,
+      "timeout_minutes": 359,
+      "shards": 20,
+      "workers_per_shard": 4,
+      "checkpoint_seconds": 600,
+      "minimum_headroom_seconds": 900
+    },
+    "local_validation": {
+      "all_20_modes_executed": true,
+      "dual_exact_verifiers_agreed": true,
+      "minimum_common17_overlap": 15
+    },
     "triggered": false
   },
   "technical_attempts": [
     {"attempt": 1, "run_id": 29452854208, "failure_step": "shared preflight", "smoke": "not_started", "full": "not_started"},
     {"attempt": 2, "run_id": 29453335991, "failure_step": "outer input bundle hash gate", "smoke": "not_started", "full": "not_started"},
     {"attempt": 3, "run_id": 29453747947, "failure_step": "shared 20-mode preflight", "smoke": "not_started", "full": "not_started"},
-    {"attempt": 4, "run_id": 29454149578, "failure_step": "corrupted replacement runtime archive", "smoke": "not_started", "full": "not_started"}
+    {"attempt": 4, "run_id": 29454149578, "failure_step": "corrupted replacement runtime archive", "smoke": "not_started", "full": "not_started"},
+    {"attempt": 5, "run_id": 29454334615, "failure_step": "CRC-corrupted Step-2 corebreak member", "smoke": "not_started", "full": "not_started"}
   ],
-  "next_action": "Restore the already verified runtime blob, apply semantic validation as a normal text patch, trigger retry 5 exactly once, and inspect the unique run."
+  "next_action": "Trigger retry 6 exactly once, inspect strict preflight and smoke, then record the unique run id without changing the trigger again."
 }
