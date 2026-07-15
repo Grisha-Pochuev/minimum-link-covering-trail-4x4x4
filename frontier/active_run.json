@@ -1,9 +1,22 @@
 {
   "schema": "active-run-v1",
   "updated_at": "2026-07-16",
-  "status": "search25_retry9_prepared_not_triggered",
-  "active_run": null,
-  "do_not_duplicate_run_id": 29456610021,
+  "status": "search25_full_running",
+  "active_run": {
+    "workflow": "smart-search-25-core-valley",
+    "run_id": 29457051261,
+    "run_url": "https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/29457051261",
+    "trigger_commit": "22becb63bb5dc00fcc547e97a9366f25b35c391b",
+    "precheck_status": "success",
+    "smoke_status": "success_strict_20_of_20",
+    "smoke_aggregate_status": "success",
+    "full_status": "running_20_of_20_visible",
+    "full_started_at": "2026-07-15T23:01:49Z",
+    "expected_full_shards": 20,
+    "search_seconds_per_shard": 20400,
+    "workers_per_shard": 4
+  },
+  "do_not_duplicate_run_id": 29457051261,
   "last_completed_run": {
     "workflow": "smart-search-24-defect-graft",
     "run_id": 29357369876,
@@ -29,14 +42,14 @@
     "input_zip_sha256": "49210583f1bc518b31decaa23b6c07b83ae3104e36e1b048d5ffba4e475ee182",
     "dependency": "libboost-dev",
     "zero_link_rejection_patch": "scripts/search25_patch_zero_links.py",
-    "local_patch_validation": {
-      "compile": "success",
-      "smoke_seconds": 3,
-      "primary_verifier": "success",
-      "independent_verifier": "success"
+    "full_profile": {
+      "search_seconds": 20400,
+      "timeout_minutes": 359,
+      "shards": 20,
+      "workers_per_shard": 4,
+      "checkpoint_seconds": 600
     },
-    "full_profile": {"search_seconds": 20400, "timeout_minutes": 359, "shards": 20, "workers_per_shard": 4, "checkpoint_seconds": 600},
-    "triggered": false
+    "triggered": true
   },
   "technical_attempts": [
     {"attempt": 1, "run_id": 29452854208, "failure_step": "shared preflight", "smoke": "not_started", "full": "not_started"},
@@ -46,7 +59,8 @@
     {"attempt": 5, "run_id": 29454334615, "failure_step": "CRC-corrupted Step-2 corebreak member", "smoke": "not_started", "full": "not_started"},
     {"attempt": 6, "run_id": 29456161606, "failure_step": "single large base64 transport changed during publication", "smoke": "not_started", "full": "not_started"},
     {"attempt": 7, "run_id": 29456531140, "failure_step": "missing boost/rational.hpp on runner", "smoke": "not_started", "full": "not_started"},
-    {"attempt": 8, "run_id": 29456610021, "failure_step": "zero-length finite segments saved to diagnostic valley bank", "precheck": "success", "smoke": "failed_20_of_20", "full": "not_started"}
+    {"attempt": 8, "run_id": 29456610021, "failure_step": "zero-length finite segments saved to diagnostic valley bank", "precheck": "success", "smoke": "failed_20_of_20", "full": "not_started"},
+    {"attempt": 9, "run_id": 29457051261, "precheck": "success", "smoke": "success_strict_20_of_20", "full": "running_20_of_20_visible"}
   ],
-  "next_action": "Trigger retry 9 exactly once and verify precheck, 20 smoke jobs, strict smoke aggregate, and visibility of all 20 full jobs."
+  "next_action": "Monitor run 29457051261 only. Do not create another search-25 trigger. After completion, download all 20 full artifacts, build the strict aggregate, verify every 63/64+ trail independently, and record the result."
 }
