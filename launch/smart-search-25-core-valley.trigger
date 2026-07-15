@@ -1,5 +1,8 @@
 workflow=smart-search-25-core-valley
-implementation_commit=dcaf6e2b47165f1f61a080a4545b83c6edb4708a
+implementation_commit=071f38b02355371bce8f846f0f8c56e3ea8828f4
 runtime_sha256=edd133b3fccf61638100360c146e9bd4e903107fa3fa4f9f2c4c896f73f983d5
 profile=automatic-precheck-smoke20-full20
+retry=2
+previous_run=29452854208
+reason=split_precheck_stages_and_strict_input_hash_diagnostics
 date=2026-07-16
