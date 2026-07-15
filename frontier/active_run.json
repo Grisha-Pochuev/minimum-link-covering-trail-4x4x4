@@ -1,6 +1,17 @@
 {
-  "active_run": null,
-  "do_not_duplicate_run_id": 29357369876,
+  "active_run": {
+    "workflow": "smart-search-25-core-valley",
+    "run_id": 29452854208,
+    "run_url": "https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/29452854208",
+    "launch_commit": "6ac6cc0c2798423898145964dc15d6662706bb57",
+    "status": "technical_precheck_failure",
+    "precheck_status": "failure",
+    "smoke_status": "not_started",
+    "full_status": "not_started",
+    "failure_scope": "Shared preflight failed before smoke; no scientific search matrix ran.",
+    "retry_authorized_reason": "workflow observability and gating correction after first technical precheck failure"
+  },
+  "do_not_duplicate_run_id": 29452854208,
   "last_completed_run": {
     "aggregate_status": "success_strict",
     "archive": "runs/2026-07-14-smart-search-24-defect-graft-full/",
@@ -21,7 +32,7 @@
     "summary_artifact_id": 8328712056,
     "workflow": "smart-search-24-defect-graft"
   },
-  "next_action": "Create one trigger commit for smart-search-25-core-valley, discover the unique Actions run, then record its run id without creating another trigger.",
+  "next_action": "Publish the precheck observability fix, update the existing trigger exactly once for retry 2, then inspect the unique new run. Do not rerun run 29452854208.",
   "schema": "active-run-v1",
   "source_search23": {
     "closure_reason": "The final 20/20 aggregate retained the same 40 intended primary seeds; the exact prepared bundle is persisted under data/search24_*.",
@@ -30,7 +41,7 @@
     "primary_core_escape_seed_count": 40,
     "run_id": 29249275103
   },
-  "status": "search25_implementation_ready_not_triggered",
+  "status": "search25_precheck_failure_retry_prepared",
   "step2_handoff": {
     "analysis": "docs/experiments/2026-07-15-search25-core-valley-analysis.md",
     "binding_launch_document": "docs/smart-search-25-core-valley-launch.md",
@@ -42,11 +53,7 @@
     "plateau62_closed_state_count": 43,
     "plateau_component_closed_under_one_rich_line_replacement": true,
     "prepared_bundle_sha256": "1d8f891978826ac64ee287b018e6a417a59bde7bcfb97ff1a427e5207282e2d0",
-    "prepared_inputs": [
-      "data/search25_local_inputs.zip",
-      "data/search25_local_inputs.README.md",
-      "data/search25_local_experiment_manifest.json"
-    ],
+    "prepared_inputs": ["data/search25_local_inputs.zip","data/search25_local_inputs.README.md","data/search25_local_experiment_manifest.json"],
     "workflow_name": "smart-search-25-core-valley"
   },
   "step3_implementation": {
@@ -54,22 +61,11 @@
     "workflow_path": ".github/workflows/smart-search-25-core-valley.yml",
     "runtime_archive": "data/search25_runtime.tar.gz",
     "runtime_archive_sha256": "edd133b3fccf61638100360c146e9bd4e903107fa3fa4f9f2c4c896f73f983d5",
-    "full_profile": {
-      "search_seconds": 20400,
-      "timeout_minutes": 359,
-      "shards": 20,
-      "workers_per_shard": 4,
-      "checkpoint_seconds": 600,
-      "minimum_headroom_seconds": 900
-    },
-    "local_validation": {
-      "all_20_modes_executed": true,
-      "strict_mini_aggregate": "20_of_20",
-      "dual_exact_verifiers_agreed": true,
-      "minimum_common17_overlap": 15,
-      "observed_attempts_per_second_range": [2400, 12600]
-    },
-    "triggered": false
+    "full_profile": {"search_seconds":20400,"timeout_minutes":359,"shards":20,"workers_per_shard":4,"checkpoint_seconds":600,"minimum_headroom_seconds":900},
+    "local_validation": {"all_20_modes_executed":true,"strict_mini_aggregate":"20_of_20","dual_exact_verifiers_agreed":true,"minimum_common17_overlap":15,"observed_attempts_per_second_range":[2400,12600]},
+    "triggered": true,
+    "implementation_commit": "dcaf6e2b47165f1f61a080a4545b83c6edb4708a"
   },
-  "updated_at": "2026-07-16"
+  "updated_at": "2026-07-16",
+  "technical_attempts": [{"attempt":1,"run_id":29452854208,"launch_commit":"6ac6cc0c2798423898145964dc15d6662706bb57","conclusion":"failure","precheck":"failure","smoke":"not_started","full":"not_started","resource_waste":"minimal_precheck_only"}]
 }

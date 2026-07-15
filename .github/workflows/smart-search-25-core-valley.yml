@@ -15,20 +15,29 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+        with: {show-progress: false}
       - name: Unpack runtime
         run: |
           echo "$RUNTIME_SHA  data/search25_runtime.tar.gz" | sha256sum -c -
           tar -xzf data/search25_runtime.tar.gz
       - uses: actions/setup-python@v5
         with: {python-version: '3.11'}
-      - name: Shared preflight
+      - name: Validate scripts and long-run budget
         run: |
           python -m py_compile scripts/{materialize_search25_inputs,verify_core_valley,verify_core_valley_independent,build_core_valley_summary,preflight_search25,run_search25_ci}.py
           python scripts/check_long_run_budget.py --search-seconds 20400 --timeout-minutes 359 --minimum-headroom-seconds 900
-          python scripts/preflight_search25.py --repo . --bundle data/search25_local_inputs.zip --workdir preflight-search25 --seconds-per-mode 1
+      - name: Verify permanent search-25 input bundle
+        run: echo "1d8f891978826ac64ee287b018e6a417a59bde7bcfb97ff1a427e5207282e2d0  data/search25_local_inputs.zip" | sha256sum -c -
+      - name: Shared 20-mode preflight
+        run: |
+          set -o pipefail
+          python scripts/preflight_search25.py --repo . --bundle data/search25_local_inputs.zip --workdir preflight-search25 --seconds-per-mode 1 2>&1 | tee preflight-search25.log
+      - name: Prepare immutable run inputs
+        run: |
           mkdir prepared-search25
           cp preflight-search25/prepared/{search25_seeds.tsv,common17.tsv,frontier.tsv,materialization_report.json} prepared-search25/
           cp preflight-search25/{core_valley_search,preflight_report.json} prepared-search25/
+          cp preflight-search25.log prepared-search25/
           chmod +x prepared-search25/core_valley_search
           (cd prepared-search25 && sha256sum * > SHA256SUMS)
       - uses: actions/upload-artifact@v4
@@ -60,7 +69,7 @@ jobs:
           retention-days: 90
   smoke-aggregate:
     needs: smoke
-    if: always()
+    if: needs.smoke.result == 'success'
     runs-on: ubuntu-latest
     steps:
       - run: test "${{ needs.smoke.result }}" = success
@@ -107,7 +116,7 @@ jobs:
           retention-days: 90
   full-aggregate:
     needs: full
-    if: always()
+    if: needs.full.result == 'success'
     runs-on: ubuntu-latest
     steps:
       - run: test "${{ needs.full.result }}" = success
