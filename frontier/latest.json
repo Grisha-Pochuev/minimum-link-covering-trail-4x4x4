@@ -17,7 +17,18 @@
     "frozen_core_overlap": 16,
     "grid_points": 64,
     "links": 22,
-    "missing": [[1,0,2],[3,3,1]],
+    "missing": [
+      [
+        1,
+        0,
+        2
+      ],
+      [
+        3,
+        3,
+        1
+      ]
+    ],
     "missing_count": 2,
     "mode": "paired_core_transplant",
     "operation": "paired_core_transplant",
@@ -39,13 +50,16 @@
     "vertices": 23
   },
   "current_next_step": {
+    "binding_handoff": "docs/smart-search-25-core-valley-launch.md",
     "do_not_do": [
       "do not rerun search-24 unchanged",
-      "do not count an unordered or merely connected 64/64 line set as a trail",
-      "do not treat the bounded defect-graft failure as a proof of impossibility"
+      "do not crawl the closed 43-state plateau with one rich-line replacement",
+      "do not use one defect line or one separator transversal as a standalone primary repair",
+      "do not score support-graph Hamiltonicity without exact finite contact spans",
+      "do not implement the full search loop in Python"
     ],
-    "instruction": "Use the completed search-24 topology diagnostics to select one non-repeating smart-search-25 hypothesis. Benchmark C++20 before increasing the same graft depth.",
-    "step_type": "select_search25_hypothesis"
+    "instruction": "Implement the C++20 atomic paired core-valley search, run strict smoke, and launch full only after smoke success.",
+    "step_type": "implement_and_launch_search25"
   },
   "latest_completed_recorded_run": {
     "archive": "runs/2026-07-14-smart-search-24-defect-graft-full/",
@@ -69,29 +83,37 @@
     "status": "success_strict_20_of_20",
     "workflow_name": "smart-search-24-defect-graft"
   },
-  "prepared_search24_inputs": {
-    "bundle": "data/search24_prepared_inputs.zip",
-    "bundle_sha256": "81ef132db60096524bf4e037cc68a1fc474af6aa931cf07fbce033983c84dae4",
-    "control_seed_count": 7,
-    "manifest": "data/search24_defect_graft_manifest.json",
-    "primary_seed_count": 40,
-    "provenance": "runs/2026-07-14-smart-search-24-defect-graft-full/artifact_provenance.json",
-    "readme": "data/search24_prepared_inputs.README.md",
-    "seed_count": 47,
-    "zero_exclusive_only_seed_count": 20,
-    "zero_point_bridge_seed_count": 20
-  },
   "repository": "Grisha-Pochuev/minimum-link-covering-trail-4x4x4",
   "schema": "mlct-frontier-v1",
-  "source_search23_finalization": {
-    "compact_62_core_escape_count": 40,
-    "compact_63_count": 0,
-    "compact_64_count": 0,
-    "confirmation_file": "runs/2026-07-14-smart-search-24-defect-graft-full/search23_recovery_confirmation.json",
-    "received_shards": 20,
-    "run_id": 29249275103,
-    "status": "success_strict_20_of_20"
+  "search25_prepared_inputs": {
+    "bundle": "data/search25_local_inputs.zip",
+    "bundle_sha256": "1d8f891978826ac64ee287b018e6a417a59bde7bcfb97ff1a427e5207282e2d0",
+    "common_core_lines": 17,
+    "corebreak61_seeds": 641,
+    "manifest": "data/search25_local_experiment_manifest.json",
+    "plateau62_closed_states": 43,
+    "readme": "data/search25_local_inputs.README.md"
   },
-  "status": "verified_62_search24_complete_no_numeric_improvement",
-  "updated_utc": "2026-07-15T00:12:34Z"
+  "status": "verified_62_step2_core_valley_handoff_ready",
+  "step2_local_experiment": {
+    "analysis": "docs/experiments/2026-07-15-search25-core-valley-analysis.md",
+    "closed_plateau": {
+      "adjacency_edges": 134,
+      "common_line_count": 17,
+      "diameter": 8,
+      "state_count": 43,
+      "union_line_count": 49
+    },
+    "corebreak61_seed_count": 641,
+    "corebreak_missing_triple_count": 51,
+    "interpretation": "The exact 62/64 one-rich-line-replacement component is closed. A common-core line must be broken and a second line changed in one atomic contact-span mutation.",
+    "manifest": "data/search25_local_experiment_manifest.json",
+    "numeric_frontier_changed": false,
+    "prepared_inputs": [
+      "data/search25_local_inputs.zip::search25_plateau62_closed.jsonl",
+      "data/search25_local_inputs.zip::search25_common17_core.json",
+      "data/search25_local_inputs.zip::search25_corebreak61_seeds.jsonl"
+    ]
+  },
+  "updated_utc": "2026-07-15T20:30:00Z"
 }

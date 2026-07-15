@@ -32,17 +32,17 @@ Heuristic output is evidence only. Every frontier candidate requires exact check
 File roles:
 
 - `START_HERE.md`: stable compact boot memory and reading order.
-- `frontier/latest.*`: best checked mathematical frontier.
+- `frontier/latest.*`: best checked mathematical and structural frontier.
 - `frontier/active_run.json`: the only authoritative live stage record.
 - `docs/smart-search-N-*.md`: binding Step-2 to Step-3 handoff.
-- `docs/retrospectives/*`: process lessons and explicit execution exceptions.
+- `docs/experiments/*`: exact local probes and bounded negative results.
 - `runs/*`: completed or explicitly labelled partial-run evidence.
 - candidate banks/originals: reusable checked and diagnostic candidates.
 
 If this file and `frontier/active_run.json` disagree about the current stage, trust
 `frontier/active_run.json` and repair this file during Step 4.
 
-## Current checked frontier
+## Current checked numeric frontier
 
 Best checked ordered trail:
 
@@ -53,59 +53,61 @@ Best checked ordered trail:
 - missing: `(1,0,2)`, `(3,3,1)`
 - source run: `29249275103`, shard `14`
 - frozen-core overlap: `16/18`
-- status: exactly verified partial trail from a now-completed run
+- status: exactly verified partial trail from a completed run
 
-It passed both CI exact verifiers and two additional local exact checks. Search-24 did not produce a
-better ordered trail.
+It passed both CI exact verifiers and two additional local exact checks. Search-24 and the Step-2
+local experiments did not produce `63/64`.
 
-## Latest completed run
+## Latest completed Actions run
 
 Workflow: `smart-search-24-defect-graft`  
 Run: `29357369876`  
 Archive: `runs/2026-07-14-smart-search-24-defect-graft-full/`
 
-Strict completion:
+Strict result:
 
-- precheck: success;
-- smoke: `20/20`;
-- full: `20/20`;
-- strict aggregate: success;
-- missing shards: none;
+- precheck, smoke and full aggregate: success, `20/20` shards;
 - exact ordered `63/64`: `0`;
-- exact ordered `64/64`: `0`.
+- exact ordered `64/64`: `0`;
+- compact exact unordered `64/64` line sets: `3,165`;
+- connected compact exact `64/64` line sets: `2,349`;
+- Hamiltonian supporting-line orders: `0`;
+- finite `63/64` or `64/64` realizations: `0`.
 
-Main diagnostics:
+Interpretation: unordered coverage is plentiful, but a connected or Hamiltonian graph of infinite
+lines is not enough. The finite segment between its two chosen contacts must contain the intended
+grid points.
 
-- `5,782,422` raw exact `64/64` supporting-line-set attempts;
-- `3,165` compact exact `64/64` line sets;
-- `2,349` connected compact exact `64/64` line sets;
-- `2,268` saved near-Hamiltonian graph rows;
-- `0` Hamiltonian supporting-line orders;
-- `0` finite `63/64` or `64/64` realizations;
-- ordinary bank: `21` exact `62/64` rows;
-- diagnostic bank: `5,821` exact rows;
-- originals: `20` raw shard bests, `2` compact classes.
+## Step-2 structural breakthrough
 
-Interpretation: the defect line repairs coverage at the unordered-line level, but the explored
-connector topologies do not stitch into a Hamiltonian support order. This is a bounded negative
-result for search-24, not a proof that 22 links are impossible.
+Exact local report:
+`docs/experiments/2026-07-15-search25-core-valley-analysis.md`.
 
-## Search-23 source completion
+Binding Step-3 handoff:
+`docs/smart-search-25-core-valley-launch.md`.
 
-Run `29249275103` later completed its strict `20/20` recovery aggregate:
+The numeric frontier stayed `62/64`, but the natural one-rich-line neighborhood around the wall was
+closed exactly:
 
-- exact `62/64` with frozen-core overlap `<=16`: still `40`;
-- compact `63/64`: `0`;
-- compact `64/64`: `0`.
+- `43` exact ordered `62/64` states;
+- `134` one-line-replacement edges, one component, diameter `8`;
+- no outgoing one-rich-line replacement to `63/64`;
+- all `43` states share the same `17` supporting lines;
+- only `49` supporting lines occur in the whole component;
+- targeted standalone hole lines and separator transversals also fail;
+- breaking one common-core line yields `641` exact `61/64` valley states with `51` missing triples.
 
-Therefore search-24's 19-shard launch exception did not omit any intended primary core-escape seed.
-The exact prepared bundle is now permanent:
+This is bounded exact computational evidence, not an impossibility proof.
 
-- `data/search24_prepared_inputs.zip`
-- `data/search24_defect_graft_manifest.json`
-- `data/search24_prepared_inputs.README.md`
+What previous searches missed: they were too monotone. To change any of the common `17` lines, the
+search must temporarily accept `59/64`–`61/64`. The next mutation must replace two lines atomically;
+neither half-change may be pruned before the final ordered finite-contact trail is evaluated.
 
-Hashes and artifact provenance are in the search-24 archive.
+Permanent search-25 inputs:
+
+- `data/search25_local_inputs.zip` — bundle with all `43` plateau states, common `17` lines, all `641` core-break valley states, and inner manifest;
+- `data/search25_local_inputs.README.md` — bundle hash and materialization rules;
+- `data/search25_local_experiment_manifest.json` — plain quick-read counts and inner hashes.
 
 ## Search history
 
@@ -115,28 +117,36 @@ Hashes and artifact provenance are in the search-24 archive.
 - search-20: rich-line preservation `58/64`, but eight explicit bridges.
 - search-21: direct compression `61/64`, zero pure bridges.
 - search-22: endpoint repair `62/64`, saturated in one frozen 18-line family.
-- search-23: core transplant; exact `62/64` with frozen-core overlap `16/18` and a new defect orbit.
-- search-24: defect-line graft; many exact connected `64/64` line sets, but zero Hamiltonian orders.
-
-The unordered `64/64` scaffold from run `28825060197` remains in its separate diagnostic bank.
+- search-23: core transplant; `62/64`, two frozen-core lines changed, new defect orbit.
+- search-24: defect-line graft; many unordered/connected `64/64` sets, no trail.
+- search-25 selected: atomic paired core-valley search with exact finite contact spans.
 
 ## Current stage
 
-There is no active run. `frontier/active_run.json` is
-`completed_recorded_awaiting_step2`.
+There is no active run. Step 2 is complete and committed. `frontier/active_run.json` status is
+`step2_handoff_ready_for_search25`.
 
-The next action is Step 2: choose one non-repeating `smart-search-25-*` hypothesis and save a precise
-handoff. Do not rerun search-24 unchanged.
+Next action is Step 3: implement the binding C++20 engine, run shared preflight, strict `20`-shard
+smoke, and launch full automatically only after smoke succeeds. Do not launch another search-24 copy.
 
-## Performance lesson
+## Binding search-25 rules
 
-Search-24 used at most `0.0739 GiB` measured RAM and no shard hit the state cap, but Python throughput
-was only `14.17` attempts/s/shard. Before increasing the same graft depth, benchmark the binding
-C++20 architecture or write a new explicit implementation-language exception.
+- name: `smart-search-25-core-valley`;
+- full search loop: C++20, not Python;
+- state includes ordered supporting lines, exact entry/exit contacts and finite coverage mask;
+- primary operation replaces two lines atomically;
+- allow the implicit half-move to fall to `59/64`, `60/64`, or `61/64`;
+- do not count unordered `64/64`, connected graphs, or Hamiltonian support orders as trails;
+- save every verified `63/64+`, every new `62/64` outside the closed 43-state component, and diverse
+  core-broken valley states;
+- two independent exact verifiers are mandatory.
 
-## Permanent long-run safety
+## Performance and long-run safety
 
-- normal full search time is `20400` seconds when timeout is `359` minutes;
+Search-24 Python averaged only `14.17` attempts/s/shard and was not memory-bound. Search-25 is
+therefore binding C++20.
+
+- normal full search time: `20400` seconds with timeout `359` minutes;
 - every serious workflow runs `scripts/check_long_run_budget.py`;
 - require at least `900` seconds headroom;
 - scientific aggregate is final only with all required shards and exact verifiers;
@@ -166,17 +176,12 @@ Additional rules:
 
 - local validation and GitHub precheck call the same versioned preflight;
 - normalize seed schemas before exact checking;
-- permanent seeds should be committed before smoke;
+- permanent seeds must be committed before smoke;
 - runtime materialization requires artifact ids, hashes and final persistence;
-- the Step-2 implementation language is binding unless a benchmarked exception is recorded;
+- the Step-2 implementation language and hypothesis are binding unless a benchmarked exception is
+  recorded before launch;
 - prepare a file manifest before publishing;
 - publish one atomic tree commit when possible;
 - trigger last and never duplicate without proving no equivalent run exists;
 - Step 3 ends only after intended full jobs are visible;
 - long-run preflight validates total job headroom.
-
-## Current next action
-
-Read `frontier/active_run.json`, then perform Step 2. Use the completed search-24 topology data to
-choose search-25. Do not launch, rerun or treat the absence of a Hamiltonian order in this bounded
-neighborhood as a global impossibility result.

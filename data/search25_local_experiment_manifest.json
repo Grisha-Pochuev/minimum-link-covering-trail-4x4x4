@@ -1,0 +1,27 @@
+{
+  "corebreak61_seeds": 641,
+  "corebreak_missing_triples": 51,
+  "files": {
+    "search25_common17_core.json": {
+      "sha256": "bc4f8d8e24fa92b98340b5f05ce729a91f2f369848e76ae102d8da03cf5c467c"
+    },
+    "search25_corebreak61_seeds.jsonl": {
+      "rows": 641,
+      "sha256": "75de3de8a3e9d099913c218d30b24b2a29660de6a7d8f2f3729b1d4257941fc3"
+    },
+    "search25_plateau62_closed.jsonl": {
+      "rows": 43,
+      "sha256": "a4f4cd50e416ca2afb5323c205afa46181468e69c31dca18943093b3fe4e868d"
+    }
+  },
+  "plateau_common_lines": 17,
+  "plateau_missing_orbits": {
+    "((1, 0, 2), (3, 3, 1))": 10,
+    "((1, 3, 1), (2, 2, 1))": 10,
+    "((2, 2, 1), (3, 2, 1))": 3,
+    "((2, 2, 1), (3, 3, 1))": 20
+  },
+  "plateau_states": 43,
+  "plateau_union_lines": 49,
+  "schema": "search25-local-experiment-manifest-v1"
+}
