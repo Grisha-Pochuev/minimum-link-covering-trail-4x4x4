@@ -25,6 +25,10 @@ jobs:
           cp scripts/search25_materialize_semantic.py scripts/materialize_search25_inputs.py
       - uses: actions/setup-python@v5
         with: {python-version: '3.11'}
+      - name: Install C++ dependency
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libboost-dev
       - name: Reconstruct and verify exact inputs
         run: |
           cat data/search25_reconstructed_inputs.parts/part*.b64 > search25_reconstructed_inputs.zip.b64
