@@ -1,0 +1,48 @@
+{
+  "compact_aggregate_bundle": {
+    "bytes": 6446,
+    "contains": "All small aggregate reports plus exact ordinary and originals JSONL banks; excludes the 16.3 MB raw diagnostic JSONL, which is recorded by digest.",
+    "path": "runs/2026-07-14-smart-search-24-defect-graft-full/compact_aggregate_bundle.zip",
+    "sha256": "3eec9ab06f1d5b9501724cbeb440e6d46d009ab6aaf63dcf7378889fc44c96fa"
+  },
+  "diagnostic_bank": {
+    "aggregate_bytes": 16253815,
+    "aggregate_filename": "diagnostic_cover64_and_graph_states.jsonl",
+    "aggregate_sha256": "3a0616aadd8569c52d1e842b300b488b5ded106abb2479fa1f4a9abf6dc1cc5a",
+    "artifact_id": 8328712056,
+    "artifact_name": "smart-search-24-defect-graft-run-summary",
+    "repository_policy": "The full 16.3 MB JSONL is represented by exact digest, row counts and aggregate histograms; this matches the compact bank-record pattern used by earlier runs.",
+    "row_count": 5821
+  },
+  "final_summary_artifact": {
+    "artifact_id": 8328712056,
+    "created_at": "2026-07-15T00:12:34Z",
+    "downloaded_zip_sha256": "5e6b089ecc721d9f15047a9891d690f8a9a3503cd265855496e501a0fd39593c",
+    "github_digest": "sha256:5e6b089ecc721d9f15047a9891d690f8a9a3503cd265855496e501a0fd39593c",
+    "name": "smart-search-24-defect-graft-run-summary"
+  },
+  "launch_commit": "7ece93a06ea910371ea6a987e43d5b6cdd3e21b5",
+  "persisted_prepared_inputs": {
+    "bundle_bytes": 6234,
+    "bundle_contents": [
+      "search24_core_escape62_seeds.jsonl",
+      "search24_seeds.tsv",
+      "search24_defect_graft_manifest.json",
+      "search24_substitution_check.json"
+    ],
+    "bundle_path": "data/search24_prepared_inputs.zip",
+    "bundle_sha256": "81ef132db60096524bf4e037cc68a1fc474af6aa931cf07fbce033983c84dae4",
+    "readable_manifest_path": "data/search24_defect_graft_manifest.json"
+  },
+  "prepared_seed_artifact": {
+    "artifact_id": 8320686058,
+    "created_at": "2026-07-14T18:19:51Z",
+    "downloaded_zip_sha256": "81ef132db60096524bf4e037cc68a1fc474af6aa931cf07fbce033983c84dae4",
+    "github_digest": "sha256:81ef132db60096524bf4e037cc68a1fc474af6aa931cf07fbce033983c84dae4",
+    "name": "smart-search-24-prepared-seeds"
+  },
+  "run_id": 29357369876,
+  "run_url": "https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/29357369876",
+  "schema": "actions-artifact-provenance-v1",
+  "workflow": "smart-search-24-defect-graft"
+}

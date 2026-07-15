@@ -1,0 +1,14 @@
+{
+  "compact_62_core_escape_count": 40,
+  "compact_63_count": 0,
+  "compact_64_count": 0,
+  "expected_shards": 20,
+  "interpretation": "The later strict 20/20 search-23 aggregate retained exactly the same 40 primary core-escape seeds used by search-24. The 19-shard launch exception therefore did not omit an intended primary seed, although the exception remains part of the provenance.",
+  "new_two_hole_orbit_count": 1,
+  "received_shards": 20,
+  "schema": "search23-recovery-confirmation-v1",
+  "source_run_id": 29249275103,
+  "source_run_url": "https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/29249275103",
+  "strict_final_summary_artifact_id": 8328628940,
+  "strict_final_summary_digest": "sha256:fe1c45a8adf084cbb5f3d87d7553d6e536d23b406493570e8ac7435ec060dc9e"
+}

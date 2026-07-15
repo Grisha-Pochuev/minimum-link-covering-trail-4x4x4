@@ -1,0 +1,18 @@
+{
+  "schema": "search24-defect-graft-manifest-v1",
+  "source_run_id": 29249275103,
+  "source_shards": [0,1,2,3,4,5,6,7,8,9,10,12,13,14,15,16,17,18,19],
+  "source_shard_count": 19,
+  "strict_search23_20_of_20": false,
+  "primary_seed_count": 40,
+  "control_seed_count": 7,
+  "zero_point_bridge_seed_count": 20,
+  "zero_exclusive_only_seed_count": 20,
+  "defect_orbit_counts": {
+    "[[0, 2, 1], [3, 3, 1]]": 17,
+    "[[1, 0, 2], [3, 3, 1]]": 23
+  },
+  "zero_point_substitution_cases": 20,
+  "zero_point_substitution_full_cases": 20,
+  "notes": "Primary seeds are all exact 62/64 search-23 candidates with frozen-core overlap <=16. A 19-shard source is allowed because all known primary seeds originate in shard 14; source completeness is recorded explicitly."
+}

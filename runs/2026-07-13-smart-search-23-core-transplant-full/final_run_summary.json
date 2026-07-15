@@ -1,0 +1,27 @@
+{
+  "schema": "core-transplant-run-summary-v1",
+  "received_shards": 20,
+  "expected_shards": 20,
+  "best_candidate_id": "mlct22-ct-c64aebf0ed34cdf4",
+  "best_covered_count": 62,
+  "best_missing": [[1,0,2],[3,3,1]],
+  "best_frozen_core_overlap": 16,
+  "compact_ordinary_62plus_count": 1115,
+  "compact_diagnostic_count": 1602,
+  "raw_original_count": 79,
+  "compact_63_count": 0,
+  "compact_64_count": 0,
+  "compact_62_core_escape_count": 40,
+  "new_two_hole_orbit_count": 1,
+  "attempts": 87975890177,
+  "changed_core_attempts": 80225167515,
+  "min_core_overlap_seen": 0,
+  "resource_records": 20,
+  "exact_verification": {
+    "primary_checker": "integer-cross-product",
+    "independent_checker": "fraction-parametric",
+    "unique_candidates_verified": 3603,
+    "shard_bests_verified": 20,
+    "all_passed": true
+  }
+}

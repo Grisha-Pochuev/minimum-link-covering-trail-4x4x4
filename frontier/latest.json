@@ -1,80 +1,97 @@
 {
-  "schema": "mlct-frontier-v1",
-  "repository": "Grisha-Pochuev/minimum-link-covering-trail-4x4x4",
-  "updated_utc": "2026-07-14T13:00:00Z",
-  "status": "verified_62_structural_core_escape_search23_partial_retry_active",
+  "best_recorded_cover64_stitch_scaffold": {
+    "candidate_id": "mlct22-lineset-9772981a21b2a88a",
+    "covered_count": 64,
+    "interpretation": "unordered 22-line cover64 scaffold; not an ordered trail",
+    "line_count": 22,
+    "source_run_id": 28825060197,
+    "status": "line_set_seed_not_a_trail"
+  },
   "best_recorded_ordered_trail_candidate": {
     "candidate_id": "mlct22-ct-c64aebf0ed34cdf4",
     "canonical_key_sha256": "021082d34574ab0cc81b55d1d4a67653cd6923c863e302c213aa7bbcb0ea358d",
-    "covered_count": 62,
-    "grid_points": 64,
     "coverage_percent": 96.875,
+    "covered_count": 62,
+    "effective_seed": 34270772,
+    "frozen_core_lines_changed": 2,
+    "frozen_core_overlap": 16,
+    "grid_points": 64,
     "links": 22,
-    "vertices": 23,
     "missing": [[1,0,2],[3,3,1]],
     "missing_count": 2,
     "mode": "paired_core_transplant",
     "operation": "paired_core_transplant",
-    "source_shard": 14,
-    "source_worker": 1,
-    "effective_seed": 34270772,
-    "frozen_core_overlap": 16,
-    "frozen_core_lines_changed": 2,
     "source_file": "runs/2026-07-13-smart-search-23-core-transplant-full/best_candidate.json",
+    "source_profile": "strict_final_20_of_20",
     "source_run_id": 29249275103,
     "source_run_url": "https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/29249275103",
-    "source_profile": "full_first_attempt_19_of_20",
+    "source_shard": 14,
+    "source_worker": 1,
     "source_workflow": "smart-search-23-core-transplant",
-    "status": "verified_partial_candidate_from_incomplete_run",
+    "status": "verified_partial_trail_from_completed_run",
     "verification": {
-      "ci_primary_exact_checker": true,
       "ci_independent_exact_checker": true,
-      "local_integer_cross_product_checker": true,
+      "ci_primary_exact_checker": true,
       "local_fraction_parametric_checker": true,
+      "local_integer_cross_product_checker": true,
       "nonzero_links": 22
-    }
-  },
-  "latest_completed_recorded_run": {
-    "run_id": 29181546758,
-    "workflow_name": "smart-search-22-endpoint-repair",
-    "status": "success",
-    "archive": "runs/2026-07-12-smart-search-22-endpoint-repair-full/"
-  },
-  "latest_checked_partial_run": {
-    "run_id": 29249275103,
-    "workflow_name": "smart-search-23-core-transplant",
-    "status": "retry_active_after_first_attempt_missing_shard_11",
-    "received_shards": 19,
-    "expected_shards": 20,
-    "missing_shards": [11],
-    "statistics": {
-      "compact_62_count": 1115,
-      "compact_62_core_escape_count": 40,
-      "compact_diagnostic_count": 1600,
-      "raw_original_count": 74,
-      "compact_63_count": 0,
-      "compact_64_count": 0,
-      "new_two_hole_orbit_count": 1,
-      "attempts": 82917351393,
-      "peak_ram_gib_max": 0.3404
     },
-    "archive": "runs/2026-07-13-smart-search-23-core-transplant-full/"
-  },
-  "best_recorded_cover64_stitch_scaffold": {
-    "candidate_id": "mlct22-lineset-9772981a21b2a88a",
-    "covered_count": 64,
-    "line_count": 22,
-    "interpretation": "unordered 22-line cover64 scaffold; not an ordered trail",
-    "source_run_id": 28825060197,
-    "status": "line_set_seed_not_a_trail"
+    "vertices": 23
   },
   "current_next_step": {
-    "step_type": "finish_search23_recording",
-    "instruction": "Wait for the active retry of shard 11 under run 29249275103, then run the strict 20/20 aggregate and finalize all three banks before selecting search-24.",
     "do_not_do": [
-      "do not launch another search-23 copy",
-      "do not start search-24 before final search-23 recording",
-      "do not treat the missing shard as a mathematical failure"
-    ]
-  }
+      "do not rerun search-24 unchanged",
+      "do not count an unordered or merely connected 64/64 line set as a trail",
+      "do not treat the bounded defect-graft failure as a proof of impossibility"
+    ],
+    "instruction": "Use the completed search-24 topology diagnostics to select one non-repeating smart-search-25 hypothesis. Benchmark C++20 before increasing the same graft depth.",
+    "step_type": "select_search25_hypothesis"
+  },
+  "latest_completed_recorded_run": {
+    "archive": "runs/2026-07-14-smart-search-24-defect-graft-full/",
+    "interpretation": "The exact defect line restores unordered coverage, but no tested supporting-line intersection graph yielded a Hamiltonian order. No ordered frontier improvement.",
+    "launch_commit": "7ece93a06ea910371ea6a987e43d5b6cdd3e21b5",
+    "run_id": 29357369876,
+    "statistics": {
+      "attempts": 5782422,
+      "compact_cover64_line_sets": 3165,
+      "compact_original_classes": 2,
+      "connected_cover64_line_sets": 2349,
+      "diagnostic_bank_entries": 5821,
+      "finite_63_trails": 0,
+      "finite_64_trails": 0,
+      "hamiltonian_support_orders": 0,
+      "max_peak_ram_gib": 0.0739,
+      "mean_attempts_per_second_per_shard": 14.17,
+      "ordinary_bank_entries": 21,
+      "raw_originals": 20
+    },
+    "status": "success_strict_20_of_20",
+    "workflow_name": "smart-search-24-defect-graft"
+  },
+  "prepared_search24_inputs": {
+    "bundle": "data/search24_prepared_inputs.zip",
+    "bundle_sha256": "81ef132db60096524bf4e037cc68a1fc474af6aa931cf07fbce033983c84dae4",
+    "control_seed_count": 7,
+    "manifest": "data/search24_defect_graft_manifest.json",
+    "primary_seed_count": 40,
+    "provenance": "runs/2026-07-14-smart-search-24-defect-graft-full/artifact_provenance.json",
+    "readme": "data/search24_prepared_inputs.README.md",
+    "seed_count": 47,
+    "zero_exclusive_only_seed_count": 20,
+    "zero_point_bridge_seed_count": 20
+  },
+  "repository": "Grisha-Pochuev/minimum-link-covering-trail-4x4x4",
+  "schema": "mlct-frontier-v1",
+  "source_search23_finalization": {
+    "compact_62_core_escape_count": 40,
+    "compact_63_count": 0,
+    "compact_64_count": 0,
+    "confirmation_file": "runs/2026-07-14-smart-search-24-defect-graft-full/search23_recovery_confirmation.json",
+    "received_shards": 20,
+    "run_id": 29249275103,
+    "status": "success_strict_20_of_20"
+  },
+  "status": "verified_62_search24_complete_no_numeric_improvement",
+  "updated_utc": "2026-07-15T00:12:34Z"
 }

@@ -1,0 +1,52 @@
+{
+  "diagnostic": {
+    "bank": "diagnostic",
+    "compact_aggregate_bundle": "compact_aggregate_bundle.zip",
+    "compact_cover64_line_sets": 3165,
+    "connected_cover64_line_sets": 2349,
+    "entry_count": 5821,
+    "finite_63_trails": 0,
+    "finite_64_trails": 0,
+    "full_aggregate_filename": "diagnostic_cover64_and_graph_states.jsonl",
+    "full_aggregate_sha256": "3a0616aadd8569c52d1e842b300b488b5ded106abb2479fa1f4a9abf6dc1cc5a",
+    "full_aggregate_size_bytes": 16253815,
+    "graft_diagnostic_rows": 388,
+    "hamiltonian_support_orders": 0,
+    "near_hamiltonian_graph_rows": 2268,
+    "note": "The full exact diagnostic JSONL is represented in the durable repository by its digest, exact counts and aggregate histograms, following the compact bank-record policy used by earlier runs. These are line-set/graph diagnostics, not ordered 22-link solutions.",
+    "schema": "candidate-bank-record-v1",
+    "source_run_id": 29357369876,
+    "summary_artifact_digest": "sha256:5e6b089ecc721d9f15047a9891d690f8a9a3503cd265855496e501a0fd39593c",
+    "summary_artifact_id": 8328712056
+  },
+  "ordinary": {
+    "bank": "ordinary",
+    "best_candidate_file": "best_candidate.json",
+    "best_candidate_id": "mlct22-ct-044ee473dca9d853-baseline",
+    "best_covered_count": 62,
+    "compact_aggregate_bundle": "compact_aggregate_bundle.zip",
+    "coverage_histogram": {"62": 21},
+    "entry_count": 21,
+    "full_aggregate_filename": "ordinary_candidate_additions.jsonl",
+    "full_aggregate_sha256": "e2bf51781a35103d3278e5ac56262ecc78ecb25d46675f0c74ac34adf9acc836",
+    "full_aggregate_size_bytes": 18479,
+    "note": "All 21 durable ordinary rows are independently checked 62/64 baseline trails. No grafted ordered trail improved the existing frontier.",
+    "schema": "candidate-bank-record-v1",
+    "source_run_id": 29357369876
+  },
+  "originals": {
+    "bank": "originals",
+    "best_candidate_file": "best_candidate.json",
+    "compact_aggregate_bundle": "compact_aggregate_bundle.zip",
+    "compact_original_class_count": 2,
+    "full_aggregate_filename": "shard_best_originals.jsonl",
+    "full_aggregate_sha256": "5d03660e6be84a727b9078b1f12091d709a51390db83d011483b298a9bdee8b0",
+    "full_aggregate_size_bytes": 17610,
+    "note": "All 20 shard-best ordered trails are preserved; symmetry/exact compaction leaves two original classes.",
+    "originals_index_filename": "originals_index.jsonl",
+    "originals_index_sha256": "bb3cfc9084f1b1bcdc28a45be86c845f5173687242ffaf20fc46674d61bfaf2d",
+    "raw_shard_best_entry_count": 20,
+    "schema": "candidate-bank-record-v1",
+    "source_run_id": 29357369876
+  }
+}
