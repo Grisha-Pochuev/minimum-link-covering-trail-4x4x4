@@ -27,8 +27,9 @@ jobs:
         with: {python-version: '3.11'}
       - name: Reconstruct and verify exact inputs
         run: |
-          echo "$INPUT_B64_SHA  data/search25_reconstructed_inputs.zip.b64" | sha256sum -c -
-          base64 -d data/search25_reconstructed_inputs.zip.b64 > search25_reconstructed_inputs.zip
+          cat data/search25_reconstructed_inputs.parts/part*.b64 > search25_reconstructed_inputs.zip.b64
+          echo "$INPUT_B64_SHA  search25_reconstructed_inputs.zip.b64" | sha256sum -c -
+          base64 -d search25_reconstructed_inputs.zip.b64 > search25_reconstructed_inputs.zip
           echo "$INPUT_ZIP_SHA  search25_reconstructed_inputs.zip" | sha256sum -c -
       - name: Validate scripts and long-run budget
         run: |
