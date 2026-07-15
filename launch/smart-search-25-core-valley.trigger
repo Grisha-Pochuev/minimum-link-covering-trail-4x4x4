@@ -1,8 +1,8 @@
 workflow=smart-search-25-core-valley
-implementation_commit=48041b4697b17f871880e96ecf832b6f808ef3dd
+implementation_commit=fa8270aa839bf99b73333373df54ca6f3efa717a
 runtime_sha256=51f642824516333142732818b9eaca75932b7c1aeca4e0788cbad63e2869b493
 profile=automatic-precheck-smoke20-full20
-retry=7
-previous_runs=29452854208,29453335991,29453747947,29454149578,29454334615,29456161606
-reason=split_ascii_safe_input_transport_into_eight_verified_parts
+retry=8
+previous_runs=29452854208,29453335991,29453747947,29454149578,29454334615,29456161606,29456531140
+reason=install_libboost_dev_for_cpp20_preflight
 date=2026-07-16
