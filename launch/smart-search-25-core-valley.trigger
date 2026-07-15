@@ -1,8 +1,8 @@
 workflow=smart-search-25-core-valley
-implementation_commit=110f61a2bbf4af824fbab4ec0af6124e602aced2
+implementation_commit=5239f1b557e8e69d0fb8d2db71a623801f60a405
 runtime_sha256=51f642824516333142732818b9eaca75932b7c1aeca4e0788cbad63e2869b493
 profile=automatic-precheck-smoke20-full20
-retry=5
-previous_runs=29452854208,29453335991,29453747947,29454149578
-reason=restore_verified_runtime_and_apply_semantic_materializer_as_text_patch
+retry=6
+previous_runs=29452854208,29453335991,29453747947,29454149578,29454334615
+reason=use_ascii_safe_reconstructed_exact_inputs_after_crc_failure
 date=2026-07-16
