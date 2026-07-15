@@ -14,35 +14,14 @@
     "ordered_64_trails": 0,
     "precheck_status": "success",
     "prepared_seed_artifact_id": 8320686058,
-    "received_shards": [
-      0,
-      1,
-      2,
-      3,
-      4,
-      5,
-      6,
-      7,
-      8,
-      9,
-      10,
-      11,
-      12,
-      13,
-      14,
-      15,
-      16,
-      17,
-      18,
-      19
-    ],
+    "received_shards": [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],
     "run_id": 29357369876,
     "run_url": "https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/29357369876",
     "smoke_status": "success_strict_20_of_20",
     "summary_artifact_id": 8328712056,
     "workflow": "smart-search-24-defect-graft"
   },
-  "next_action": "Perform Step 3 from docs/smart-search-25-core-valley-launch.md: implement the C++20 atomic paired core-valley engine, run shared preflight, strict 20-shard smoke, then automatically launch full only after smoke success.",
+  "next_action": "Create one trigger commit for smart-search-25-core-valley, discover the unique Actions run, then record its run id without creating another trigger.",
   "schema": "active-run-v1",
   "source_search23": {
     "closure_reason": "The final 20/20 aggregate retained the same 40 intended primary seeds; the exact prepared bundle is persisted under data/search24_*.",
@@ -51,7 +30,7 @@
     "primary_core_escape_seed_count": 40,
     "run_id": 29249275103
   },
-  "status": "step2_handoff_ready_for_search25",
+  "status": "search25_implementation_ready_not_triggered",
   "step2_handoff": {
     "analysis": "docs/experiments/2026-07-15-search25-core-valley-analysis.md",
     "binding_launch_document": "docs/smart-search-25-core-valley-launch.md",
@@ -70,5 +49,27 @@
     ],
     "workflow_name": "smart-search-25-core-valley"
   },
-  "updated_at": "2026-07-15"
+  "step3_implementation": {
+    "workflow": "smart-search-25-core-valley",
+    "workflow_path": ".github/workflows/smart-search-25-core-valley.yml",
+    "runtime_archive": "data/search25_runtime.tar.gz",
+    "runtime_archive_sha256": "edd133b3fccf61638100360c146e9bd4e903107fa3fa4f9f2c4c896f73f983d5",
+    "full_profile": {
+      "search_seconds": 20400,
+      "timeout_minutes": 359,
+      "shards": 20,
+      "workers_per_shard": 4,
+      "checkpoint_seconds": 600,
+      "minimum_headroom_seconds": 900
+    },
+    "local_validation": {
+      "all_20_modes_executed": true,
+      "strict_mini_aggregate": "20_of_20",
+      "dual_exact_verifiers_agreed": true,
+      "minimum_common17_overlap": 15,
+      "observed_attempts_per_second_range": [2400, 12600]
+    },
+    "triggered": false
+  },
+  "updated_at": "2026-07-16"
 }

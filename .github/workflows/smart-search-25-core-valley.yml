@@ -1,0 +1,123 @@
+name: smart-search-25-core-valley
+run-name: smart-search-25-core-valley-auto
+permissions: {contents: read, actions: read}
+on:
+  push:
+    branches: [main]
+    paths: [launch/smart-search-25-core-valley.trigger]
+  workflow_dispatch:
+concurrency: {group: smart-search-25-core-valley, cancel-in-progress: false}
+env:
+  RUNTIME_SHA: edd133b3fccf61638100360c146e9bd4e903107fa3fa4f9f2c4c896f73f983d5
+jobs:
+  precheck:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Unpack runtime
+        run: |
+          echo "$RUNTIME_SHA  data/search25_runtime.tar.gz" | sha256sum -c -
+          tar -xzf data/search25_runtime.tar.gz
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - name: Shared preflight
+        run: |
+          python -m py_compile scripts/{materialize_search25_inputs,verify_core_valley,verify_core_valley_independent,build_core_valley_summary,preflight_search25,run_search25_ci}.py
+          python scripts/check_long_run_budget.py --search-seconds 20400 --timeout-minutes 359 --minimum-headroom-seconds 900
+          python scripts/preflight_search25.py --repo . --bundle data/search25_local_inputs.zip --workdir preflight-search25 --seconds-per-mode 1
+          mkdir prepared-search25
+          cp preflight-search25/prepared/{search25_seeds.tsv,common17.tsv,frontier.tsv,materialization_report.json} prepared-search25/
+          cp preflight-search25/{core_valley_search,preflight_report.json} prepared-search25/
+          chmod +x prepared-search25/core_valley_search
+          (cd prepared-search25 && sha256sum * > SHA256SUMS)
+      - uses: actions/upload-artifact@v4
+        with: {name: smart-search-25-prepared-inputs, path: prepared-search25/, if-no-files-found: error, retention-days: 90}
+  smoke:
+    needs: precheck
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix: {shard: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]}
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          echo "$RUNTIME_SHA  data/search25_runtime.tar.gz" | sha256sum -c -
+          tar -xzf data/search25_runtime.tar.gz
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - uses: actions/download-artifact@v4
+        with: {name: smart-search-25-prepared-inputs, path: prepared-search25}
+      - run: python scripts/run_search25_ci.py --profile smoke --shard ${{ matrix.shard }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: smart-search-25-smoke-shard-${{ matrix.shard }}
+          path: results/core_valley/
+          if-no-files-found: warn
+          retention-days: 90
+  smoke-aggregate:
+    needs: smoke
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - run: test "${{ needs.smoke.result }}" = success
+      - uses: actions/checkout@v4
+      - run: tar -xzf data/search25_runtime.tar.gz
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - uses: actions/download-artifact@v4
+        with: {pattern: smart-search-25-smoke-shard-*, path: collected, merge-multiple: true}
+      - name: Strict smoke aggregate
+        run: |
+          python scripts/build_core_valley_summary.py --input collected --out collected --expected-shards 20 --strict
+          python - <<'PY'
+          import json
+          r=json.load(open('collected/run_summary.json'))
+          assert r['complete'] and len(r['received_shards'])==20 and r['attempts']>0
+          assert r['min_common17_overlap']<=15
+          assert all(v['attempts']>0 for k,v in r['mode_breakdown'].items() if k!='frontier-throughput-control')
+          PY
+      - uses: actions/upload-artifact@v4
+        with: {name: smart-search-25-smoke-summary, path: collected/, if-no-files-found: error, retention-days: 90}
+  full:
+    needs: smoke-aggregate
+    runs-on: ubuntu-latest
+    timeout-minutes: 359
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix: {shard: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]}
+    steps:
+      - uses: actions/checkout@v4
+      - run: tar -xzf data/search25_runtime.tar.gz
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - uses: actions/download-artifact@v4
+        with: {name: smart-search-25-prepared-inputs, path: prepared-search25}
+      - run: python scripts/run_search25_ci.py --profile full --shard ${{ matrix.shard }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: smart-search-25-core-valley-shard-${{ matrix.shard }}
+          path: results/core_valley/
+          if-no-files-found: warn
+          retention-days: 90
+  full-aggregate:
+    needs: full
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - run: test "${{ needs.full.result }}" = success
+      - uses: actions/checkout@v4
+      - run: tar -xzf data/search25_runtime.tar.gz
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - uses: actions/download-artifact@v4
+        with: {pattern: smart-search-25-core-valley-shard-*, path: collected, merge-multiple: true}
+      - run: python scripts/build_core_valley_summary.py --input collected --out collected --expected-shards 20 --strict
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: smart-search-25-core-valley-run-summary, path: collected/, if-no-files-found: error, retention-days: 90}

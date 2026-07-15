@@ -1,0 +1,19 @@
+{
+  "schema": "search25-step3-manifest-v1",
+  "workflow": "smart-search-25-core-valley",
+  "engine_language": "C++20",
+  "atomic_two_line_mutations": true,
+  "finite_contact_span_scoring": true,
+  "smoke_shards": 20,
+  "full_shards": 20,
+  "workers_per_shard": 4,
+  "full_seconds": 20400,
+  "timeout_minutes": 359,
+  "runtime_sha256": "edd133b3fccf61638100360c146e9bd4e903107fa3fa4f9f2c4c896f73f983d5",
+  "local_validation": {
+    "modes": 20,
+    "strict_aggregate": "20_of_20",
+    "min_common17_overlap": 15,
+    "dual_verifiers": true
+  }
+}
