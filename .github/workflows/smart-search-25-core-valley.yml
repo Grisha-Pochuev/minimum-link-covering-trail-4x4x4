@@ -25,6 +25,8 @@ jobs:
           cp scripts/search25_materialize_semantic.py scripts/materialize_search25_inputs.py
       - uses: actions/setup-python@v5
         with: {python-version: '3.11'}
+      - name: Patch zero-link rejection
+        run: python scripts/search25_patch_zero_links.py src/search25/core_valley_search.cpp
       - name: Install C++ dependency
         run: |
           sudo apt-get update
@@ -37,7 +39,7 @@ jobs:
           echo "$INPUT_ZIP_SHA  search25_reconstructed_inputs.zip" | sha256sum -c -
       - name: Validate scripts and long-run budget
         run: |
-          python -m py_compile scripts/{materialize_search25_inputs,verify_core_valley,verify_core_valley_independent,build_core_valley_summary,preflight_search25,run_search25_ci}.py
+          python -m py_compile scripts/{materialize_search25_inputs,verify_core_valley,verify_core_valley_independent,build_core_valley_summary,preflight_search25,run_search25_ci,search25_patch_zero_links}.py
           python scripts/check_long_run_budget.py --search-seconds 20400 --timeout-minutes 359 --minimum-headroom-seconds 900
       - name: Shared 20-mode preflight
         id: shared_preflight
