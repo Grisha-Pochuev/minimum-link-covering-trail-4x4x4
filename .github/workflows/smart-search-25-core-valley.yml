@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 concurrency: {group: smart-search-25-core-valley, cancel-in-progress: false}
 env:
-  RUNTIME_SHA: 96f974b47308838fae1e2dadf9ddb81860345afc05ddb13db329af80f98cec1c
+  RUNTIME_SHA: 51f642824516333142732818b9eaca75932b7c1aeca4e0788cbad63e2869b493
 jobs:
   precheck:
     runs-on: ubuntu-latest
@@ -20,6 +20,7 @@ jobs:
         run: |
           echo "$RUNTIME_SHA  data/search25_runtime.tar.gz" | sha256sum -c -
           tar -xzf data/search25_runtime.tar.gz
+          cp scripts/search25_materialize_semantic.py scripts/materialize_search25_inputs.py
       - uses: actions/setup-python@v5
         with: {python-version: '3.11'}
       - name: Validate scripts and long-run budget
