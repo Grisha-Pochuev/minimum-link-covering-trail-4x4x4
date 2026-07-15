@@ -9,6 +9,8 @@ on:
 concurrency: {group: smart-search-25-core-valley, cancel-in-progress: false}
 env:
   RUNTIME_SHA: 51f642824516333142732818b9eaca75932b7c1aeca4e0788cbad63e2869b493
+  INPUT_B64_SHA: 18c0a360cad88dafa40cd5ff039fca4b3a94f293010e3f5b2d3600b985236cfd
+  INPUT_ZIP_SHA: 49210583f1bc518b31decaa23b6c07b83ae3104e36e1b048d5ffba4e475ee182
 jobs:
   precheck:
     runs-on: ubuntu-latest
@@ -16,25 +18,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with: {show-progress: false}
-      - name: Unpack runtime
+      - name: Unpack versioned runtime
         run: |
           echo "$RUNTIME_SHA  data/search25_runtime.tar.gz" | sha256sum -c -
           tar -xzf data/search25_runtime.tar.gz
           cp scripts/search25_materialize_semantic.py scripts/materialize_search25_inputs.py
       - uses: actions/setup-python@v5
         with: {python-version: '3.11'}
+      - name: Reconstruct and verify exact inputs
+        run: |
+          echo "$INPUT_B64_SHA  data/search25_reconstructed_inputs.zip.b64" | sha256sum -c -
+          base64 -d data/search25_reconstructed_inputs.zip.b64 > search25_reconstructed_inputs.zip
+          echo "$INPUT_ZIP_SHA  search25_reconstructed_inputs.zip" | sha256sum -c -
       - name: Validate scripts and long-run budget
         run: |
           python -m py_compile scripts/{materialize_search25_inputs,verify_core_valley,verify_core_valley_independent,build_core_valley_summary,preflight_search25,run_search25_ci}.py
           python scripts/check_long_run_budget.py --search-seconds 20400 --timeout-minutes 359 --minimum-headroom-seconds 900
-      - name: Record permanent input bundle hash
-        run: sha256sum data/search25_local_inputs.zip
       - name: Shared 20-mode preflight
         id: shared_preflight
         continue-on-error: true
         run: |
           set -o pipefail
-          python scripts/preflight_search25.py --repo . --bundle data/search25_local_inputs.zip --workdir preflight-search25 --seconds-per-mode 1 2>&1 | tee preflight-search25.log
+          python scripts/preflight_search25.py --repo . --bundle search25_reconstructed_inputs.zip --workdir preflight-search25 --seconds-per-mode 1 2>&1 | tee preflight-search25.log
       - name: Upload preflight diagnostics
         if: always()
         uses: actions/upload-artifact@v4
@@ -87,7 +92,6 @@ jobs:
     if: needs.smoke.result == 'success'
     runs-on: ubuntu-latest
     steps:
-      - run: test "${{ needs.smoke.result }}" = success
       - uses: actions/checkout@v4
       - run: tar -xzf data/search25_runtime.tar.gz
       - uses: actions/setup-python@v5
@@ -134,7 +138,6 @@ jobs:
     if: needs.full.result == 'success'
     runs-on: ubuntu-latest
     steps:
-      - run: test "${{ needs.full.result }}" = success
       - uses: actions/checkout@v4
       - run: tar -xzf data/search25_runtime.tar.gz
       - uses: actions/setup-python@v5
