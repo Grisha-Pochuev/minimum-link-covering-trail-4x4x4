@@ -1,9 +1,9 @@
 {
   "schema": "active-run-v1",
   "updated_at": "2026-07-16",
-  "status": "search25_retry3_prepared_not_triggered",
+  "status": "search25_retry4_prepared_not_triggered",
   "active_run": null,
-  "do_not_duplicate_run_id": 29453335991,
+  "do_not_duplicate_run_id": 29453747947,
   "last_completed_run": {
     "workflow": "smart-search-24-defect-graft",
     "run_id": 29357369876,
@@ -26,7 +26,7 @@
   "step3_implementation": {
     "workflow_path": ".github/workflows/smart-search-25-core-valley.yml",
     "runtime_archive": "data/search25_runtime.tar.gz",
-    "runtime_archive_sha256": "51f642824516333142732818b9eaca75932b7c1aeca4e0788cbad63e2869b493",
+    "runtime_archive_sha256": "96f974b47308838fae1e2dadf9ddb81860345afc05ddb13db329af80f98cec1c",
     "full_profile": {
       "search_seconds": 20400,
       "timeout_minutes": 359,
@@ -35,28 +35,14 @@
       "checkpoint_seconds": 600,
       "minimum_headroom_seconds": 900
     },
-    "input_validation": "outer ZIP hash recorded; immutable inner hashes and row counts enforced",
+    "input_validation": "all 684 rows are checked semantically; plateau intersection must equal common17; every valley row must break the core; 51 missing-triple classes required",
+    "preflight_diagnostics_artifact": "smart-search-25-preflight-diagnostics",
     "triggered": false
   },
   "technical_attempts": [
-    {
-      "attempt": 1,
-      "run_id": 29452854208,
-      "launch_commit": "6ac6cc0c2798423898145964dc15d6662706bb57",
-      "conclusion": "failure",
-      "failure_step": "shared preflight",
-      "smoke": "not_started",
-      "full": "not_started"
-    },
-    {
-      "attempt": 2,
-      "run_id": 29453335991,
-      "launch_commit": "cb67f63a81b6fc6347573d4f300b1ee623a2ff69",
-      "conclusion": "failure",
-      "failure_step": "outer input bundle hash gate",
-      "smoke": "not_started",
-      "full": "not_started"
-    }
+    {"attempt": 1, "run_id": 29452854208, "launch_commit": "6ac6cc0c2798423898145964dc15d6662706bb57", "failure_step": "shared preflight", "smoke": "not_started", "full": "not_started"},
+    {"attempt": 2, "run_id": 29453335991, "launch_commit": "cb67f63a81b6fc6347573d4f300b1ee623a2ff69", "failure_step": "outer input bundle hash gate", "smoke": "not_started", "full": "not_started"},
+    {"attempt": 3, "run_id": 29453747947, "launch_commit": "011eab49b5aa0a22f522f0c46a2220bdcc7602ce", "failure_step": "shared 20-mode preflight", "smoke": "not_started", "full": "not_started"}
   ],
-  "next_action": "Publish packaging correction, then update the existing trigger exactly once for retry 3. Inspect the unique new run; do not rerun attempts 1 or 2."
+  "next_action": "Publish semantic-input validation and durable preflight diagnostics, then trigger retry 4 exactly once and inspect the unique new run."
 }

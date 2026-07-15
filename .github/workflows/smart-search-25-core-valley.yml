@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 concurrency: {group: smart-search-25-core-valley, cancel-in-progress: false}
 env:
-  RUNTIME_SHA: 51f642824516333142732818b9eaca75932b7c1aeca4e0788cbad63e2869b493
+  RUNTIME_SHA: 96f974b47308838fae1e2dadf9ddb81860345afc05ddb13db329af80f98cec1c
 jobs:
   precheck:
     runs-on: ubuntu-latest
@@ -29,9 +29,23 @@ jobs:
       - name: Record permanent input bundle hash
         run: sha256sum data/search25_local_inputs.zip
       - name: Shared 20-mode preflight
+        id: shared_preflight
+        continue-on-error: true
         run: |
           set -o pipefail
           python scripts/preflight_search25.py --repo . --bundle data/search25_local_inputs.zip --workdir preflight-search25 --seconds-per-mode 1 2>&1 | tee preflight-search25.log
+      - name: Upload preflight diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smart-search-25-preflight-diagnostics
+          path: |
+            preflight-search25.log
+            preflight-search25/
+          if-no-files-found: warn
+          retention-days: 90
+      - name: Enforce shared preflight success
+        run: test "${{ steps.shared_preflight.outcome }}" = success
       - name: Prepare immutable run inputs
         run: |
           mkdir prepared-search25
