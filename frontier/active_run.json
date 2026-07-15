@@ -1,9 +1,9 @@
 {
   "schema": "active-run-v1",
   "updated_at": "2026-07-16",
-  "status": "search25_retry7_prepared_not_triggered",
+  "status": "search25_retry8_prepared_not_triggered",
   "active_run": null,
-  "do_not_duplicate_run_id": 29456161606,
+  "do_not_duplicate_run_id": 29456531140,
   "last_completed_run": {
     "workflow": "smart-search-24-defect-graft",
     "run_id": 29357369876,
@@ -20,21 +20,14 @@
     "common_core_lines": 17,
     "corebreak61_seed_count": 641
   },
-  "reconstructed_search25_inputs": {
-    "transport_directory": "data/search25_reconstructed_inputs.parts/",
-    "parts": 8,
-    "concatenated_base64_sha256": "18c0a360cad88dafa40cd5ff039fca4b3a94f293010e3f5b2d3600b985236cfd",
-    "decoded_zip_sha256": "49210583f1bc518b31decaa23b6c07b83ae3104e36e1b048d5ffba4e475ee182",
-    "plateau62_rows": 43,
-    "common_core_lines": 17,
-    "corebreak61_rows": 641,
-    "missing_triple_classes": 51,
-    "reason": "The original ZIP had a bad CRC and a single large ASCII transport was altered during connector publication. Eight independently hash-checked small parts avoid both failure modes."
-  },
   "step3_implementation": {
     "workflow_path": ".github/workflows/smart-search-25-core-valley.yml",
-    "implementation_commit": "eacbb0862a2b57d5b3042aee6e732b60c0f1bb58",
+    "implementation_commit": "5ae4de97110bbcf197baffca7ebde2e784192831",
     "runtime_sha256": "51f642824516333142732818b9eaca75932b7c1aeca4e0788cbad63e2869b493",
+    "input_parts": 8,
+    "input_base64_sha256": "18c0a360cad88dafa40cd5ff039fca4b3a94f293010e3f5b2d3600b985236cfd",
+    "input_zip_sha256": "49210583f1bc518b31decaa23b6c07b83ae3104e36e1b048d5ffba4e475ee182",
+    "dependency": "libboost-dev",
     "full_profile": {"search_seconds": 20400, "timeout_minutes": 359, "shards": 20, "workers_per_shard": 4, "checkpoint_seconds": 600},
     "triggered": false
   },
@@ -44,7 +37,8 @@
     {"attempt": 3, "run_id": 29453747947, "failure_step": "shared 20-mode preflight", "smoke": "not_started", "full": "not_started"},
     {"attempt": 4, "run_id": 29454149578, "failure_step": "corrupted replacement runtime archive", "smoke": "not_started", "full": "not_started"},
     {"attempt": 5, "run_id": 29454334615, "failure_step": "CRC-corrupted Step-2 corebreak member", "smoke": "not_started", "full": "not_started"},
-    {"attempt": 6, "run_id": 29456161606, "failure_step": "single large base64 transport changed during publication", "smoke": "not_started", "full": "not_started"}
+    {"attempt": 6, "run_id": 29456161606, "failure_step": "single large base64 transport changed during publication", "smoke": "not_started", "full": "not_started"},
+    {"attempt": 7, "run_id": 29456531140, "failure_step": "missing boost/rational.hpp on runner", "smoke": "not_started", "full": "not_started"}
   ],
-  "next_action": "Trigger retry 7 exactly once and verify precheck, 20 smoke jobs, strict smoke aggregate, and visibility of all 20 full jobs."
+  "next_action": "Trigger retry 8 exactly once and verify precheck, 20 smoke jobs, strict smoke aggregate, and visibility of all 20 full jobs."
 }
