@@ -1,8 +1,10 @@
 # Current search frontier
 
 Status: the checked ordered-trail frontier remains `62/64`. Search-24 completed strict `20/20`, and
-Step-2 local exact experiments have now closed the natural one-rich-line-replacement neighborhood
-around the `62/64` wall. The next binding hypothesis is `smart-search-25-core-valley`.
+Step-2 local exact experiments closed the natural one-rich-line-replacement neighborhood around the
+`62/64` wall. The selected next hypothesis is `smart-search-25-core-valley`.
+
+Live execution status is deliberately not stored here. Always read `frontier/active_run.json`.
 
 ## Best checked ordered trail
 
@@ -20,7 +22,7 @@ around the `62/64` wall. The next binding hypothesis is `smart-search-25-core-va
 
 It passed both CI exact verifiers and two additional independent exact incidence checks.
 
-## Latest completed Actions run
+## Latest completed recorded Actions run
 
 Run `29357369876`, workflow `smart-search-24-defect-graft`:
 
@@ -71,15 +73,22 @@ score the final finite contact spans directly. The intermediate half-move must b
 An unordered `64/64` line set, a connected graph, or a Hamiltonian support order remains diagnostic
 only, not a trail.
 
-## Permanent search-25 inputs
+## Canonical search-25 inputs
 
-- `data/search25_local_inputs.zip` — permanent bundle containing the `43` plateau states, common `17`-line core, `641` core-break valley seeds, and inner manifest;
-- `data/search25_local_inputs.README.md` — bundle hash and preflight materialization rules;
-- `data/search25_local_experiment_manifest.json` — plain quick-read copy of counts and inner hashes.
+The original `data/search25_local_inputs.zip` was CRC-corrupted and has been removed from the current
+branch. Canonical lossless transport:
 
-## Next action
+- `data/search25_reconstructed_inputs.parts/part00.b64` through `part07.b64`;
+- concatenated base64 SHA-256:
+  `18c0a360cad88dafa40cd5ff039fca4b3a94f293010e3f5b2d3600b985236cfd`;
+- decoded ZIP SHA-256:
+  `49210583f1bc518b31decaa23b6c07b83ae3104e36e1b048d5ffba4e475ee182`;
+- `data/search25_local_inputs.README.md` — reconstruction and integrity rules;
+- `data/search25_local_experiment_manifest.json` — counts and inner hashes.
 
-There is no active run. Step 3 must implement and launch
-`docs/smart-search-25-core-valley-launch.md` exactly. Use C++20, atomic paired mutations, and finite
-contact-span scoring. Do not rerun search-24, crawl the closed `43`-state plateau, or use a standalone
-defect line/transversal as the primary hypothesis.
+## Selected search
+
+Binding handoff: `docs/smart-search-25-core-valley-launch.md`.
+
+The selected method is C++20 atomic paired core-valley mutation with exact finite contact-span scoring.
+Execution state and the one permitted next action are stored only in `frontier/active_run.json`.
