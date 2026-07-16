@@ -62,5 +62,24 @@
     {"attempt": 8, "run_id": 29456610021, "failure_step": "zero-length finite segments saved to diagnostic valley bank", "precheck": "success", "smoke": "failed_20_of_20", "full": "not_started"},
     {"attempt": 9, "run_id": 29457051261, "precheck": "success", "smoke": "success_strict_20_of_20", "full": "running_20_of_20_visible"}
   ],
-  "next_action": "Monitor run 29457051261 only. Do not create another search-25 trigger. After completion, download all 20 full artifacts, build the strict aggregate, verify every 63/64+ trail independently, and record the result."
+  "process_retrospective": "docs/retrospectives/2026-07-16-search25-launch-failures.md",
+  "historical_release_exception": {
+    "status": "active_run_frozen_do_not_modify",
+    "reason": "search-25 predates the mandatory step3-release-v1 gate and uses a versioned opaque runtime archive",
+    "runtime_archive": "data/search25_runtime.tar.gz",
+    "post_run_cleanup": [
+      "persist unpacked readable runtime sources and hashes in the completed run archive",
+      "do not copy the opaque-runtime pattern into search-26 or later",
+      "use scripts/check_step3_release.py and a step3-release-v1 manifest before the next trigger"
+    ]
+  },
+  "future_release_gate": {
+    "script": "scripts/check_step3_release.py",
+    "manifest_template": "docs/templates/step3-release-manifest.example.json",
+    "required_before_trigger": true,
+    "trigger_must_be_separate_final_commit": true,
+    "verify_every_output_bank": true,
+    "require_22_nonzero_links": true
+  },
+  "next_action": "Monitor run 29457051261 only. Do not create another search-25 trigger. After completion, download all 20 full artifacts, build the strict aggregate, verify every 63/64+ trail independently, persist the unpacked readable runtime sources, and record the result."
 }
