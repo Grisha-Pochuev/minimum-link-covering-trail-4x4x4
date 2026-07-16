@@ -8,10 +8,11 @@ The results below describe the verified state of the project **as of 16 July 202
 - the `22`-link case remains open;
 - the best exactly checked ordered `22`-link trail covers `62/64` points (`96.875%`);
 - its two missing points are `(1,0,2)` and `(3,3,1)`;
-- no verified ordered `63/64` or `64/64` trail with `22` links has been found;
-- the latest completed strict 20-shard search found thousands of unordered `64/64` line sets, but none could be realized as a valid finite ordered trail. This indicates that joining strong covering lines into one continuous trail is the central obstruction.
+- no verified ordered `63/64` or `64/64` trail with `22` links has been found.
 
-The current search studies atomic replacements of two core lines. Exact local analysis showed that changing only one rich line cannot escape the present `62/64` neighborhood. This is strong bounded evidence, but not a proof that a `22`-link solution is impossible.
+The latest completed strict search, [`smart-search-25-core-valley`](runs/2026-07-16-smart-search-25-core-valley-full/summary.md), tested atomic replacements of two supporting lines. It completed all `20/20` shards, examined `6,151,145,399` paired mutations and `78,081,729` finite contact-span realizations, changed three of the formerly common 17 core lines, but still found no `63/64` trail.
+
+This is strong bounded evidence that the tested paired-repair family is saturated. It is not a proof that a `22`-link solution is impossible.
 
 ## Best verified 22-link trail
 

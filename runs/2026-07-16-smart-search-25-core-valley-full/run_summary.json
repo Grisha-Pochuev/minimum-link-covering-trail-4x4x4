@@ -1,0 +1,82 @@
+{
+  "attempts": 6151145399,
+  "best_candidate_id": "mlct22-cv-40a5999c05294be6",
+  "best_covered": 62,
+  "complete": true,
+  "corebroken_valley_rows": 16052,
+  "expected_shards": 20,
+  "finite_realizations": 78081729,
+  "min_common17_overlap": 14,
+  "missing_shards": [],
+  "mode_breakdown": {
+    "core-contact-pair": {
+      "attempts": 982977877,
+      "best": 62,
+      "finite_realizations": 7165143,
+      "min_common17": 14,
+      "shards": 4
+    },
+    "core-rich-contact": {
+      "attempts": 1508015827,
+      "best": 62,
+      "finite_realizations": 16347042,
+      "min_common17": 14,
+      "shards": 5
+    },
+    "core-rich-pair": {
+      "attempts": 2288090326,
+      "best": 62,
+      "finite_realizations": 37840513,
+      "min_common17": 14,
+      "shards": 6
+    },
+    "frontier-throughput-control": {
+      "attempts": 4004,
+      "best": 62,
+      "finite_realizations": 69,
+      "min_common17": 14,
+      "shards": 1
+    },
+    "plateau-closure-control": {
+      "attempts": 256526268,
+      "best": 62,
+      "finite_realizations": 7365343,
+      "min_common17": 15,
+      "shards": 1
+    },
+    "valley-beam": {
+      "attempts": 1115531097,
+      "best": 62,
+      "finite_realizations": 9363619,
+      "min_common17": 14,
+      "shards": 3
+    }
+  },
+  "ordered_63plus": 0,
+  "ordered_64": 0,
+  "ordinary_62plus_rows": 53,
+  "received_shards": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19
+  ],
+  "schema": "search25-run-summary-v1",
+  "strict": true
+}

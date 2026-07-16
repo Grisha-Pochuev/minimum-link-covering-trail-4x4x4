@@ -1,0 +1,49 @@
+{
+  "ordinary": {
+    "schema": "candidate-bank-record-v1",
+    "bank": "ordinary",
+    "source_run_id": 29457051261,
+    "entry_count": 53,
+    "best_covered_count": 62,
+    "coverage_histogram": {"62": 53},
+    "best_candidate_file": "best_candidate.json",
+    "full_aggregate_sha256": "1657259d254eb3d07dd846c910ee853c2b7d9aa2db8bec8d45aac9e4fc9cbba3",
+    "full_aggregate_size_bytes": 54461,
+    "note": "53 exact 62/64 ordered trails from atomic paired mutations; all independently rechecked.",
+    "full_aggregate_location": "GitHub Actions summary artifact 8365119990",
+    "compact_repository_policy": "Exact count, digest, best candidate and verification report are committed; the complete 53-row JSONL remains in the retained Actions artifact."
+  },
+  "diagnostic": {
+    "schema": "candidate-bank-record-v1",
+    "bank": "diagnostic",
+    "source_run_id": 29457051261,
+    "entry_count": 16052,
+    "coverage_histogram": {"59": 14407, "60": 1534, "61": 111},
+    "full_aggregate_filename": "corebroken_valley_bank.jsonl",
+    "full_aggregate_sha256": "799003eb3d13f96c7b3cffc0c6661c5f796e900b9d78ff4b30d8408f080594a2",
+    "full_aggregate_size_bytes": 16977255,
+    "summary_file": "diagnostic_summary.json",
+    "summary_artifact_id": 8365119990,
+    "summary_artifact_digest": "sha256:1b88c232892b7abc50d4bb2cbfc72218470052b646e3ccf3239608f629cd2da8",
+    "note": "59/64-61/64 exact finite valley states; diagnostic only, not frontier trails."
+  },
+  "originals": {
+    "schema": "candidate-bank-record-v1",
+    "bank": "originals",
+    "source_run_id": 29457051261,
+    "raw_shard_best_entry_count": 20,
+    "compact_original_class_count": 5,
+    "full_aggregate_sha256": "68602dc119f0b5e8e4baf4b3727d1c52510bbb7251cc7324b4d9bb5bac85f3ad",
+    "full_aggregate_size_bytes": 20431,
+    "originals_index_filename": "originals_index.jsonl",
+    "originals_index_sha256": "c14bd007955c480cec432925509576de4f5efa071ea6463c21f05d000a6b489d",
+    "note": "All 20 raw shard bests retained; cube symmetry/reflection plus trail reversal gives five classes.",
+    "full_aggregate_location": "GitHub Actions summary artifact 8365119990",
+    "compact_repository_policy": "All 20 raw rows remain in the retained Actions artifact; the five-class index and exact digest are committed."
+  },
+  "compact_aggregate_bundle": {
+    "filename": "compact_aggregate_bundle.zip",
+    "sha256": "a4614d1fa9567effa58a39f2ef964506c8e3e46e8c4ced7888b2481efe52931c",
+    "contents": ["coverage_histogram.json","diagnostic_summary.json","exact_verification_report.json","independent_recheck.json","mode_breakdown.json","originals_index.jsonl","performance_summary.json"]
+  }
+}

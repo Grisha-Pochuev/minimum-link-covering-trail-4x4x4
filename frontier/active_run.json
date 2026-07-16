@@ -1,85 +1,25 @@
 {
   "schema": "active-run-v1",
   "updated_at": "2026-07-16",
-  "status": "search25_full_running",
-  "active_run": {
+  "status": "search25_completed_recorded_step1",
+  "active_run": null,
+  "do_not_duplicate_run_id": 29457051261,
+  "last_completed_run": {
     "workflow": "smart-search-25-core-valley",
     "run_id": 29457051261,
     "run_url": "https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/29457051261",
     "trigger_commit": "22becb63bb5dc00fcc547e97a9366f25b35c391b",
-    "precheck_status": "success",
-    "smoke_status": "success_strict_20_of_20",
-    "smoke_aggregate_status": "success",
-    "full_status": "running_20_of_20_visible",
-    "full_started_at": "2026-07-15T23:01:49Z",
-    "expected_full_shards": 20,
-    "search_seconds_per_shard": 20400,
-    "workers_per_shard": 4
-  },
-  "do_not_duplicate_run_id": 29457051261,
-  "last_completed_run": {
-    "workflow": "smart-search-24-defect-graft",
-    "run_id": 29357369876,
-    "run_url": "https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/29357369876",
     "aggregate_status": "success_strict",
     "full_status": "success_strict_20_of_20",
-    "best_ordered_covered_count": 62
+    "best_ordered_covered_count": 62,
+    "ordered_63plus": 0,
+    "archive": "runs/2026-07-16-smart-search-25-core-valley-full/"
   },
-  "step2_handoff": {
+  "completed_hypothesis": {
     "workflow_name": "smart-search-25-core-valley",
     "hypothesis": "atomic paired core-valley replacement with exact finite contact-span scoring",
-    "engine_language": "C++20",
-    "plateau62_closed_state_count": 43,
-    "common_core_lines": 17,
-    "corebreak61_seed_count": 641
+    "result": "no 63/64 after 6,151,145,399 attempts; minimum common17 overlap 14",
+    "repeat_policy": "do_not_rerun_unchanged"
   },
-  "step3_implementation": {
-    "workflow_path": ".github/workflows/smart-search-25-core-valley.yml",
-    "implementation_commit": "b2d81c3ee4832be4c28318bf136956b5704036ad",
-    "runtime_sha256": "51f642824516333142732818b9eaca75932b7c1aeca4e0788cbad63e2869b493",
-    "input_parts": 8,
-    "input_base64_sha256": "18c0a360cad88dafa40cd5ff039fca4b3a94f293010e3f5b2d3600b985236cfd",
-    "input_zip_sha256": "49210583f1bc518b31decaa23b6c07b83ae3104e36e1b048d5ffba4e475ee182",
-    "dependency": "libboost-dev",
-    "zero_link_rejection_patch": "scripts/search25_patch_zero_links.py",
-    "full_profile": {
-      "search_seconds": 20400,
-      "timeout_minutes": 359,
-      "shards": 20,
-      "workers_per_shard": 4,
-      "checkpoint_seconds": 600
-    },
-    "triggered": true
-  },
-  "technical_attempts": [
-    {"attempt": 1, "run_id": 29452854208, "failure_step": "shared preflight", "smoke": "not_started", "full": "not_started"},
-    {"attempt": 2, "run_id": 29453335991, "failure_step": "outer input bundle hash gate", "smoke": "not_started", "full": "not_started"},
-    {"attempt": 3, "run_id": 29453747947, "failure_step": "shared 20-mode preflight", "smoke": "not_started", "full": "not_started"},
-    {"attempt": 4, "run_id": 29454149578, "failure_step": "corrupted replacement runtime archive", "smoke": "not_started", "full": "not_started"},
-    {"attempt": 5, "run_id": 29454334615, "failure_step": "CRC-corrupted Step-2 corebreak member", "smoke": "not_started", "full": "not_started"},
-    {"attempt": 6, "run_id": 29456161606, "failure_step": "single large base64 transport changed during publication", "smoke": "not_started", "full": "not_started"},
-    {"attempt": 7, "run_id": 29456531140, "failure_step": "missing boost/rational.hpp on runner", "smoke": "not_started", "full": "not_started"},
-    {"attempt": 8, "run_id": 29456610021, "failure_step": "zero-length finite segments saved to diagnostic valley bank", "precheck": "success", "smoke": "failed_20_of_20", "full": "not_started"},
-    {"attempt": 9, "run_id": 29457051261, "precheck": "success", "smoke": "success_strict_20_of_20", "full": "running_20_of_20_visible"}
-  ],
-  "process_retrospective": "docs/retrospectives/2026-07-16-search25-launch-failures.md",
-  "historical_release_exception": {
-    "status": "active_run_frozen_do_not_modify",
-    "reason": "search-25 predates the mandatory step3-release-v1 gate and uses a versioned opaque runtime archive",
-    "runtime_archive": "data/search25_runtime.tar.gz",
-    "post_run_cleanup": [
-      "persist unpacked readable runtime sources and hashes in the completed run archive",
-      "do not copy the opaque-runtime pattern into search-26 or later",
-      "use scripts/check_step3_release.py and a step3-release-v1 manifest before the next trigger"
-    ]
-  },
-  "future_release_gate": {
-    "script": "scripts/check_step3_release.py",
-    "manifest_template": "docs/templates/step3-release-manifest.example.json",
-    "required_before_trigger": true,
-    "trigger_must_be_separate_final_commit": true,
-    "verify_every_output_bank": true,
-    "require_22_nonzero_links": true
-  },
-  "next_action": "Monitor run 29457051261 only. Do not create another search-25 trigger. After completion, download all 20 full artifacts, build the strict aggregate, verify every 63/64+ trail independently, persist the unpacked readable runtime sources, and record the result."
+  "next_action": "Perform Step 2: analyze the completed search-25 evidence and save one genuinely broader non-repeating hypothesis. Do not trigger a new run before a binding handoff and release gate exist."
 }

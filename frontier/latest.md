@@ -1,8 +1,6 @@
 # Current search frontier
 
-Status: the checked ordered-trail frontier remains `62/64`. Search-24 completed strict `20/20`, and
-Step-2 local exact experiments closed the natural one-rich-line-replacement neighborhood around the
-`62/64` wall. The selected next hypothesis is `smart-search-25-core-valley`.
+Status: the checked ordered-trail frontier remains `62/64`. Search-25 completed strict `20/20`, escaped the formerly closed common-17 core down to overlap `14/17`, but produced no exact ordered `63/64` or `64/64` trail.
 
 Live execution status is deliberately not stored here. Always read `frontier/active_run.json`.
 
@@ -14,7 +12,6 @@ Live execution status is deliberately not stored here. Always read `frontier/act
 - links: `22`
 - vertices: `23`
 - missing: `(1,0,2)`, `(3,3,1)`
-- mode and operation: `paired_core_transplant`
 - source run: `29249275103`, shard `14`, worker `1`
 - frozen-core overlap: `16 / 18`
 - source file: `runs/2026-07-13-smart-search-23-core-transplant-full/best_candidate.json`
@@ -24,71 +21,37 @@ It passed both CI exact verifiers and two additional independent exact incidence
 
 ## Latest completed recorded Actions run
 
-Run `29357369876`, workflow `smart-search-24-defect-graft`:
+Run `29457051261`, workflow `smart-search-25-core-valley`:
 
-- precheck: success;
-- smoke and full: strict `20/20`;
-- exact ordered `63/64`: `0`;
+- precheck, strict smoke and full: `20/20` success;
+- best ordered finite trail: `62/64`;
+- exact ordered `63/64+`: `0`;
 - exact ordered `64/64`: `0`;
-- compact exact `64/64` supporting-line sets: `3,165`;
-- connected compact exact `64/64` line sets: `2,349`;
-- Hamiltonian supporting-line orders: `0`;
-- saved near-Hamiltonian graph rows: `2,268`;
-- finite `63/64` or `64/64` realizations: `0`;
-- maximum measured RAM: `0.0739 GiB`;
-- mean Python throughput: `14.17` attempts/s/shard.
+- atomic paired attempts: `6,151,145,399`;
+- finite contact-span realizations: `78,081,729`;
+- minimum common-17 overlap: `14`;
+- durable ordinary bank: `53` exact `62/64` rows;
+- diagnostic bank: `16,052` exact `59/64`–`61/64` valley states;
+- originals: `20` raw shard bests, `5` symmetry/reversal classes;
+- maximum measured process-tree RAM: `0.0154 GiB`;
+- mean measured throughput: about `15,274` attempts/s/shard, including the one-second control shard.
 
-Archive: `runs/2026-07-14-smart-search-24-defect-graft-full/`.
+Run-best candidate `mlct22-cv-40a5999c05294be6` covers `62/64`, misses `(0,2,1)` and `(3,3,1)`, and retains only `14/17` formerly common core lines.
 
-## Step-2 structural frontier
+Archive: `runs/2026-07-16-smart-search-25-core-valley-full/`.
 
-The complete local report is
-`docs/experiments/2026-07-15-search25-core-valley-analysis.md`.
+## Structural interpretation
 
-Exact contact-span experiments found:
+Search-25 was the correct test of the previous local diagnosis. The earlier exact experiment closed all one-rich-line moves around the 43-state `62/64` plateau. Search-25 allowed two-line changes atomically and scored finite contact spans directly.
 
-- search-24 diagnostic rows collapse to only `502` unique supporting-line sets;
-- graph-directed repairs can produce Hamiltonian `64/64` supporting-line sets, but their finite
-  segment realizations are poor, confirming that graph Hamiltonicity is not the real objective;
-- every one-rich-line replacement from the best `62/64` trail gives only `9` new `62/64` states;
-- repeated exact replacement closes after exactly `43` `62/64` states and `134` adjacency edges;
-- all `43` states retain the same `17` supporting lines;
-- the component uses only `49` lines in total and has diameter `8`;
-- no one-rich-line replacement exits this component to `63/64`;
-- targeted one-point connector replacements through the actual holes also fail;
-- breaking one of the common `17` lines yields `641` exact `61/64` valley states with `51` missing
-  triples;
-- a standalone line through two holes and a standalone separator transversal both fail as the second
-  repair.
+The engine reached states changing three of the common 17 lines, so failure cannot be blamed on remaining trapped inside the one-line plateau. Yet no mode reached `63/64` after more than six billion paired mutations and 78 million finite realizations.
 
-This is a bounded exact result. It does not prove that `63/64` or `64/64` is impossible.
+This is strong bounded evidence that the tested core-valley paired-repair families are saturated. It is not a proof that a 22-link covering trail is impossible. The next hypothesis should broaden the structural mechanism rather than repeat search-25 with another seed.
 
-## Mathematical interpretation
+## Three banks
 
-The previous searches were too monotone. They preserved `62/64`, but the closed plateau cannot change
-any of its common `17` lines one at a time. The next credible move must change two lines atomically and
-score the final finite contact spans directly. The intermediate half-move must be allowed to fall to
-`59/64`, `60/64`, or `61/64`.
+- Ordinary: `53` independently rechecked ordered `62/64` additions; `50` symmetry/reversal classes.
+- Diagnostic: `16,052` exact finite valley states (`14,407` at `59/64`, `1,534` at `60/64`, `111` at `61/64`).
+- Originals: `20` raw shard bests; `5` compact classes.
 
-An unordered `64/64` line set, a connected graph, or a Hamiltonian support order remains diagnostic
-only, not a trail.
-
-## Canonical search-25 inputs
-
-The original `data/search25_local_inputs.zip` was CRC-corrupted and has been removed from the current
-branch. Canonical lossless transport:
-
-- `data/search25_reconstructed_inputs.parts/part00.b64` through `part07.b64`;
-- concatenated base64 SHA-256:
-  `18c0a360cad88dafa40cd5ff039fca4b3a94f293010e3f5b2d3600b985236cfd`;
-- decoded ZIP SHA-256:
-  `49210583f1bc518b31decaa23b6c07b83ae3104e36e1b048d5ffba4e475ee182`;
-- `data/search25_local_inputs.README.md` — reconstruction and integrity rules;
-- `data/search25_local_experiment_manifest.json` — counts and inner hashes.
-
-## Selected search
-
-Binding handoff: `docs/smart-search-25-core-valley-launch.md`.
-
-The selected method is C++20 atomic paired core-valley mutation with exact finite contact-span scoring.
-Execution state and the one permitted next action are stored only in `frontier/active_run.json`.
+An unordered line cover, support graph, or diagnostic valley state is not counted as a frontier trail.

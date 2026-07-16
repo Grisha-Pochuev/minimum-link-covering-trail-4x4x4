@@ -1,0 +1,31 @@
+{
+  "schema": "search25-artifact-provenance-v1",
+  "run_id": 29457051261,
+  "run_url": "https://github.com/Grisha-Pochuev/minimum-link-covering-trail-4x4x4/actions/runs/29457051261",
+  "workflow": "smart-search-25-core-valley",
+  "trigger_commit": "22becb63bb5dc00fcc547e97a9366f25b35c391b",
+  "summary_artifact": {
+    "id": 8365119990,
+    "name": "smart-search-25-core-valley-run-summary",
+    "digest": "sha256:1b88c232892b7abc50d4bb2cbfc72218470052b646e3ccf3239608f629cd2da8"
+  },
+  "preflight_artifact": {
+    "id": 8359758032,
+    "name": "smart-search-25-preflight-diagnostics",
+    "digest": "sha256:4e349580fc54b52f71e4d43643481dadb91a910bde005ff2dcd0e62c7e5eedc2"
+  },
+  "runtime": {
+    "path": "data/search25_runtime.tar.gz",
+    "sha256": "51f642824516333142732818b9eaca75932b7c1aeca4e0788cbad63e2869b493",
+    "historical_commit": "22becb63bb5dc00fcc547e97a9366f25b35c391b",
+    "source_manifest": "data/search25_runtime.README.md"
+  },
+  "input_transport": {
+    "base64_sha256": "18c0a360cad88dafa40cd5ff039fca4b3a94f293010e3f5b2d3600b985236cfd",
+    "decoded_zip_sha256": "49210583f1bc518b31decaa23b6c07b83ae3104e36e1b048d5ffba4e475ee182"
+  },
+  "compact_aggregate_bundle": {
+    "path": "runs/2026-07-16-smart-search-25-core-valley-full/compact_aggregate_bundle.zip",
+    "sha256": "a4614d1fa9567effa58a39f2ef964506c8e3e46e8c4ced7888b2481efe52931c"
+  }
+}
