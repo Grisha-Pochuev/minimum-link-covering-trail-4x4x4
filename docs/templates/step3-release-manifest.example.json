@@ -1,0 +1,66 @@
+{
+  "schema": "step3-release-v1",
+  "workflow_name": "smart-search-N-short-name",
+  "workflow_path": ".github/workflows/smart-search-N-short-name.yml",
+  "trigger_path": "launch/smart-search-N-short-name.trigger",
+  "required_workflow_literals": [
+    "smart-search-N-short-name",
+    "scripts/check_long_run_budget.py",
+    "--expected-shards 20 --strict",
+    "required-system-package"
+  ],
+  "forbidden_workflow_literals": [
+    "retired-input-bundle.zip"
+  ],
+  "files": [
+    {
+      "path": "src/searchN/search_engine.cpp",
+      "sha256": "REPLACE_WITH_SHA256",
+      "archive": "none"
+    },
+    {
+      "path": "data/searchN_inputs.zip",
+      "sha256": "REPLACE_WITH_SHA256",
+      "archive": "zip",
+      "required_members": [
+        "manifest.json",
+        "seeds.jsonl"
+      ]
+    }
+  ],
+  "concatenations": [
+    {
+      "name": "optional split transport",
+      "parts": [
+        "data/searchN_inputs.parts/part00.b64",
+        "data/searchN_inputs.parts/part01.b64"
+      ],
+      "sha256": "REPLACE_WITH_CONCATENATED_TEXT_SHA256",
+      "max_part_bytes": 500000
+    }
+  ],
+  "commands": [
+    [
+      "python",
+      "-m",
+      "py_compile",
+      "scripts/searchN_preflight.py"
+    ],
+    [
+      "python",
+      "scripts/check_long_run_budget.py",
+      "--search-seconds",
+      "20400",
+      "--timeout-minutes",
+      "359",
+      "--minimum-headroom-seconds",
+      "900"
+    ],
+    [
+      "python",
+      "scripts/searchN_preflight.py",
+      "--all-modes",
+      "--verify-every-output"
+    ]
+  ]
+}
