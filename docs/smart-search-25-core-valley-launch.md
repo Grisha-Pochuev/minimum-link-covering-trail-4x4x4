@@ -2,7 +2,11 @@
 
 ## Binding Step-2 handoff
 
-This document is the exact handoff for Step 3. Step 2 does not launch GitHub Actions.
+This document is the exact scientific handoff for Step 3. Step 2 does not launch GitHub Actions.
+
+Step-4 correction dated 2026-07-16: the original `data/search25_local_inputs.zip` was CRC-corrupted and
+has been removed from the current branch. The canonical input transport and release rules below replace
+that obsolete packaging reference without changing the mathematical hypothesis.
 
 ## Scientific objective
 
@@ -23,7 +27,9 @@ final ordered finite trail without pruning the intermediate half-move.
 
 - language: `C++20`;
 - exact geometry: normalized integer line keys plus exact rational contact parameters;
+- declared system dependency: `libboost-dev` when `boost/rational.hpp` is used;
 - no Python search loop in the full matrix;
+- ordinary readable source modules are preferred over opaque archives for future searches;
 - state contains:
   - ordered sequence of `22` supporting lines;
   - exact entry and exit contact on each line;
@@ -31,17 +37,29 @@ final ordered finite trail without pruning the intermediate half-move.
   - common-17 overlap;
   - missing-point mask;
   - parent and paired-operation metadata;
-- all saved candidates pass two independent exact verifiers.
+- all saved candidates and diagnostic finite trails pass two independent exact verifiers;
+- every emitted finite trail has exactly `22` nonzero links.
 
-## Permanent inputs
+## Canonical permanent inputs
 
-- `data/search25_local_inputs.zip` — bundle containing the `43` plateau states, common `17` lines, `641` exact `61/64` core-break states, and inner manifest;
-- `data/search25_local_inputs.README.md` — bundle SHA-256 and materialization rules;
-- `data/search25_local_experiment_manifest.json` — plain quick-read copy of hashes and counts;
-- the current ordered frontier candidate from search-23;
-- the known full `23`-link Ripa trail only as a control.
+Canonical lossless transport:
 
-Preflight must independently recheck row counts, file hashes, line counts, and exact coverage.
+- `data/search25_reconstructed_inputs.parts/part00.b64` through `part07.b64`;
+- concatenated base64 SHA-256:
+  `18c0a360cad88dafa40cd5ff039fca4b3a94f293010e3f5b2d3600b985236cfd`;
+- decoded ZIP SHA-256:
+  `49210583f1bc518b31decaa23b6c07b83ae3104e36e1b048d5ffba4e475ee182`;
+- decoded members:
+  - `search25_plateau62_closed.jsonl` — `43` plateau states;
+  - `search25_common17_core.json` — common `17` lines;
+  - `search25_corebreak61_seeds.jsonl` — `641` exact `61/64` core-break states;
+  - `search25_local_experiment_manifest.json` — inner hashes and counts;
+- reconstruction rules: `data/search25_local_inputs.README.md`;
+- current ordered frontier candidate from search-23;
+- known full `23`-link Ripa trail only as a control.
+
+The retired `data/search25_local_inputs.zip` must never be used. Preflight independently checks both
+outer hashes, ZIP CRC/member list, inner hashes, row counts, line counts and exact coverage.
 
 ## Atomic mutation families
 
@@ -93,7 +111,7 @@ No shard may merely repeat search-24 defect grafting or generic single-vertex re
 
 An unordered `64/64` line set, a connected graph, or a Hamiltonian support order is diagnostic only.
 
-## Save policy
+## Save and verifier policy
 
 Always save and exactly verify:
 
@@ -103,8 +121,11 @@ Always save and exactly verify:
 - paired-operation diagnostics showing which two removed and two added lines were used;
 - per-shard throughput, peak RAM, state counts, pruning counts, and missing-orbit histograms.
 
-Do not flood the ordinary bank with old plateau states; keep them in the dedicated search-25 input
-bank.
+Before accepting smoke, independently re-read every emitted best, ordinary, original, checkpoint,
+valley and diagnostic file. A diagnostic row is not exempt from exact geometry or the `22` nonzero-link
+invariant.
+
+Do not flood the ordinary bank with old plateau states; keep them in the dedicated search-25 input bank.
 
 ## Profiles
 
@@ -126,15 +147,32 @@ Full:
 - checkpoint interval `600` seconds;
 - full starts automatically only after strict smoke success.
 
+## Mandatory release gate before trigger
+
+For future retries or derived searches, GitHub Actions must not be used as the release debugger.
+
+1. Freeze source, inputs and workflow in one release-candidate commit.
+2. Create a `step3-release-v1` manifest from
+   `docs/templates/step3-release-manifest.example.json`.
+3. Re-fetch or inspect the exact committed payload.
+4. Run `scripts/check_step3_release.py` and save a passing report.
+5. Clean-compile with all declared dependencies.
+6. Run every mode briefly and verify every emitted output twice.
+7. Record the release commit/report in `frontier/active_run.json`.
+8. Trigger in a separate final commit exactly once.
+
+Any source/input change invalidates the report and requires the full gate again.
+
 ## Smoke acceptance
 
 Smoke is accepted only if:
 
 - all `20` shards finish and upload artifacts;
-- all permanent input hashes and counts match;
+- all permanent input hashes, CRCs and counts match;
 - at least one primary shard performs real atomic paired mutations;
 - at least one primary shard reaches a state with common-17 overlap `<=15`;
 - exact finite-span verifier agrees with the independent verifier;
+- every saved finite trail has `22` nonzero links;
 - no state-cap or serialization bug silently disables a mutation family;
 - measured C++ throughput is recorded.
 
