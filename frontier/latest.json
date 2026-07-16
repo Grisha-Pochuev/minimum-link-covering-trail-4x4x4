@@ -18,16 +18,8 @@
     "grid_points": 64,
     "links": 22,
     "missing": [
-      [
-        1,
-        0,
-        2
-      ],
-      [
-        3,
-        3,
-        1
-      ]
+      [1, 0, 2],
+      [3, 3, 1]
     ],
     "missing_count": 2,
     "mode": "paired_core_transplant",
@@ -49,17 +41,9 @@
     },
     "vertices": 23
   },
-  "current_next_step": {
-    "binding_handoff": "docs/smart-search-25-core-valley-launch.md",
-    "do_not_do": [
-      "do not rerun search-24 unchanged",
-      "do not crawl the closed 43-state plateau with one rich-line replacement",
-      "do not use one defect line or one separator transversal as a standalone primary repair",
-      "do not score support-graph Hamiltonicity without exact finite contact spans",
-      "do not implement the full search loop in Python"
-    ],
-    "instruction": "Implement the C++20 atomic paired core-valley search, run strict smoke, and launch full only after smoke success.",
-    "step_type": "implement_and_launch_search25"
+  "execution_status": {
+    "authoritative_file": "frontier/active_run.json",
+    "instruction": "Never infer active, retry, pending-recording or next-action state from frontier/latest.json."
   },
   "latest_completed_recorded_run": {
     "archive": "runs/2026-07-14-smart-search-24-defect-graft-full/",
@@ -83,18 +67,35 @@
     "status": "success_strict_20_of_20",
     "workflow_name": "smart-search-24-defect-graft"
   },
+  "process_retrospective": "docs/retrospectives/2026-07-16-search25-launch-failures.md",
   "repository": "Grisha-Pochuev/minimum-link-covering-trail-4x4x4",
   "schema": "mlct-frontier-v1",
   "search25_prepared_inputs": {
-    "bundle": "data/search25_local_inputs.zip",
-    "bundle_sha256": "1d8f891978826ac64ee287b018e6a417a59bde7bcfb97ff1a427e5207282e2d0",
+    "base64_parts_glob": "data/search25_reconstructed_inputs.parts/part*.b64",
+    "base64_parts": 8,
+    "concatenated_base64_sha256": "18c0a360cad88dafa40cd5ff039fca4b3a94f293010e3f5b2d3600b985236cfd",
+    "decoded_zip_sha256": "49210583f1bc518b31decaa23b6c07b83ae3104e36e1b048d5ffba4e475ee182",
+    "retired_bundle": "data/search25_local_inputs.zip",
+    "retired_reason": "CRC-corrupted member; removed from current branch",
     "common_core_lines": 17,
     "corebreak61_seeds": 641,
     "manifest": "data/search25_local_experiment_manifest.json",
     "plateau62_closed_states": 43,
     "readme": "data/search25_local_inputs.README.md"
   },
-  "status": "verified_62_step2_core_valley_handoff_ready",
+  "selected_search": {
+    "binding_handoff": "docs/smart-search-25-core-valley-launch.md",
+    "do_not_do": [
+      "do not rerun search-24 unchanged",
+      "do not crawl the closed 43-state plateau with one rich-line replacement",
+      "do not use one defect line or one separator transversal as a standalone primary repair",
+      "do not score support-graph Hamiltonicity without exact finite contact spans",
+      "do not implement the full search loop in Python"
+    ],
+    "hypothesis": "C++20 atomic paired core-valley replacement with exact finite contact-span scoring",
+    "workflow_name": "smart-search-25-core-valley"
+  },
+  "status": "verified_62_search25_selected",
   "step2_local_experiment": {
     "analysis": "docs/experiments/2026-07-15-search25-core-valley-analysis.md",
     "closed_plateau": {
@@ -109,11 +110,12 @@
     "interpretation": "The exact 62/64 one-rich-line-replacement component is closed. A common-core line must be broken and a second line changed in one atomic contact-span mutation.",
     "manifest": "data/search25_local_experiment_manifest.json",
     "numeric_frontier_changed": false,
-    "prepared_inputs": [
-      "data/search25_local_inputs.zip::search25_plateau62_closed.jsonl",
-      "data/search25_local_inputs.zip::search25_common17_core.json",
-      "data/search25_local_inputs.zip::search25_corebreak61_seeds.jsonl"
+    "prepared_input_archive_members": [
+      "search25_plateau62_closed.jsonl",
+      "search25_common17_core.json",
+      "search25_corebreak61_seeds.jsonl",
+      "search25_local_experiment_manifest.json"
     ]
   },
-  "updated_utc": "2026-07-15T20:30:00Z"
+  "updated_utc": "2026-07-16T00:00:00Z"
 }
