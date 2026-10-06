@@ -1,0 +1,2 @@
+smart-search-26-anchored-exact
+release_commit: b56d4ca21e78830e5ab8133719ea513f0484b302
