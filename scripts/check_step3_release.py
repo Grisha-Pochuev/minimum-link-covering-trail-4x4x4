@@ -70,6 +70,11 @@ def main() -> int:
     parser.add_argument("--repo", type=Path, default=Path("."))
     parser.add_argument("--report", type=Path)
     parser.add_argument("--skip-commands", action="store_true")
+    parser.add_argument(
+        "--allow-missing-trigger",
+        action="store_true",
+        help="pre-trigger release gate: the trigger file is created only by the separate final trigger commit",
+    )
     args = parser.parse_args()
 
     repo = args.repo.resolve()
@@ -82,7 +87,8 @@ def main() -> int:
     workflow_path = repo / workflow_rel
     trigger_path = repo / trigger_rel
     require(workflow_path.is_file(), f"missing workflow: {workflow_rel}")
-    require(trigger_path.is_file(), f"missing trigger: {trigger_rel}")
+    trigger_present = trigger_path.is_file()
+    require(trigger_present or args.allow_missing_trigger, f"missing trigger: {trigger_rel}")
 
     workflow_text = workflow_path.read_text(encoding="utf-8")
     require(trigger_rel in workflow_text, f"workflow does not contain trigger path: {trigger_rel}")
@@ -149,6 +155,7 @@ def main() -> int:
         "trigger_path": trigger_rel,
         "checked_files": checked_files,
         "commands_run": 0 if args.skip_commands else len(data.get("commands", [])),
+        "trigger_present": trigger_present,
         "status": "pass",
     }
     encoded = json.dumps(report, indent=2, sort_keys=True) + "\n"

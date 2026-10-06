@@ -111,7 +111,9 @@ GitHub Actions is not the release debugger. Before any trigger:
    `step3-release-v1` manifest.
 2. Re-fetch or inspect the exact committed payload. Local files alone are not evidence that GitHub
    received the same bytes.
-3. Run `python scripts/check_step3_release.py --manifest <manifest> --report <report>`.
+3. Run `python scripts/check_step3_release.py --manifest <manifest> --allow-missing-trigger --report <report>`
+   on a fresh clone of the release commit (the trigger file must not exist yet; CI precheck reruns the
+   static gate without `--allow-missing-trigger`).
 4. Validate all hashes, archive CRC/member lists, split-file concatenations and workflow literals.
 5. Compile in a clean environment with the exact declared dependencies.
 6. Run every mode briefly and pass both exact verifiers over every emitted file.

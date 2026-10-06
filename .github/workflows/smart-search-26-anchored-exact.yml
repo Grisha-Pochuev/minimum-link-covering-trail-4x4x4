@@ -1,0 +1,190 @@
+name: smart-search-26-anchored-exact
+run-name: smart-search-26-anchored-exact-auto
+# Exhaustive exact branch-and-bound closure ladder around the Ripa corner zigzag.
+# Handoff: docs/smart-search-26-anchored-exact-launch.md
+# Release manifest: docs/search26-step3-release-manifest.json
+#
+# Declared dependencies (complete list):
+#   - runner image ubuntu-24.04 (GitHub-hosted, 4 vCPU / 16 GB for public repos)
+#   - g++ from the runner image (asserted >= 11 for -std=c++20); C++ standard library only, no Boost
+#   - Python 3.12 via actions/setup-python@v5; Python standard library only
+#   - no apt packages, no pip packages, no binary or base64 inputs
+permissions: {contents: read, actions: read}
+on:
+  push:
+    branches: [main]
+    paths: [launch/smart-search-26-anchored-exact.trigger]
+  workflow_dispatch:
+concurrency: {group: smart-search-26-anchored-exact, cancel-in-progress: false}
+env:
+  PYTHON_VERSION: '3.12'
+  SEARCH_SECONDS: '20400'
+  TIMEOUT_MINUTES: '359'
+  SHARDS: '20'
+  THREADS: '4'
+jobs:
+  precheck:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with: {show-progress: false}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Verify declared toolchain
+        run: |
+          g++ --version
+          python --version
+          nproc
+          free -g
+          test "$(g++ -dumpversion | cut -d. -f1)" -ge 11
+      - name: Validate scripts and long-run budget
+        run: |
+          python -m py_compile scripts/search26_common.py scripts/search26_bruteforce.py scripts/run_search26_ci.py scripts/build_search26_summary.py scripts/verify_search26_primary.py scripts/verify_search26_independent.py scripts/preflight_search26.py scripts/check_step3_release.py
+          python scripts/check_long_run_budget.py --search-seconds 20400 --timeout-minutes 359 --minimum-headroom-seconds 900
+      - name: Step-3 release gate (static, committed payload)
+        run: python scripts/check_step3_release.py --manifest docs/search26-step3-release-manifest.json --skip-commands --report precheck-release-report.json
+      - name: Shared preflight (same command as local release gate)
+        id: shared_preflight
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          python scripts/preflight_search26.py --repo . --workdir preflight-search26 2>&1 | tee preflight-search26.log
+      - name: Upload preflight diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smart-search-26-preflight-diagnostics
+          path: |
+            preflight-search26.log
+            precheck-release-report.json
+            preflight-search26/preflight_report.json
+            preflight-search26/mini-aggregate/
+          if-no-files-found: warn
+          retention-days: 90
+      - name: Enforce shared preflight success
+        run: test "${{ steps.shared_preflight.outcome }}" = success
+  smoke:
+    needs: precheck
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix: {shard: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]}
+    steps:
+      - uses: actions/checkout@v4
+        with: {show-progress: false}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Compile engine
+        run: |
+          g++ --version
+          mkdir -p build
+          g++ -O2 -std=c++20 -pthread -Wall -Wextra -o build/anchored_exact src/search26/anchored_exact.cpp
+          sha256sum build/anchored_exact src/search26/anchored_exact.cpp
+          build/anchored_exact selftest
+      - name: Smoke shard
+        run: python scripts/run_search26_ci.py --profile smoke --shard ${{ matrix.shard }} --shards 20 --threads 4 --engine build/anchored_exact --out results/search26
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: smart-search-26-smoke-shard-${{ matrix.shard }}
+          path: results/search26/
+          if-no-files-found: warn
+          retention-days: 90
+  smoke-aggregate:
+    needs: smoke
+    if: needs.smoke.result == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with: {show-progress: false}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - uses: actions/download-artifact@v4
+        with: {pattern: smart-search-26-smoke-shard-*, path: collected, merge-multiple: true}
+      - name: Strict smoke aggregate
+        run: |
+          python scripts/build_search26_summary.py --input collected --out smoke-summary --expected-shards 20 --strict --require-control-leaves --max-rss-gib 13
+          python - <<'PY'
+          import json
+          r = json.load(open('smoke-summary/run_summary.json'))
+          assert r['status'] == 'pass' and r['complete'] and len(r['received_shards']) == 20, r['errors']
+          for name in ('A', 'B', 'C', 'control'):
+              assert r['stages'][name]['shards_run'] == 20, name
+              assert r['stages'][name]['nodes'] > 0, name
+          assert r['verified_near_trails'] > 0
+          assert r['max_peak_child_rss_gib'] <= 13.0
+          print('strict smoke accepted')
+          PY
+      - uses: actions/upload-artifact@v4
+        with: {name: smart-search-26-smoke-summary, path: smoke-summary/, if-no-files-found: error, retention-days: 90}
+  full:
+    needs: smoke-aggregate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 359
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix: {shard: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]}
+    steps:
+      - uses: actions/checkout@v4
+        with: {show-progress: false}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Compile engine
+        run: |
+          g++ --version
+          mkdir -p build
+          g++ -O2 -std=c++20 -pthread -Wall -Wextra -o build/anchored_exact src/search26/anchored_exact.cpp
+          sha256sum build/anchored_exact src/search26/anchored_exact.cpp
+          build/anchored_exact selftest
+      - name: Full shard (20400 s search budget)
+        run: python scripts/run_search26_ci.py --profile full --shard ${{ matrix.shard }} --shards 20 --threads 4 --engine build/anchored_exact --out results/search26
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: smart-search-26-anchored-exact-shard-${{ matrix.shard }}
+          path: results/search26/
+          if-no-files-found: warn
+          retention-days: 90
+  full-aggregate:
+    needs: full
+    if: needs.full.result == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with: {show-progress: false}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - uses: actions/download-artifact@v4
+        with: {pattern: smart-search-26-anchored-exact-shard-*, path: collected, merge-multiple: true}
+      - name: Strict full aggregate
+        run: python scripts/build_search26_summary.py --input collected --out run-summary --expected-shards 20 --strict --max-rss-gib 13
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: smart-search-26-anchored-exact-run-summary, path: run-summary/, if-no-files-found: error, retention-days: 90}
+  failure-report:
+    needs: [precheck, smoke, smoke-aggregate, full, full-aggregate]
+    if: always() && needs.smoke-aggregate.result == 'success' && (needs.full.result != 'success' || needs.full-aggregate.result != 'success')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with: {show-progress: false}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with: {pattern: smart-search-26-anchored-exact-shard-*, path: collected, merge-multiple: true}
+      - name: Incomplete (non-strict) report
+        run: |
+          mkdir -p collected
+          python scripts/build_search26_summary.py --input collected --out incomplete-report --expected-shards 20 || true
+          echo "INCOMPLETE RUN: technical evidence only, not a mathematical result" > incomplete-report/INCOMPLETE.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: smart-search-26-incomplete-report, path: incomplete-report/, if-no-files-found: warn, retention-days: 90}

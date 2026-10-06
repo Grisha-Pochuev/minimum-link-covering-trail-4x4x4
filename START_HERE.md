@@ -1,6 +1,6 @@
 # START HERE — compact agent memory
 
-Last updated: 2026-07-16
+Last updated: 2026-10-07
 
 ## Mandatory boot rule
 
@@ -157,6 +157,8 @@ A failed attempt may be retried only after the whole gate passes again on the ne
 - search-23: core transplant; `62/64`, two frozen-core lines changed, new defect orbit.
 - search-24: defect-line graft; many unordered/connected `64/64` sets, no trail.
 - search-25: atomic paired core-valley search; `6.15` billion attempts, overlap down to `14/17`, no `63/64`.
+- search-26: first exhaustive exact search (anchored closure ladder around the Ripa corner zigzag);
+  handoff `docs/smart-search-26-anchored-exact-launch.md`; live stage only in `frontier/active_run.json`.
 
 ## Performance and long-run safety
 
@@ -174,6 +176,20 @@ A failed attempt may be retried only after the whole gate passes again on the ne
 3. Freeze and validate one release -> trigger once -> strict smoke -> automatic full.
 4. Review process and memory without changing the historical commit of an active run.
 
+## Search-26 (selected 2026-10-07)
+
+Hypothesis H26: decide exactly whether any 22-link covering trail contains the Ripa corner zigzag
+`333→000→300→033→003→330` (any symmetric image) inside explicit line classes, by complete exact
+branch-and-bound enumeration (closure ladder A ⊂ B ⊂ C: rich lines only, plus at most one / two
+zero-point connector links). A closed stage is an exact negative result for that class; a `64/64`
+leaf is reconstructed and checked by two exact verifiers.
+
+New process detail: `scripts/check_step3_release.py --allow-missing-trigger` is used for the
+pre-trigger release gate (the trigger file may only appear in the final trigger commit); CI precheck
+runs the gate without the flag.
+
 ## Next action
 
-Step 1 is complete for run `29457051261`. Perform Step 2: analyze search-25 and choose one genuinely broader, non-repeating hypothesis. Do not launch or rerun anything until a new binding handoff exists.
+Read `frontier/active_run.json` for the live search-26 stage. Do not duplicate a search-26 run that is
+recorded there; after it completes, perform Step 1 recording (closure status per stage, banks, unit
+certificates).
