@@ -1,0 +1,123 @@
+{
+  "checked_files": [
+    {
+      "archive": "none",
+      "bytes": 46691,
+      "members": 0,
+      "path": "src/search26/anchored_exact.cpp",
+      "sha256": "3b91e3cd2e9ecf95c78c50e6f594cabbd20130c9bf87094df67293b2998e8d74"
+    },
+    {
+      "archive": "none",
+      "bytes": 11185,
+      "members": 0,
+      "path": "scripts/search26_common.py",
+      "sha256": "132316213529c6bac07ff77e536461f1c9ecfdbf20e7f3f26aa72bfde43ecf1a"
+    },
+    {
+      "archive": "none",
+      "bytes": 4800,
+      "members": 0,
+      "path": "scripts/search26_bruteforce.py",
+      "sha256": "f4a6c66142c926a414f3eb0d959568c0597a148d516e8840c22713baab6f49bc"
+    },
+    {
+      "archive": "none",
+      "bytes": 9388,
+      "members": 0,
+      "path": "scripts/run_search26_ci.py",
+      "sha256": "3ccdfa33f1f2898d0a46c556b4a971ed8cdeb89065dc672fd5ea8d46265a825f"
+    },
+    {
+      "archive": "none",
+      "bytes": 8292,
+      "members": 0,
+      "path": "scripts/build_search26_summary.py",
+      "sha256": "3156fb14e3844382eee91f8be57d8ae445b4bc9332f50639c140b79a0860b4bf"
+    },
+    {
+      "archive": "none",
+      "bytes": 2959,
+      "members": 0,
+      "path": "scripts/verify_search26_primary.py",
+      "sha256": "0a9b56e4986e8215a7baf3ef2ae9e9953d7ab29322c86cc8e487422014fd83c2"
+    },
+    {
+      "archive": "none",
+      "bytes": 4446,
+      "members": 0,
+      "path": "scripts/verify_search26_independent.py",
+      "sha256": "1b367513ca61b8e39fb5c5cfdca7be302133e97d70b7a5148c0ea27902553df3"
+    },
+    {
+      "archive": "none",
+      "bytes": 9729,
+      "members": 0,
+      "path": "scripts/preflight_search26.py",
+      "sha256": "d5d53eac596f261ce18dcbc52278dffb512180478e8b31e454b6d6acb1e2b4da"
+    },
+    {
+      "archive": "none",
+      "bytes": 8383,
+      "members": 0,
+      "path": "scripts/bridge_compress_common.py",
+      "sha256": "58eb898d07f2cb4d2973759656164cffc394559a507394274cd49e6cdde41e5f"
+    },
+    {
+      "archive": "none",
+      "bytes": 1938,
+      "members": 0,
+      "path": "scripts/check_rational_trail.py",
+      "sha256": "d54eb8afd99ab5fb5d2397a247876811836fa604fc42d57d6e34f65ecf607d79"
+    },
+    {
+      "archive": "none",
+      "bytes": 1222,
+      "members": 0,
+      "path": "scripts/check_long_run_budget.py",
+      "sha256": "1f02eee203fc5b77c8610eb2d047f02328e0c070f2177b32cf2b28186813808b"
+    },
+    {
+      "archive": "none",
+      "bytes": 7032,
+      "members": 0,
+      "path": "scripts/check_step3_release.py",
+      "sha256": "793e9952fd8ebef3a1d61247ab7946f4aac71253a2e4b85e768e3ffa8af3b1c9"
+    },
+    {
+      "archive": "none",
+      "bytes": 150,
+      "members": 0,
+      "path": "data/search26/controls/best62_anchor4.replay",
+      "sha256": "fe8faa2161ab97a2141e611c4aa9f484ed5cfebb7ebb4aa5db216676cb904400"
+    },
+    {
+      "archive": "none",
+      "bytes": 142,
+      "members": 0,
+      "path": "data/search26/controls/best62_anchor5.replay",
+      "sha256": "c0723860eb2b001496b05ae734c552f02a4990408444aecb36eb24514016e612"
+    },
+    {
+      "archive": "none",
+      "bytes": 8500,
+      "members": 0,
+      "path": ".github/workflows/smart-search-26-anchored-exact.yml",
+      "sha256": "2616027eb22a5a2a7d58504e5b15147723cc9c784f44f9365556fbfcba93a711"
+    },
+    {
+      "archive": "none",
+      "bytes": 9878,
+      "members": 0,
+      "path": "docs/smart-search-26-anchored-exact-launch.md",
+      "sha256": "b7df039d51bb2348766d05fd02916705aa9d4d57b8a96c14876b786334ea8721"
+    }
+  ],
+  "commands_run": 3,
+  "manifest": "docs/search26-step3-release-manifest.json",
+  "schema": "step3-release-report-v1",
+  "status": "pass",
+  "trigger_path": "launch/smart-search-26-anchored-exact.trigger",
+  "trigger_present": false,
+  "workflow_path": ".github/workflows/smart-search-26-anchored-exact.yml"
+}

@@ -1,7 +1,7 @@
 {
   "schema": "active-run-v1",
   "updated_at": "2026-10-07",
-  "status": "search26_step3_release_candidate",
+  "status": "search26_release_gate_passed_awaiting_trigger",
   "active_run": null,
   "do_not_duplicate_run_id": 29457051261,
   "last_completed_run": {
@@ -21,7 +21,7 @@
     "result": "no 63/64 after 6,151,145,399 attempts; minimum common17 overlap 14",
     "repeat_policy": "do_not_rerun_unchanged"
   },
-  "next_action": "Run the release gate on a fresh clone of the frozen release commit, record the passing report and release commit here, then write the trigger in a separate final commit exactly once.",
+  "next_action": "Release gate passed on a fresh clone of the release commit. Write launch/smart-search-26-anchored-exact.trigger in a separate final commit exactly once (no source change after the release commit), then record the run id here.",
   "selected_search": {
     "number": 26,
     "workflow_name": "smart-search-26-anchored-exact",
@@ -30,9 +30,10 @@
     "handoff": "docs/smart-search-26-anchored-exact-launch.md",
     "release_manifest": "docs/search26-step3-release-manifest.json",
     "hypothesis": "H26: exhaustive exact closure ladder (A rich-only, B <=1 free connector, C <=2 free connectors) for 22-link covering trails containing the Ripa corner zigzag (anchor 5)",
-    "release_commit": null,
-    "release_report": null,
+    "release_commit": "b56d4ca21e78830e5ab8133719ea513f0484b302",
+    "release_report": "docs/search26-release-gate/release-report.json",
     "trigger_commit": null,
-    "run_id": null
+    "run_id": null,
+    "preflight_report": "docs/search26-release-gate/preflight-report.json"
   }
 }

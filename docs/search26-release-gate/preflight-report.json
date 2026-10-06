@@ -1,0 +1,152 @@
+{
+  "admissibility": [
+    {
+      "bruteforce_max": 25,
+      "engine_at_max": 25,
+      "engine_at_max_plus_1": 22,
+      "k": 0,
+      "links": 8
+    },
+    {
+      "bruteforce_max": 25,
+      "engine_at_max": 25,
+      "engine_at_max_plus_1": 22,
+      "k": 1,
+      "links": 8
+    }
+  ],
+  "budget": "{'search_seconds': 20400, 'timeout_minutes': 359, 'headroom_seconds': 1140, 'minimum_headroom_seconds': 900}",
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+  "engine_sha256": "1a2e9908f11af711ad3ba3cd30df6f00edcf6e620dfca2f5d5afb9613e36e7e8",
+  "environment": "fresh git clone of the release commit in a clean sandbox (Debian 13 arm64, g++ 14.2; also compiled with g++ 13.3 and clang 19 with identical engine results)",
+  "miniature": {
+    "aggregate_status": "pass",
+    "nodes": 19961856,
+    "nodes_per_thread_second": 155733,
+    "seconds": 77.2,
+    "stages": {
+      "A": {
+        "class": "anchor5; every other link on a lattice line with >=3 grid points",
+        "closure": "partial",
+        "complete_fraction": 0.000289,
+        "full64_leaves": 0,
+        "max_engine_elapsed_seconds": 8.0,
+        "near_leaves": 0,
+        "nodes": 6797312,
+        "shards_run": 2,
+        "shards_skipped": 0,
+        "units_complete": 13,
+        "units_not_started": 45013,
+        "units_open": 4,
+        "units_total": 45030
+      },
+      "B": {
+        "class": "anchor5; rich lines plus at most one free connector link covering no grid point",
+        "closure": "partial",
+        "complete_fraction": 0.0,
+        "full64_leaves": 0,
+        "max_engine_elapsed_seconds": 8.0,
+        "near_leaves": 0,
+        "nodes": 3178496,
+        "shards_run": 2,
+        "shards_skipped": 0,
+        "units_complete": 0,
+        "units_not_started": 39926,
+        "units_open": 4,
+        "units_total": 39930
+      },
+      "C": {
+        "class": "anchor5; rich lines plus at most two free connector links covering no grid point",
+        "closure": "partial",
+        "complete_fraction": 0.0,
+        "full64_leaves": 0,
+        "max_engine_elapsed_seconds": 6.0,
+        "near_leaves": 0,
+        "nodes": 1332224,
+        "shards_run": 2,
+        "shards_skipped": 0,
+        "units_complete": 0,
+        "units_not_started": 126362,
+        "units_open": 4,
+        "units_total": 126366
+      },
+      "control": {
+        "class": "pipeline control (target 48, not a scientific claim)",
+        "closure": "partial",
+        "complete_fraction": 0.0,
+        "full64_leaves": 0,
+        "max_engine_elapsed_seconds": 10.0,
+        "near_leaves": 40,
+        "nodes": 8653824,
+        "shards_run": 2,
+        "shards_skipped": 0,
+        "units_complete": 0,
+        "units_not_started": 39926,
+        "units_open": 4,
+        "units_total": 39930
+      }
+    },
+    "verified_control_trails": 40
+  },
+  "negative_tests": [
+    {
+      "rejected": true,
+      "row": 0,
+      "script": "verify_search26_primary.py"
+    },
+    {
+      "rejected": true,
+      "row": 0,
+      "script": "verify_search26_independent.py"
+    },
+    {
+      "rejected": true,
+      "row": 1,
+      "script": "verify_search26_primary.py"
+    },
+    {
+      "rejected": true,
+      "row": 1,
+      "script": "verify_search26_independent.py"
+    },
+    {
+      "rejected": true,
+      "row": 2,
+      "script": "verify_search26_primary.py"
+    },
+    {
+      "rejected": true,
+      "row": 2,
+      "script": "verify_search26_independent.py"
+    }
+  ],
+  "peak_child_rss_gib": 0.3203,
+  "platform": "Linux-6.12.110+-aarch64-with-glibc2.41",
+  "python": "3.12.15",
+  "release_commit": "b56d4ca21e78830e5ab8133719ea513f0484b302",
+  "replay_controls": [
+    {
+      "anchor": 4,
+      "links": 22,
+      "model_covered": 62,
+      "uses_F": true,
+      "uses_T": true,
+      "verified_covered": 62
+    },
+    {
+      "anchor": 5,
+      "links": 22,
+      "model_covered": 62,
+      "uses_F": true,
+      "uses_T": true,
+      "verified_covered": 62
+    }
+  ],
+  "selftest": [
+    "selftest: lines=1492 n2=1344 n3=72 n4=76",
+    "selftest: T samples checked=5250 undominated=0",
+    "selftest PASS"
+  ],
+  "source_sha256": "3b91e3cd2e9ecf95c78c50e6f594cabbd20130c9bf87094df67293b2998e8d74",
+  "status": "pass"
+}
