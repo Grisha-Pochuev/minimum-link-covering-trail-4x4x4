@@ -15,8 +15,9 @@ Same command locally and in CI:
      run and the split run both close every unit with the same exact maximum;
   6. ledger integrity and the committed plan regenerates byte-for-byte;
   7. long-run budget check;
-  8. miniature: 2 shards on the committed plan plus a target-48 control,
-     strict aggregate, both verifiers over every emitted bank, control leaves > 0.
+  8. miniature: 2 shards on a deterministic mini ledger (8 cheap parents, one
+     split +1) that must CLOSE, plus a target-48 control; strict aggregate,
+     both verifiers over every bank, control leaves > 0, empty next ledger.
 """
 from __future__ import annotations
 
@@ -139,23 +140,28 @@ def main() -> int:
     rep["budget"] = sh([py, scripts / "check_long_run_budget.py", "--search-seconds", SEARCH_SECONDS, "--timeout-minutes", TIMEOUT_MINUTES,
                         "--minimum-headroom-seconds", MIN_HEADROOM], repo, log).strip()
 
-    # 8. miniature
+    # 8. miniature: a deterministic mini ledger of cheap parents (one split) must close
     mini = work / "mini"
+    mled = repo / "docs/search27/preflight-mini-ledger.json"
+    mplan = work / "mini.plan"
+    sh([py, scripts / "make_search27_plan.py", "--ledger", mled, "--out", mplan], repo, log)
     ctrl = work / "control.plan"
     ctrl.write_text("".join(l + "\n" for l in (repo / "launch/search27-B.plan").read_text().splitlines()[60:100]))
     for shard in (0, 1):
         sh([py, scripts / "run_search27_ci.py", "--profile", "preflight", "--shard", shard, "--shards", 2, "--threads", 2, "--engine", new,
-            "--plan", repo / "launch/search27-B.plan", "--control-plan", ctrl, "--out", mini], repo, log, timeout=600)
+            "--plan", mplan, "--control-plan", ctrl, "--seconds", 120, "--out", mini], repo, log, timeout=900)
     sh([py, scripts / "build_search27_summary.py", "--input", mini, "--out", work / "mini-aggregate", "--expected-shards", 2,
-        "--ledger", repo / "docs/search27/B-ledger-from-search26.json", "--plan", repo / "launch/search27-B.plan", "--strict"], repo, log)
+        "--ledger", mled, "--plan", mplan, "--strict"], repo, log)
     agg = json.loads((work / "mini-aggregate/run_summary.json").read_text())
-    if agg["status"] != "pass" or agg["verified_near_trails"] <= 0 or agg["units"]["complete"] <= 0:
-        raise SystemExit("miniature aggregate failed, produced no verified control trails, or closed no unit")
+    if agg["status"] != "pass" or agg["verified_near_trails"] <= 0:
+        raise SystemExit("miniature aggregate failed or produced no verified control trails")
+    if agg["stage_B"]["closure"] != "closed" or agg["units"]["complete"] != agg["plan_units_total"] or agg["plan_units_total"] <= 8:
+        raise SystemExit(f"miniature did not close its deterministic mini plan: {agg['units']} / {agg['plan_units_total']}")
     nl = json.loads((work / "mini-aggregate/next-ledger.json").read_text())
-    if len(nl["open_items"]) + len(nl["not_started_items"]) != agg["units"]["open"] + agg["units"]["not_started"]:
-        raise SystemExit("next ledger does not match remaining units")
-    sh([py, scripts / "make_search27_plan.py", "--ledger", work / "mini-aggregate/next-ledger.json", "--out", work / "next.plan"], repo, log)
-    rep["miniature"] = {"units": agg["units"], "verified_control_trails": agg["verified_near_trails"], "status": agg["status"]}
+    if nl["open_items"] or nl["not_started_items"] or nl["parents_complete"] != 39930:
+        raise SystemExit("next ledger after a closed miniature is not empty")
+    rep["miniature"] = {"units": agg["units"], "plan_units_total": agg["plan_units_total"], "closure": agg["stage_B"]["closure"],
+                        "verified_control_trails": agg["verified_near_trails"], "status": agg["status"]}
     rep["steps"] = log
     rep["status"] = "pass"
     (work / "preflight_report.json").write_text(json.dumps(rep, indent=2, sort_keys=True) + "\n")
