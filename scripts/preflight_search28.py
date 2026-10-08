@@ -5,7 +5,8 @@ Same command locally and in CI:
 
     python scripts/preflight_search28.py --repo . --workdir preflight-search28
 
-  1. compile the frozen search-26 engine and the search-27 plan engine;
+  1. compile the frozen search-26 engine and the search-28 plan engine
+     (search-27 plan engine + full-budget transposition tables);
   2. plan-engine self-test;
   3. classic equivalence: without plan= the two engines emit identical
      units.jsonl (timings excluded) on a fixed node-limited workload;
@@ -79,7 +80,7 @@ def main() -> int:
     else:
         rep["compiler"] = sh([args.cxx, "--version"], repo, log).splitlines()[0]
         sh([args.cxx, "-O2", "-std=c++20", "-pthread", "-Wall", "-Wextra", "-o", old, repo / "src/search26/anchored_exact.cpp"], repo, log)
-        sh([args.cxx, "-O2", "-std=c++20", "-pthread", "-Wall", "-Wextra", "-o", new, repo / "src/search27/anchored_exact_plan.cpp"], repo, log)
+        sh([args.cxx, "-O2", "-std=c++20", "-pthread", "-Wall", "-Wextra", "-o", new, repo / "src/search28/anchored_exact_plan.cpp"], repo, log)
     if "selftest PASS" not in sh([new, "selftest"], repo, log):
         raise SystemExit("plan engine selftest failed")
 
@@ -142,6 +143,21 @@ def main() -> int:
         raise SystemExit(f"split changed the exact maximum: {res}")
     rep["split_invariance"] = {"links": 8, "k": 1, **res}
 
+    # 5b. search-28 table sizing: non-power-of-two tables (multiply-shift indexing) must
+    # close the same exhaustive model with the same exact maximum as power-of-two ones.
+    ttres = {}
+    for tt in (64, 48, 40):
+        od = work / f"tt_{tt}"
+        od.mkdir()
+        sh([new, "search", *[x for x in small if not x.startswith("tt_mb=")], f"tt_mb={tt}", f"out={od}"], repo, log)
+        s = json.loads((od / "engine_summary.json").read_text())
+        if s["units_complete"] != s["units_assigned"]:
+            raise SystemExit(f"tt_mb={tt} run did not complete")
+        ttres[tt] = s["best_model_covered"]
+    if len(set(ttres.values())) != 1 or ttres[64] != res["whole"]:
+        raise SystemExit(f"table size changed the exact maximum: {ttres}")
+    rep["tt_size_invariance"] = {str(k): v for k, v in ttres.items()}
+
     # 6. ledger + plan (works for every round: the ledger is the current campaign state)
     led = json.loads((repo / LEDGER).read_text())
     if led.get("schema") != "search28-C-ledger-v2" or led.get("stage") != "C" or led.get("parents_total") != PARENTS:
@@ -184,7 +200,7 @@ def main() -> int:
     rep["steps"] = log
     rep["status"] = "pass"
     (work / "preflight_report.json").write_text(json.dumps(rep, indent=2, sort_keys=True) + "\n")
-    print(json.dumps({k: rep[k] for k in ("status", "classic_equivalence", "split_structure", "split_invariance", "plan", "miniature")}, indent=1))
+    print(json.dumps({k: rep[k] for k in ("status", "classic_equivalence", "split_structure", "split_invariance", "tt_size_invariance", "plan", "miniature")}, indent=1))
     return 0
 
 

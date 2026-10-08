@@ -36,3 +36,16 @@ control whose trails pass both exact verifiers.
 
 Unfinished units are never a negative mathematical result. Stage C is closed
 only when a round's aggregate reports `closure: closed`.
+
+## Memory policy (from round 2)
+Round 1 ran the search-27 plan engine with 2 GiB tables per thread (~8 GiB per job).
+From round 2 the workflow builds `src/search28/anchored_exact_plan.cpp`: identical to
+the search-27 engine except that the transposition table now uses the full `tt_mb`
+budget (the old sizing rounded down to a power of two, so 3 GiB gave 2 GiB).
+Power-of-two sizes keep the old indexing bit-for-bit (checked: identical units at
+tt_mb=64 and 2048); other sizes use multiply-shift indexing; entries store the full
+key, so soundness does not depend on the index map (preflight 5b: tt_mb 64/48/40 give
+the same exact maximum). `run_search28_ci.py` picks `tt_mb=auto`:
+min(3072, (MemTotal − 3584 MiB)/threads), i.e. 4 × 3 GiB ≈ 12.2 GiB on the 16 GB runner.
+Tables are zero-filled at start, so smoke (same tt) proves every runner can hold them
+before the 6-hour jobs start.

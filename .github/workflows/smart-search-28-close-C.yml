@@ -76,8 +76,8 @@ jobs:
       - name: Compile engine
         run: |
           mkdir -p build
-          g++ -O2 -std=c++20 -pthread -Wall -Wextra -o build/anchored_exact_plan src/search27/anchored_exact_plan.cpp
-          sha256sum build/anchored_exact_plan src/search27/anchored_exact_plan.cpp "$PLAN"
+          g++ -O2 -std=c++20 -pthread -Wall -Wextra -o build/anchored_exact_plan src/search28/anchored_exact_plan.cpp
+          sha256sum build/anchored_exact_plan src/search28/anchored_exact_plan.cpp "$PLAN"
           build/anchored_exact_plan selftest
       - name: Smoke shard
         run: python scripts/run_search28_ci.py --profile smoke --shard ${{ matrix.shard }} --shards 20 --threads 4 --engine build/anchored_exact_plan --plan "$PLAN" --out results/search28
@@ -130,10 +130,10 @@ jobs:
       - name: Compile engine
         run: |
           mkdir -p build
-          g++ -O2 -std=c++20 -pthread -Wall -Wextra -o build/anchored_exact_plan src/search27/anchored_exact_plan.cpp
-          sha256sum build/anchored_exact_plan src/search27/anchored_exact_plan.cpp "$PLAN"
+          g++ -O2 -std=c++20 -pthread -Wall -Wextra -o build/anchored_exact_plan src/search28/anchored_exact_plan.cpp
+          sha256sum build/anchored_exact_plan src/search28/anchored_exact_plan.cpp "$PLAN"
           build/anchored_exact_plan selftest
-      - name: Full shard (20400 s search budget)
+      - name: Full shard (20400 s search budget, tt auto ~3 GiB/thread)
         run: python scripts/run_search28_ci.py --profile full --shard ${{ matrix.shard }} --shards 20 --threads 4 --engine build/anchored_exact_plan --plan "$PLAN" --out results/search28
       - uses: actions/upload-artifact@v4
         if: always()

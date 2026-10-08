@@ -28,9 +28,32 @@ CONTROL = dict(STAGE_C, name="control", target=48, class_="pipeline control (tar
 
 PROFILES = {
     "preflight": {"total": 30, "tt_mb": 64, "save_min": 56, "max_saved": 40},
-    "smoke": {"total": 120, "tt_mb": 2048, "save_min": 56, "max_saved": 200},
-    "full": {"total": 20400, "tt_mb": 2048, "save_min": 56, "max_saved": 300},
+    "smoke": {"total": 120, "tt_mb": "auto", "save_min": 56, "max_saved": 200},
+    "full": {"total": 20400, "tt_mb": "auto", "save_min": 56, "max_saved": 300},
 }
+
+# Memory policy (search-28 round 2+): the transposition tables are allocated and
+# zero-filled up front, so the engine's RSS is ~threads * tt_mb from the first second
+# (measured: 3.05 GiB per thread at tt_mb=3072).  "auto" takes the runner's MemTotal,
+# reserves RESERVE_MIB for the OS, the runner agent, Python and the engine itself, and
+# caps each table at TT_CAP_MIB.  On the 16 GB public runner this gives 4 x 3072 MiB
+# (~12.2 GiB peak); smoke uses the same value, so a runner that cannot hold it fails
+# in smoke, before the 6-hour jobs start.
+TT_CAP_MIB = 3072
+TT_FLOOR_MIB = 1024
+RESERVE_MIB = 3584
+
+
+def auto_tt_mb(threads: int) -> int:
+    total_kib = 0
+    for line in Path("/proc/meminfo").read_text().splitlines():
+        if line.startswith("MemTotal:"):
+            total_kib = int(line.split()[1])
+    per = (total_kib // 1024 - RESERVE_MIB) // max(1, threads)
+    per = min(TT_CAP_MIB, per // 256 * 256)
+    if per < TT_FLOOR_MIB:
+        raise SystemExit(f"runner too small: MemTotal {total_kib} KiB leaves {per} MiB per thread")
+    return per
 
 
 def run(engine: Path, stage: dict, plan: Path, args, seconds: float, outdir: Path, prof: dict, save_min: int) -> dict:
@@ -64,6 +87,9 @@ def main() -> int:
     ap.add_argument("--seconds", type=float, default=None, help="override the profile search budget (preflight/tests)")
     args = ap.parse_args()
     prof = dict(PROFILES[args.profile])
+    if prof["tt_mb"] == "auto":
+        prof["tt_mb"] = auto_tt_mb(args.threads)
+    print(json.dumps({"tt_mb_per_thread": prof["tt_mb"], "threads": args.threads}))
     if args.seconds is not None:
         prof["total"] = args.seconds
     shard_dir = args.out / f"shard-{args.shard:02d}"
