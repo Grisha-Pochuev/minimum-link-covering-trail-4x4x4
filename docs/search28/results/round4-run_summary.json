@@ -1,0 +1,57 @@
+{
+  "best_claimed_covered": 0,
+  "complete": true,
+  "errors": [],
+  "expected_shards": 20,
+  "max_peak_child_rss_gib": 8.0631,
+  "plan_sha256": "ed0cfa1d935ce66bcf6ff16529b436be9d79e5563484187fc24c983be9280165",
+  "plan_units_total": 12910,
+  "profile": "full",
+  "received_shards": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19
+  ],
+  "round": 4,
+  "schema": "search28-run-summary-v1",
+  "stage_C": {
+    "class": "anchor5; rich lines plus at most two free connector links covering no grid point",
+    "closure": "closed",
+    "complete_fraction": 1.0,
+    "max_engine_elapsed_seconds": 2933.3,
+    "nodes": 11218272871,
+    "parents_complete_after": 126366,
+    "parents_complete_before": 119699,
+    "parents_total": 126366
+  },
+  "status": "pass",
+  "units": {
+    "complete": 12910,
+    "not_started": 0,
+    "open": 0
+  },
+  "verification": {
+    "independent": "pass",
+    "primary": "pass"
+  },
+  "verified_full64_trails": 0,
+  "verified_near_trails": 0,
+  "workflow": "smart-search-28-close-C"
+}
