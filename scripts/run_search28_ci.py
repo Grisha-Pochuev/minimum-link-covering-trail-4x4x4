@@ -39,7 +39,9 @@ PROFILES = {
 # caps each table at TT_CAP_MIB.  On the 16 GB public runner this gives 4 x 3072 MiB
 # (~12.2 GiB peak); smoke uses the same value, so a runner that cannot hold it fails
 # in smoke, before the 6-hour jobs start.
-TT_CAP_MIB = 3072
+# Round 3 relaunch (2026-10-09): full shard 3 of run 37883273393 lost its runner after
+# 3 h 45 min at 4 x 3072 MiB, so the cap is lowered to 2048 MiB (~8.2 GiB per job).
+TT_CAP_MIB = 2048
 TT_FLOOR_MIB = 1024
 RESERVE_MIB = 3584
 
